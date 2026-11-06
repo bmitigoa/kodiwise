@@ -1,0 +1,155 @@
+package com.kodiwise.app
+
+import android.os.Bundle
+import android.util.Log
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
+import java.util.Locale
+
+class PropertyUploadActivity : AppCompatActivity() {
+
+    private val firestore by lazy { FirebaseFirestore.getInstance() }
+
+    // UI
+    private lateinit var btnSubmit: Button
+    private lateinit var tvUploadStatus: TextView
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        if (!AuthManager.isLoggedIn()) {
+            toast("Please login first")
+            finish()
+            return
+        }
+
+        setContentView(R.layout.activity_property_upload)
+
+        // Inputs
+        val etTitle = findViewById<EditText>(R.id.etTitle)
+        val etLocation = findViewById<EditText>(R.id.etLocation)
+        val etBedrooms = findViewById<EditText>(R.id.etBedrooms)
+        val etBathrooms = findViewById<EditText>(R.id.etBathrooms)
+        val etPrice = findViewById<EditText>(R.id.etPrice)
+        val etDescription = findViewById<EditText>(R.id.etDescription)
+
+        // UI
+        btnSubmit = findViewById(R.id.btnSubmitUpload)
+        tvUploadStatus = findViewById(R.id.tvUploadStatus)
+
+        btnSubmit.setOnClickListener {
+            val uid = AuthManager.uid()
+            if (uid == null) {
+                toast("Please login first")
+                return@setOnClickListener
+            }
+
+            val title = etTitle.text.toString().trim()
+            val locationName = etLocation.text.toString().trim()
+            val bedrooms = etBedrooms.text.toString().toIntOrNull()
+            val bathrooms = etBathrooms.text.toString().toIntOrNull()
+            val quotedRent = etPrice.text.toString().toDoubleOrNull()
+            val description = etDescription.text.toString().trim()
+
+            if (title.isEmpty() || locationName.isEmpty() ||
+                bedrooms == null || bathrooms == null ||
+                quotedRent == null || description.isEmpty()
+            ) {
+                toast("Fill all fields correctly")
+                return@setOnClickListener
+            }
+
+            lifecycleScope.launch {
+                setUploading(true)
+                try {
+                    tvUploadStatus.text = "Predicting rent (ML)..."
+
+                    val req = PredictionRequest(
+                        bedroomsNum = bedrooms,
+                        bathroomsNum = bathrooms,
+                        locationStd = locationName,
+                        propertyTypeStd = "apartment",
+                        titleClean = cleanTitle(title)
+                    )
+
+                    val predictedRent = withContext(Dispatchers.IO) {
+                        val resp = ApiClient.api.predict(req)
+                        if (!resp.isSuccessful) {
+                            val err = resp.errorBody()?.string()
+                            throw RuntimeException("API ${resp.code()}: ${err ?: "unknown error"}")
+                        }
+                        resp.body()?.bestValue() ?: 0.0
+                    }
+
+                    val bandResult = RentUtils.bandFromQuotedVsPredicted(quotedRent, predictedRent)
+                    val rentBand = bandResult.band
+                    val rentRatio = bandResult.ratio
+
+                    tvUploadStatus.text = "Saving property..."
+                    val propertyRef = firestore.collection("properties").document()
+                    val propertyId = propertyRef.id
+
+                    val propertyData = hashMapOf(
+                        "title" to title,
+                        "locationName" to locationName,
+                        "bedrooms" to bedrooms,
+                        "bathrooms" to bathrooms,
+                        "quotedRent" to quotedRent,
+                        "description" to description,
+
+                        "status" to "pending",
+                        "ownerId" to uid,
+                        "createdAt" to FieldValue.serverTimestamp(),
+
+                        "predictedRent" to predictedRent,
+                        "rentBand" to rentBand,
+                        "rentRatio" to rentRatio,
+
+                        // AR placeholders
+                        "arScale" to 0.4,
+                        "arRotationY" to 180
+                    )
+
+                    propertyRef.set(propertyData).await()
+
+                    tvUploadStatus.text = "Done ✅"
+                    toast("Uploaded ✅ (Pending Admin Approval)")
+                    setResult(RESULT_OK)
+                    finish()
+
+                } catch (e: Exception) {
+                    Log.e("PROPERTY_UPLOAD", "Upload failed", e)
+                    toast("Upload failed: ${e.message}")
+                    tvUploadStatus.text = "Upload failed"
+                    setUploading(false)
+                }
+            }
+        }
+    }
+
+    private fun setUploading(uploading: Boolean) {
+        btnSubmit.isEnabled = !uploading
+        btnSubmit.text = if (uploading) "Uploading..." else "Upload Property"
+    }
+
+    private fun cleanTitle(title: String): String {
+        return title.lowercase(Locale.getDefault())
+            .replace(Regex("[^a-z0-9\\s]"), " ")
+            .replace(Regex("\\s+"), " ")
+            .trim()
+    }
+
+    private fun toast(msg: String) {
+        Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
+    }
+}
