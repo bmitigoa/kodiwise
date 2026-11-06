@@ -114,3 +114,16 @@ def cross_validate_log_residuals(
         y_pred = pipe.predict(f_va)
         residuals.append(np.log1p(y_true) - np.log1p(y_pred))
     return np.concatenate(residuals)
+
+
+def prediction_interval_widths(pipe, df: pd.DataFrame, q10_log: float, q90_log: float) -> np.ndarray:
+    """Per-row range width (high - low) using the same CV-calibrated
+    log-space quantile method api/predictor.py uses at serving time.
+    Lets Run C and Run D be compared not just on point-accuracy but on how
+    wide a range they'd actually hand a user for the same confidence level.
+    """
+    points = np.clip(pipe.predict(df), 0, None)
+    log_points = np.log1p(points)
+    low = np.clip(np.expm1(log_points + q10_log), 0, None)
+    high = np.clip(np.expm1(log_points + q90_log), 0, None)
+    return high - low

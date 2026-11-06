@@ -29,6 +29,7 @@ from ml.evaluate import (
     cross_validate_log_residuals,
     make_lgbm_log_pipeline,
     metrics,
+    prediction_interval_widths,
     run_baselines,
 )
 from ml.features import (
@@ -110,6 +111,11 @@ def run_experiment(
             "n_cv_residuals": int(len(residuals)),
         }
 
+        widths = prediction_interval_widths(pipe, test, q10, q90)
+        prediction_interval["median_test_range_width_kes"] = float(np.median(widths))
+        prediction_interval["test_range_width_p25_kes"] = float(np.percentile(widths, 25))
+        prediction_interval["test_range_width_p75_kes"] = float(np.percentile(widths, 75))
+
         metrics_payload = {
             "version": version,
             "generated": date.today().isoformat(),
@@ -167,7 +173,9 @@ def title_len_source_proxy(clean_df: pd.DataFrame) -> dict:
     }
 
 
-PRODUCTION_VERSION = "v20261106-appC"
+RUN_C_VERSION = "v20261106-appC"
+RUN_D_VERSION = "v20261106-appD"
+PRODUCTION_VERSION = RUN_D_VERSION  # the expanded-form model now that the forms collect it
 
 
 def main() -> None:
@@ -195,12 +203,12 @@ def main() -> None:
     # columns -- they're diagnostic-only and were never going to be served.
     serving_safe_df = recompute_rooms_bath_from_counts(clean_df)
 
-    print(f"\n=== Run C: app-realistic (bedrooms/bathrooms/location only) -- SAVED as production ({PRODUCTION_VERSION}) ===")
-    run_c = run_experiment(serving_safe_df, APP_FEATURE_SET, save_model=True, version=PRODUCTION_VERSION)
+    print(f"\n=== Run C: app-realistic (bedrooms/bathrooms/location only) -- kept as {RUN_C_VERSION}, no longer production ===")
+    run_c = run_experiment(serving_safe_df, APP_FEATURE_SET, save_model=True, version=RUN_C_VERSION)
     print(json.dumps({k: v for k, v in run_c.items() if k != "top_feature_importances"}, indent=2))
 
-    print("\n=== Run D: app-realistic + proposed expanded-form features ===")
-    run_d = run_experiment(serving_safe_df, RUN_D_FEATURE_SET, save_model=False)
+    print(f"\n=== Run D: app-realistic + expanded-form features -- SAVED as production ({RUN_D_VERSION}) ===")
+    run_d = run_experiment(serving_safe_df, RUN_D_FEATURE_SET, save_model=True, version=RUN_D_VERSION)
     print(json.dumps({k: v for k, v in run_d.items() if k != "top_feature_importances"}, indent=2))
 
     print("\n=== title_len as a source-platform proxy ===")
@@ -214,8 +222,8 @@ def main() -> None:
         "run_a_paper_reproduction": run_a,
         "run_b_kodiwise_baseline": run_b_clean,
         "run_b_scored_with_app_realistic_inputs": run_b_app_degraded_metrics,
-        "run_c_app_realistic_deployed": run_c,
-        "run_d_app_expanded_form_proposal": run_d,
+        "run_c_app_realistic": run_c,
+        "run_d_app_expanded_form_deployed": run_d,
         "title_len_source_platform_proxy": proxy,
     }
     report_path = MODELS_DIR / PRODUCTION_VERSION / "run_comparison.json"

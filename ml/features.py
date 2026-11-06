@@ -103,6 +103,17 @@ RUN_D_BINARY = [
 ]
 RUN_D_FEATURE_SET = FeatureSet("app_expanded_form", RUN_D_NUMERIC, RUN_D_BINARY, [], text=None)
 
+PROPERTY_TYPES = ["apartment", "house", "bedsitter"]
+
+
+def property_type_flags(property_type: str | None) -> dict:
+    """Single source of truth for turning a single property-type choice
+    into the is_apartment/is_house/is_bedsitter one-hot flags Run D was
+    trained on. None (not selected) -> all zero, same as any other missing
+    binary flag.
+    """
+    return {f"is_{t}": int(property_type == t) for t in PROPERTY_TYPES}
+
 
 def recompute_rooms_bath_from_counts(df: pd.DataFrame) -> pd.DataFrame:
     """rooms_total and bath_per_bed in the dataset are NOT simple functions

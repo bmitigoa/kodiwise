@@ -9,6 +9,7 @@ from ml.features import (
     coerce_dtypes,
     get_feature_names,
     lookup_location_stats,
+    property_type_flags,
     recompute_rooms_bath_from_counts,
 )
 
@@ -125,3 +126,11 @@ def test_recompute_rooms_bath_overrides_dataset_values_with_api_reproducible_one
     # Studio (bedrooms_num=0) must not divide by zero / produce inf.
     assert np.isfinite(out["bath_per_bed"]).all()
     assert out["bath_per_bed"].iloc[1] > 1000  # 1 / 1e-6, same convention as rent_ml
+
+
+def test_property_type_flags_sets_exactly_one_flag():
+    assert property_type_flags("house") == {"is_apartment": 0, "is_house": 1, "is_bedsitter": 0}
+
+
+def test_property_type_flags_none_is_all_zero():
+    assert property_type_flags(None) == {"is_apartment": 0, "is_house": 0, "is_bedsitter": 0}
