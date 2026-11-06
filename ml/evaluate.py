@@ -93,3 +93,24 @@ def run_baselines(train_df: pd.DataFrame, test_df: pd.DataFrame, fs: FeatureSet,
         pipe.fit(train_df, y_tr)
         results[name] = metrics(y_te, pipe.predict(test_df))
     return results
+
+
+def cross_validate_log_residuals(
+    train_df: pd.DataFrame, fs: FeatureSet, k: int = 5, seed: int = RANDOM_STATE
+) -> np.ndarray:
+    """Pooled out-of-fold residuals in log space (log1p(y_true) -
+    log1p(y_pred)) for the LightGBM log-target pipeline, location stats
+    recomputed per fold. Used to build a CV-calibrated prediction interval:
+    at serving time, lower = expm1(log1p(point) + q10), upper =
+    expm1(log1p(point) + q90), using quantiles of this pooled array.
+    """
+    trd = train_df.reset_index(drop=True)
+    residuals = []
+    for tr_idx, va_idx in KFold(k, shuffle=True, random_state=seed).split(trd):
+        f_tr, f_va, _ = add_location_stats(trd.iloc[tr_idx], trd.iloc[va_idx])
+        pipe = make_lgbm_log_pipeline(fs)
+        pipe.fit(f_tr, f_tr[TARGET].values)
+        y_true = f_va[TARGET].values
+        y_pred = pipe.predict(f_va)
+        residuals.append(np.log1p(y_true) - np.log1p(y_pred))
+    return np.concatenate(residuals)

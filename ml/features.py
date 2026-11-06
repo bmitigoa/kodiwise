@@ -88,6 +88,46 @@ APP_NUMERIC = ["bedrooms_num", "bathrooms_num", "rooms_total", "bath_per_bed",
                "loc_mean_tr", "loc_median_tr", "loc_count_tr"]
 APP_FEATURE_SET = FeatureSet("app_realistic", APP_NUMERIC, [], [], text=None)
 
+# Run D: APP_FEATURE_SET plus the fields a user could realistically fill in
+# on an expanded form -- sq_m (optional numeric), furnished, property type,
+# and the amenity flags that actually carry signal in Run B's own feature
+# importances (has_generator, has_borehole, has_cctv, has_dsq, has_play_area,
+# has_garden -- the only amenity flags that appear in Run B's top 50 at all;
+# has_parking/has_balcony/has_gym/has_pool/has_security/has_lift/has_wifi/
+# pet_friendly/has_ensuite/has_backup_water did not and are deliberately
+# left out of this proposal). Still no location one-hot, still no text.
+RUN_D_NUMERIC = APP_NUMERIC + ["sq_m"]
+RUN_D_BINARY = [
+    "is_furnished", "is_apartment", "is_house", "is_bedsitter",
+    "has_generator", "has_borehole", "has_cctv", "has_dsq", "has_play_area", "has_garden",
+]
+RUN_D_FEATURE_SET = FeatureSet("app_expanded_form", RUN_D_NUMERIC, RUN_D_BINARY, [], text=None)
+
+
+def recompute_rooms_bath_from_counts(df: pd.DataFrame) -> pd.DataFrame:
+    """rooms_total and bath_per_bed in the dataset are NOT simple functions
+    of bedrooms_num/bathrooms_num: rent_ml's feature engineering
+    (clean_nairobi_and_features_v2.py) computes them from separate
+    "_filled" columns (bedrooms_filled/bathrooms_filled), which go through
+    title-text parsing, studio/bedsitter special-casing, and per-location
+    median imputation that the API has no way to reproduce -- confirmed by
+    direct inspection: bedrooms_num != bedrooms_filled on ~28% of rows,
+    sometimes by more than one bedroom.
+
+    Training Run C/D on the dataset's native rooms_total/bath_per_bed would
+    silently reintroduce the exact training-serving skew this whole
+    exercise is meant to eliminate, since the API can only ever compute
+    these from bedrooms_num/bathrooms_num directly. This recomputes both
+    columns that way -- matching exactly what api/ will do at serving
+    time -- using the same epsilon convention as the original formula
+    (bath_per_bed = bathrooms_num / (bedrooms_num + 1e-6)) so a studio
+    (bedrooms_num=0) doesn't divide by zero.
+    """
+    df = df.copy()
+    df["rooms_total"] = df["bedrooms_num"] + df["bathrooms_num"]
+    df["bath_per_bed"] = df["bathrooms_num"] / (df["bedrooms_num"] + 1e-6)
+    return df
+
 
 def simulate_app_predict_input(df: pd.DataFrame, binary_cols: list[str], categorical_cols: list[str]) -> pd.DataFrame:
     """Degrade a dataframe to what PredictionFormActivity actually sends:
@@ -149,6 +189,43 @@ def add_location_stats(
 
     unseen = int((~other["location_std"].isin(stats.index)).sum())
     return _apply(train), _apply(other), unseen
+
+
+def build_location_lookup(train: pd.DataFrame, m: int = 5) -> dict:
+    """Precompute the same train-only smoothed location stats as
+    add_location_stats(), as a plain dict the API can load once at startup
+    and look up in O(1) per request -- no raw per-row rents are exposed,
+    only the aggregated/smoothed stats actually needed to serve. The
+    "__global__" key is the fallback for a location unseen in training.
+    """
+    g = train.groupby("location_std")[TARGET]
+    global_mean = train[TARGET].mean()
+    global_median = train[TARGET].median()
+    stats = pd.DataFrame({"mean": g.mean(), "median": g.median(), "n": g.count()})
+    smoothed_mean = (stats["n"] * stats["mean"] + m * global_mean) / (stats["n"] + m)
+
+    locations = {
+        loc: {
+            "loc_mean_tr": float(smoothed_mean[loc]),
+            "loc_median_tr": float(stats["median"][loc]),
+            "loc_count_tr": float(stats["n"][loc]),
+        }
+        for loc in stats.index
+    }
+    locations["__global__"] = {
+        "loc_mean_tr": float(global_mean),
+        "loc_median_tr": float(global_median),
+        "loc_count_tr": 0.0,
+    }
+    return locations
+
+
+def lookup_location_stats(location_std: str, lookup: dict) -> dict:
+    """Apply a build_location_lookup() dict to one location at serving
+    time, falling back to the global training mean/median/0 count for a
+    location unseen in training -- same fallback rule as add_location_stats.
+    """
+    return lookup.get(location_std, lookup["__global__"])
 
 
 def build_preprocessor(fs: FeatureSet, scale: bool = False) -> ColumnTransformer:

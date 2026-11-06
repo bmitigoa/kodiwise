@@ -1,7 +1,16 @@
 import numpy as np
 import pandas as pd
 
-from ml.features import FeatureSet, add_location_stats, build_preprocessor, coerce_dtypes, get_feature_names
+from ml.features import (
+    FeatureSet,
+    add_location_stats,
+    build_location_lookup,
+    build_preprocessor,
+    coerce_dtypes,
+    get_feature_names,
+    lookup_location_stats,
+    recompute_rooms_bath_from_counts,
+)
 
 TINY_FS = FeatureSet(
     name="tiny",
@@ -78,3 +87,41 @@ def test_preprocessor_fits_and_transforms_without_error():
     assert Xte.shape[1] == Xtr.shape[1]
     names = get_feature_names(pre, TINY_FS)
     assert len(names) == Xtr.shape[1]
+
+
+def test_location_lookup_matches_add_location_stats():
+    train = _synthetic_df(20)
+    lookup = build_location_lookup(train)
+    loc = train["location_std"].iloc[0]
+    looked_up = lookup_location_stats(loc, lookup)
+
+    # Cross-check against the row-wise computation used at training time.
+    single_row = train.iloc[[0]]
+    train_out, _, _ = add_location_stats(train, single_row)
+    assert abs(looked_up["loc_mean_tr"] - train_out["loc_mean_tr"].iloc[0]) < 1e-6
+    assert abs(looked_up["loc_median_tr"] - train_out["loc_median_tr"].iloc[0]) < 1e-6
+    assert looked_up["loc_count_tr"] == train_out["loc_count_tr"].iloc[0]
+
+
+def test_location_lookup_unseen_location_falls_back_to_global():
+    train = _synthetic_df(10)
+    lookup = build_location_lookup(train)
+    result = lookup_location_stats("Karen", lookup)
+    assert abs(result["loc_mean_tr"] - train["price_kes"].mean()) < 1e-6
+    assert result["loc_count_tr"] == 0.0
+
+
+def test_recompute_rooms_bath_overrides_dataset_values_with_api_reproducible_ones():
+    df = pd.DataFrame({
+        "bedrooms_num": [2, 0, 1],
+        "bathrooms_num": [1, 1, 1],
+        # Deliberately inconsistent with bedrooms_num/bathrooms_num, as the
+        # real dataset's "_filled"-derived columns are.
+        "rooms_total": [999, 999, 999],
+        "bath_per_bed": [999, 999, 999],
+    })
+    out = recompute_rooms_bath_from_counts(df)
+    assert list(out["rooms_total"]) == [3, 1, 2]
+    # Studio (bedrooms_num=0) must not divide by zero / produce inf.
+    assert np.isfinite(out["bath_per_bed"]).all()
+    assert out["bath_per_bed"].iloc[1] > 1000  # 1 / 1e-6, same convention as rent_ml

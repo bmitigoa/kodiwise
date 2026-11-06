@@ -23,17 +23,27 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
-from ml.evaluate import cross_validate_baselines, cross_validate_lgbm, make_lgbm_log_pipeline, metrics, run_baselines
+from ml.evaluate import (
+    cross_validate_baselines,
+    cross_validate_lgbm,
+    cross_validate_log_residuals,
+    make_lgbm_log_pipeline,
+    metrics,
+    run_baselines,
+)
 from ml.features import (
     APP_FEATURE_SET,
     FeatureSet,
     KODIWISE_FEATURE_SET,
     PAPER_FEATURE_SET,
+    RUN_D_FEATURE_SET,
     STRATIFY_COL,
     TARGET,
     add_location_stats,
+    build_location_lookup,
     coerce_dtypes,
     get_feature_names,
+    recompute_rooms_bath_from_counts,
     simulate_app_predict_input,
 )
 
@@ -43,7 +53,9 @@ CLEAN_PATH = Path("data/processed/nairobi_rentals_clean.csv")
 MODELS_DIR = Path("ml/models")
 
 
-def run_experiment(df: pd.DataFrame, fs: FeatureSet, save_model: bool = False, return_artifacts: bool = False) -> dict:
+def run_experiment(
+    df: pd.DataFrame, fs: FeatureSet, save_model: bool = False, return_artifacts: bool = False, version: str | None = None
+) -> dict:
     df = coerce_dtypes(df, fs.binary, fs.categorical)
 
     idx_tr, idx_te = train_test_split(
@@ -81,11 +93,23 @@ def run_experiment(df: pd.DataFrame, fs: FeatureSet, save_model: bool = False, r
     }
 
     if save_model:
-        version = date.today().strftime("v%Y%m%d")
+        version = version or date.today().strftime("v%Y%m%d")
         out_dir = MODELS_DIR / version
         out_dir.mkdir(parents=True, exist_ok=True)
         joblib.dump(pipe, out_dir / "model.joblib")
-        train[["location_std", TARGET]].to_csv(out_dir / "location_stats_training_data.csv", index=False)
+
+        location_lookup = build_location_lookup(train)
+        (out_dir / "location_lookup.json").write_text(json.dumps(location_lookup, indent=2))
+
+        residuals = cross_validate_log_residuals(train, fs)
+        q10, q90 = np.percentile(residuals, [10, 90])
+        prediction_interval = {
+            "method": "cv_log_residual_quantiles",
+            "q10_log": float(q10),
+            "q90_log": float(q90),
+            "n_cv_residuals": int(len(residuals)),
+        }
+
         metrics_payload = {
             "version": version,
             "generated": date.today().isoformat(),
@@ -102,11 +126,13 @@ def run_experiment(df: pd.DataFrame, fs: FeatureSet, save_model: bool = False, r
             "cv_lgbm_log_target": cv_lgbm,
             "test_baselines": test_baselines,
             "cv_baselines": cv_baselines,
+            "prediction_interval": prediction_interval,
         }
         (out_dir / "metrics.json").write_text(json.dumps(metrics_payload, indent=2))
         (out_dir / "feature_importance.json").write_text(json.dumps(importances[:50], indent=2))
         result["model_version"] = version
         result["model_dir"] = str(out_dir)
+        result["prediction_interval"] = prediction_interval
 
     if return_artifacts:
         result["_pipe"] = pipe
@@ -141,6 +167,9 @@ def title_len_source_proxy(clean_df: pd.DataFrame) -> dict:
     }
 
 
+PRODUCTION_VERSION = "v20261106-appC"
+
+
 def main() -> None:
     raw_df = pd.read_csv(RAW_PATH)
     clean_df = pd.read_csv(CLEAN_PATH)
@@ -150,16 +179,29 @@ def main() -> None:
     print(json.dumps({k: v for k, v in run_a.items() if k != "top_feature_importances"}, indent=2))
 
     print("\n=== Run B: KodiWise baseline (cleaned data, KodiWise feature set) ===")
-    run_b = run_experiment(clean_df, KODIWISE_FEATURE_SET, save_model=True, return_artifacts=True)
+    run_b = run_experiment(clean_df, KODIWISE_FEATURE_SET, save_model=False, return_artifacts=True)
     print(json.dumps({k: v for k, v in run_b.items() if k not in ("top_feature_importances", "_pipe", "_test")}, indent=2))
 
     print("\n=== Run B scored under app-realistic (degraded) inputs ===")
     run_b_app_degraded_metrics = score_app_degraded(run_b)
     print(json.dumps(run_b_app_degraded_metrics, indent=2))
 
-    print("\n=== Run C: app-realistic (bedrooms/bathrooms/location only) ===")
-    run_c = run_experiment(clean_df, APP_FEATURE_SET, save_model=False)
+    # rooms_total/bath_per_bed in the dataset come from a title-parsed,
+    # location-median-imputed "_filled" pipeline the API can't reproduce
+    # (bedrooms_num != bedrooms_filled on ~28% of rows). Run C/D must use
+    # the API-reproducible versions, computed directly from bedrooms_num/
+    # bathrooms_num, or they'd reintroduce the exact skew this exercise is
+    # meant to eliminate. Run A/B intentionally keep the dataset's native
+    # columns -- they're diagnostic-only and were never going to be served.
+    serving_safe_df = recompute_rooms_bath_from_counts(clean_df)
+
+    print(f"\n=== Run C: app-realistic (bedrooms/bathrooms/location only) -- SAVED as production ({PRODUCTION_VERSION}) ===")
+    run_c = run_experiment(serving_safe_df, APP_FEATURE_SET, save_model=True, version=PRODUCTION_VERSION)
     print(json.dumps({k: v for k, v in run_c.items() if k != "top_feature_importances"}, indent=2))
+
+    print("\n=== Run D: app-realistic + proposed expanded-form features ===")
+    run_d = run_experiment(serving_safe_df, RUN_D_FEATURE_SET, save_model=False)
+    print(json.dumps({k: v for k, v in run_d.items() if k != "top_feature_importances"}, indent=2))
 
     print("\n=== title_len as a source-platform proxy ===")
     proxy = title_len_source_proxy(clean_df)
@@ -168,13 +210,15 @@ def main() -> None:
     run_b_clean = {k: v for k, v in run_b.items() if k not in ("_pipe", "_test")}
     report = {
         "generated": date.today().isoformat(),
+        "production_model_version": PRODUCTION_VERSION,
         "run_a_paper_reproduction": run_a,
         "run_b_kodiwise_baseline": run_b_clean,
         "run_b_scored_with_app_realistic_inputs": run_b_app_degraded_metrics,
-        "run_c_app_realistic_retrained": run_c,
+        "run_c_app_realistic_deployed": run_c,
+        "run_d_app_expanded_form_proposal": run_d,
         "title_len_source_platform_proxy": proxy,
     }
-    report_path = MODELS_DIR / run_b["model_version"] / "run_comparison.json"
+    report_path = MODELS_DIR / PRODUCTION_VERSION / "run_comparison.json"
     report_path.write_text(json.dumps(report, indent=2))
     print(f"\nComparison report saved to {report_path}")
 
