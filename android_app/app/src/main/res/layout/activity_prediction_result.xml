@@ -35,6 +35,16 @@
             android:textSize="22sp"
             android:textStyle="bold" />
 
+        <TextView
+            android:id="@+id/tvEstimateNote"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="12sp"
+            android:textColor="#6B7280"
+            android:layout_marginTop="6dp"
+            android:visibility="gone" />
+
         <Button
             android:id="@+id/btnViewInAR"
             android:layout_width="match_parent"

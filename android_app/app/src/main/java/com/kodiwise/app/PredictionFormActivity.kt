@@ -67,15 +67,20 @@ class PredictionFormActivity : AppCompatActivity() {
                         return@launch
                     }
 
-                    val pred = resp.body()?.predictedRentKes ?: 0.0
+                    val body = resp.body()
+                    val pred = body?.predictedRentKes ?: 0.0
 
                     withContext(Dispatchers.Main) {
-                        if (pred != null && pred > 0) {
+                        if (pred > 0) {
                             val i = Intent(this@PredictionFormActivity, PredictionResultActivity::class.java).apply {
                                 putExtra("location", location)
                                 putExtra("bedrooms", bedrooms)
                                 putExtra("bathrooms", bathrooms)
                                 putExtra("predicted", pred)
+                                if (body?.hasRange() == true) {
+                                    putExtra("predictedLow", body.predictedRentLowKes!!)
+                                    putExtra("predictedHigh", body.predictedRentHighKes!!)
+                                }
                             }
                             startActivity(i)
                         } else {
