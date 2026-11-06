@@ -1,9 +1,9 @@
 """KodiWise rent prediction API.
 
-Serves Run C (ml.features.APP_FEATURE_SET) -- the model trained on only
-bedrooms/bathrooms/location, matching exactly what PredictionFormActivity
-collects. See docs/PROGRESS.md for why Run B (the higher-benchmark but
-unservable model) was not shipped here.
+Serves Run D (ml.features.RUN_D_FEATURE_SET) -- bedrooms/bathrooms/location
+plus the expanded-form fields (sq_m, furnished, property type, 6 amenity
+flags) PredictionFormActivity and PropertyUploadActivity now collect. See
+docs/PROGRESS.md for the Run C -> Run D rationale and the measured gain.
 
 Run locally: uvicorn api.main:app --reload --port 8080
 """
@@ -16,7 +16,7 @@ from fastapi import FastAPI, HTTPException
 from api.predictor import Predictor
 from api.schemas import HealthResponse, ModelVersionResponse, PredictRequest, PredictResponse
 
-PRODUCTION_VERSION = "v20261106-appC"
+PRODUCTION_VERSION = "v20261106-appD"
 predictor = Predictor(PRODUCTION_VERSION)
 
 
@@ -51,7 +51,7 @@ def model_version() -> ModelVersionResponse:
         n_test=m["n_test"],
         test_r2=m["test_metrics"]["R2"],
         test_mape=m["test_metrics"]["MAPE"],
-        note="Trained on bedrooms/bathrooms/location only -- see docs/PROGRESS.md.",
+        note="Trained on bedrooms/bathrooms/location plus optional expanded-form fields -- see docs/PROGRESS.md.",
     )
 
 
@@ -59,5 +59,18 @@ def model_version() -> ModelVersionResponse:
 def predict(req: PredictRequest) -> PredictResponse:
     if not predictor.loaded:
         raise HTTPException(status_code=503, detail="Model not loaded")
-    result = predictor.predict(req.bedrooms_num, req.bathrooms_num, req.location_std)
+    result = predictor.predict(
+        bedrooms_num=req.bedrooms_num,
+        bathrooms_num=req.bathrooms_num,
+        location_std=req.location_std,
+        sq_m=req.sq_m,
+        is_furnished=req.is_furnished,
+        property_type=req.property_type,
+        has_generator=req.has_generator,
+        has_borehole=req.has_borehole,
+        has_cctv=req.has_cctv,
+        has_dsq=req.has_dsq,
+        has_play_area=req.has_play_area,
+        has_garden=req.has_garden,
+    )
     return PredictResponse(**result)

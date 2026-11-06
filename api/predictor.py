@@ -5,13 +5,14 @@ never silently drift from what the model was actually trained on.
 from __future__ import annotations
 
 import json
+import math
 from pathlib import Path
 
 import joblib
 import numpy as np
 import pandas as pd
 
-from ml.features import APP_FEATURE_SET, lookup_location_stats, recompute_rooms_bath_from_counts
+from ml.features import RUN_D_FEATURE_SET, lookup_location_stats, property_type_flags, recompute_rooms_bath_from_counts
 
 MODELS_DIR = Path(__file__).resolve().parent.parent / "ml" / "models"
 
@@ -33,14 +34,46 @@ class Predictor:
     def loaded(self) -> bool:
         return self.pipe is not None
 
-    def predict(self, bedrooms_num: int, bathrooms_num: int, location_std: str) -> dict:
+    def predict(
+        self,
+        bedrooms_num: int,
+        bathrooms_num: int,
+        location_std: str,
+        sq_m: float | None = None,
+        is_furnished: int | None = None,
+        property_type: str | None = None,
+        has_generator: int | None = None,
+        has_borehole: int | None = None,
+        has_cctv: int | None = None,
+        has_dsq: int | None = None,
+        has_play_area: int | None = None,
+        has_garden: int | None = None,
+    ) -> dict:
         row = pd.DataFrame([{"bedrooms_num": bedrooms_num, "bathrooms_num": bathrooms_num}])
         row = recompute_rooms_bath_from_counts(row)
 
         loc_stats = lookup_location_stats(location_std, self.location_lookup)
         for key, value in loc_stats.items():
             row[key] = value
-        row = row[APP_FEATURE_SET.numeric]
+
+        # sq_m is genuinely missing-aware: NaN flows through to the same
+        # SimpleImputer(median) the trained pipeline already has, rather
+        # than defaulting to a value that would be wrong (e.g. 0 sq. m).
+        row["sq_m"] = sq_m if sq_m is not None else math.nan
+
+        # Binary flags default to 0 ("not mentioned" -> assume absent),
+        # matching how the Android forms behave for an unchecked box.
+        row["is_furnished"] = is_furnished if is_furnished is not None else 0
+        for key, value in property_type_flags(property_type).items():
+            row[key] = value
+        row["has_generator"] = has_generator if has_generator is not None else 0
+        row["has_borehole"] = has_borehole if has_borehole is not None else 0
+        row["has_cctv"] = has_cctv if has_cctv is not None else 0
+        row["has_dsq"] = has_dsq if has_dsq is not None else 0
+        row["has_play_area"] = has_play_area if has_play_area is not None else 0
+        row["has_garden"] = has_garden if has_garden is not None else 0
+
+        row = row[RUN_D_FEATURE_SET.numeric + RUN_D_FEATURE_SET.binary]
 
         point = max(float(self.pipe.predict(row)[0]), 0.0)
 
