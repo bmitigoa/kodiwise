@@ -1,0 +1,38 @@
+# Secrets — never commit
+.env
+*.env
+google-services.json
+*.keystore
+*.jks
+key.properties
+
+# Android build artifacts / local machine config
+android_app/local.properties
+android_app/.gradle/
+android_app/.idea/
+android_app/.kotlin/
+android_app/build/
+android_app/app/build/
+android_app/*.iml
+android_app/app/*.iml
+android_app/captures/
+android_app/.cxx/
+android_app/.externalNativeBuild/
+
+# Large 3D assets — exceed GitHub's file size limits, keep out of git history
+android_app/app/src/main/assets/models/*.glb
+
+# Python (future phases)
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Datasets / models (future phases) — documented in README, not committed
+data/raw/
+data/processed/
+ml/models/
+
+# OS cruft
+.DS_Store
+Thumbs.db
