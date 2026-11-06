@@ -24,3 +24,7 @@ app/src/main/assets/models/apartment.glb
 # Build outputs
 app/build/
 build/
+
+# any copies of Firebase config
+app/google-services*.json*
+!app/google-services.json.example
