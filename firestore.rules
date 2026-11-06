@@ -3,19 +3,43 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    // True if the signed-in user's own profile doc has role == 'admin'.
+    // Admins are assigned manually in the Firebase console only — nothing in the
+    // app can set this, since users/{uid}.update below forbids changing role.
+    function isAdmin() {
+      return request.auth != null
+             && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
     // User profiles: users/{uid} — each user can read/write only their own profile.
     match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read: if request.auth != null && request.auth.uid == userId;
+
+      // On signup: uid must match the caller, and the role they pick for
+      // themselves is limited to tenant/landlord — nobody can self-assign admin.
+      allow create: if request.auth != null
+                    && request.auth.uid == userId
+                    && request.resource.data.role in ['tenant', 'landlord'];
+
+      // On update: same owner, and role is immutable from the client side.
+      allow update: if request.auth != null
+                    && request.auth.uid == userId
+                    && request.resource.data.role == resource.data.role;
+
+      allow delete: if request.auth != null && request.auth.uid == userId;
     }
 
     // Property listings: any signed-in user can read (browse/search listings);
-    // only the owner can create, update, or delete their own listing.
+    // the owner can create/update/delete their own listing; admins can update
+    // any listing (approve/reject) but cannot delete someone else's.
     match /properties/{propertyId} {
       allow read: if request.auth != null;
       allow create: if request.auth != null
                     && request.resource.data.ownerId == request.auth.uid;
-      allow update, delete: if request.auth != null
-                             && resource.data.ownerId == request.auth.uid;
+      allow update: if request.auth != null
+                    && (resource.data.ownerId == request.auth.uid || isAdmin());
+      allow delete: if request.auth != null
+                    && resource.data.ownerId == request.auth.uid;
 
       // Media metadata under a property follows the parent property's ownership.
       match /media/{mediaId} {
