@@ -17,13 +17,14 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        // TODO(KodiWise): points at the old leak-free-v8 cloud API until the new
-        // KodiWise API (Phase 0 backend) exists. Set KODIWISE_API_URL in local.properties
-        // or gradle.properties to override.
+        // Points at the deployed KodiWise API (kodiwise-api, Run D / Cloud Run,
+        // project rent-prediction-ar, region africa-south1). Set KODIWISE_API_URL
+        // in local.properties or gradle.properties to override (e.g. for a local
+        // `uvicorn api.main:app` dev server).
         buildConfigField(
             "String",
             "API_BASE_URL",
-            "\"${project.findProperty("KODIWISE_API_URL") ?: "https://rent-ml-api-798766993143.africa-south1.run.app/"}\""
+            "\"${project.findProperty("KODIWISE_API_URL") ?: "https://kodiwise-api-798766993143.africa-south1.run.app/"}\""
         )
     }
 
