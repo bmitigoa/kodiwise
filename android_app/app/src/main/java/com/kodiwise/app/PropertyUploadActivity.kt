@@ -47,6 +47,9 @@ class PropertyUploadActivity : AppCompatActivity() {
         btnSubmit = findViewById(R.id.btnSubmitUpload)
         tvUploadStatus = findViewById(R.id.tvUploadStatus)
 
+        RealisticPropertyFields.bindCollapse(this)
+        RealisticPropertyFields.bindDontKnowSize(this)
+
         btnSubmit.setOnClickListener {
             val uid = AuthManager.uid()
             if (uid == null) {
@@ -69,6 +72,8 @@ class PropertyUploadActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            val realistic = RealisticPropertyFields.read(this)
+
             lifecycleScope.launch {
                 setUploading(true)
                 try {
@@ -79,7 +84,16 @@ class PropertyUploadActivity : AppCompatActivity() {
                         bathroomsNum = bathrooms,
                         locationStd = locationName,
                         propertyTypeStd = "apartment",
-                        titleClean = cleanTitle(title)
+                        titleClean = cleanTitle(title),
+                        sqM = realistic.sqM,
+                        isFurnished = realistic.isFurnished,
+                        propertyType = realistic.propertyType,
+                        hasGenerator = realistic.hasGenerator,
+                        hasBorehole = realistic.hasBorehole,
+                        hasCctv = realistic.hasCctv,
+                        hasDsq = realistic.hasDsq,
+                        hasPlayArea = realistic.hasPlayArea,
+                        hasGarden = realistic.hasGarden
                     )
 
                     val predictedRent = withContext(Dispatchers.IO) {
@@ -114,6 +128,22 @@ class PropertyUploadActivity : AppCompatActivity() {
                         "predictedRent" to predictedRent,
                         "rentBand" to rentBand,
                         "rentRatio" to rentRatio,
+
+                        // Realistic property fields -- same names as
+                        // ml.features.RUN_D_FEATURE_SET / the API schema,
+                        // so a future retrain can read straight off these
+                        // Firestore docs without a field-name mapping step.
+                        "sq_m" to realistic.sqM,
+                        "is_furnished" to realistic.isFurnished,
+                        "is_apartment" to (if (realistic.propertyType == "apartment") 1 else 0),
+                        "is_house" to (if (realistic.propertyType == "house") 1 else 0),
+                        "is_bedsitter" to (if (realistic.propertyType == "bedsitter") 1 else 0),
+                        "has_generator" to realistic.hasGenerator,
+                        "has_borehole" to realistic.hasBorehole,
+                        "has_cctv" to realistic.hasCctv,
+                        "has_dsq" to realistic.hasDsq,
+                        "has_play_area" to realistic.hasPlayArea,
+                        "has_garden" to realistic.hasGarden,
 
                         // AR placeholders
                         "arScale" to 0.4,

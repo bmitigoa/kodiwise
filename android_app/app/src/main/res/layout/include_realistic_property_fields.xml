@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Size -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Size (sq. m) — optional"
+        android:textStyle="bold"
+        android:textColor="#111827"
+        android:layout_marginBottom="6dp" />
+
+    <EditText
+        android:id="@+id/etSqm"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:background="@drawable/input_rounded"
+        android:padding="12dp"
+        android:hint="e.g. 65"
+        android:inputType="numberDecimal"
+        android:textColor="#111827"
+        android:textColorHint="#9CA3AF"
+        android:layout_marginBottom="6dp" />
+
+    <CheckBox
+        android:id="@+id/cbDontKnowSize"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="I don't know the size"
+        android:textColor="#6B7280"
+        android:layout_marginBottom="14dp" />
+
+    <CheckBox
+        android:id="@+id/cbFurnished"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Furnished"
+        android:textColor="#111827"
+        android:layout_marginBottom="14dp" />
+
+    <!-- Property type -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Property Type"
+        android:textStyle="bold"
+        android:textColor="#111827"
+        android:layout_marginBottom="6dp" />
+
+    <RadioGroup
+        android:id="@+id/rgPropertyType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="14dp">
+
+        <RadioButton
+            android:id="@+id/rbApartment"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Apartment"
+            android:checked="true"
+            android:textSize="12sp" />
+
+        <RadioButton
+            android:id="@+id/rbHouse"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="House"
+            android:textSize="12sp" />
+
+        <RadioButton
+            android:id="@+id/rbBedsitter"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Bedsitter"
+            android:textSize="12sp" />
+    </RadioGroup>
+
+    <!-- Amenities: collapsible, collapsed by default to keep the form short -->
+    <LinearLayout
+        android:id="@+id/headerAmenities"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="@drawable/bg_light_button"
+        android:padding="10dp"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Amenities (optional)"
+            android:textStyle="bold"
+            android:textColor="#111827" />
+
+        <TextView
+            android:id="@+id/tvAmenitiesArrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="▸"
+            android:textColor="#111827" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutAmenities"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:layout_marginBottom="14dp">
+
+        <CheckBox
+            android:id="@+id/cbGenerator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Generator" />
+
+        <CheckBox
+            android:id="@+id/cbBorehole"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Borehole" />
+
+        <CheckBox
+            android:id="@+id/cbCctv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="CCTV" />
+
+        <CheckBox
+            android:id="@+id/cbDsq"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="DSQ (Servant Quarter)" />
+
+        <CheckBox
+            android:id="@+id/cbPlayArea"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Play Area" />
+
+        <CheckBox
+            android:id="@+id/cbGarden"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Garden" />
+
+    </LinearLayout>
+
+</merge>

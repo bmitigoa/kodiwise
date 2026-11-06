@@ -23,6 +23,9 @@ class PredictionFormActivity : AppCompatActivity() {
         val etBathrooms = findViewById<EditText>(R.id.etPBathrooms)
         val btnPredict = findViewById<Button>(R.id.btnPredictNow)
 
+        RealisticPropertyFields.bindCollapse(this)
+        RealisticPropertyFields.bindDontKnowSize(this)
+
         btnPredict.setOnClickListener {
 
             val location = etLocation.text.toString().trim()
@@ -42,12 +45,23 @@ class PredictionFormActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            val realistic = RealisticPropertyFields.read(this)
+
             val req = PredictionRequest(
                 bedroomsNum = bedrooms,
                 bathroomsNum = bathrooms,
                 locationStd = location,
                 propertyTypeStd = "apartment",
-                titleClean = "apartment in $location"
+                titleClean = "apartment in $location",
+                sqM = realistic.sqM,
+                isFurnished = realistic.isFurnished,
+                propertyType = realistic.propertyType,
+                hasGenerator = realistic.hasGenerator,
+                hasBorehole = realistic.hasBorehole,
+                hasCctv = realistic.hasCctv,
+                hasDsq = realistic.hasDsq,
+                hasPlayArea = realistic.hasPlayArea,
+                hasGarden = realistic.hasGarden
             )
 
             lifecycleScope.launch(Dispatchers.IO) {

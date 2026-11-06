@@ -47,7 +47,10 @@
             android:layout_height="wrap_content"
             android:hint="Bathrooms (e.g., 1)"
             android:inputType="number"
-            android:layout_marginTop="10dp" />
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="14dp" />
+
+        <include layout="@layout/include_realistic_property_fields" />
 
         <Button
             android:id="@+id/btnPredictNow"

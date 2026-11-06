@@ -19,6 +19,18 @@ data class PredictionRequest(
     @SerializedName("title_clean")
     val titleClean: String,
 
+    // Expanded-form fields (Run D / ml.features.RUN_D_FEATURE_SET), read by
+    // the new KodiWise API. All optional -- the old v8 API ignores unknown
+    // fields, so this stays compatible with both until the URL cutover.
+    @SerializedName("sq_m")
+    val sqM: Double? = null,
+
+    @SerializedName("is_furnished")
+    val isFurnished: Int = 0,
+
+    @SerializedName("property_type")
+    val propertyType: String? = null,
+
     // optional amenities (defaults = 0)
     @SerializedName("has_backup_water")
     val hasBackupWater: Int = 0,

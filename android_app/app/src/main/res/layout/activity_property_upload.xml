@@ -159,6 +159,8 @@
                 android:textColorHint="#9CA3AF"
                 android:layout_marginBottom="14dp" />
 
+            <include layout="@layout/include_realistic_property_fields" />
+
             <!-- Photo upload disabled: Firebase Storage is not enabled on the KodiWise
                  Firebase project (Spark/free plan) and will not be added. See project rules. -->
             <androidx.appcompat.widget.AppCompatButton
