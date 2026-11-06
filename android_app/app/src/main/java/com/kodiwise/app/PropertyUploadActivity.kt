@@ -2,6 +2,8 @@ package com.kodiwise.app
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -37,7 +39,7 @@ class PropertyUploadActivity : AppCompatActivity() {
 
         // Inputs
         val etTitle = findViewById<EditText>(R.id.etTitle)
-        val etLocation = findViewById<EditText>(R.id.etLocation)
+        val etLocation = findViewById<AutoCompleteTextView>(R.id.etLocation)
         val etBedrooms = findViewById<EditText>(R.id.etBedrooms)
         val etBathrooms = findViewById<EditText>(R.id.etBathrooms)
         val etPrice = findViewById<EditText>(R.id.etPrice)
@@ -49,6 +51,17 @@ class PropertyUploadActivity : AppCompatActivity() {
 
         RealisticPropertyFields.bindCollapse(this)
         RealisticPropertyFields.bindDontKnowSize(this)
+
+        val locationAdapter = ArrayAdapter(
+            this, android.R.layout.simple_dropdown_item_1line, LocationDirectory.getCached(this).toMutableList()
+        )
+        etLocation.setAdapter(locationAdapter)
+        lifecycleScope.launch {
+            LocationDirectory.refresh(this@PropertyUploadActivity)
+            locationAdapter.clear()
+            locationAdapter.addAll(LocationDirectory.getCached(this@PropertyUploadActivity))
+            locationAdapter.notifyDataSetChanged()
+        }
 
         btnSubmit.setOnClickListener {
             val uid = AuthManager.uid()

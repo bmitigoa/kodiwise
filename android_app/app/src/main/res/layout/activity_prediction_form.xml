@@ -26,12 +26,13 @@
             android:textStyle="bold"
             android:textSize="16sp"/>
 
-        <EditText
+        <AutoCompleteTextView
             android:id="@+id/etPLocation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Location (e.g., Kilimani)"
-            android:inputType="text" />
+            android:hint="Start typing a neighbourhood (e.g., Kilimani)"
+            android:inputType="text"
+            android:completionThreshold="1" />
 
         <EditText
             android:id="@+id/etPBedrooms"

@@ -10,6 +10,9 @@ interface RentApiService {
     @GET("health")
     suspend fun health(): Response<Map<String, Any>>
 
+    @GET("locations")
+    suspend fun locations(): Response<LocationsResponse>
+
     @POST("predict")
     suspend fun predict(@Body req: PredictionRequest): Response<PredictionResponse>
 }

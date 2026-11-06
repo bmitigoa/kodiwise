@@ -19,6 +19,12 @@ data class PredictionResponse(
     @SerializedName("model_version")
     val modelVersion: String? = null,
 
+    // Null against the old v8 API (no such concept there). When present
+    // and false, the typed location didn't match any known neighbourhood
+    // (or alias) and the estimate fell back to the Nairobi-wide average.
+    @SerializedName("location_recognised")
+    val locationRecognised: Boolean? = null,
+
     val note: String? = null
 ) {
 

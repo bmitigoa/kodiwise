@@ -3,6 +3,8 @@ package com.kodiwise.app
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -18,13 +20,24 @@ class PredictionFormActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_prediction_form)
 
-        val etLocation = findViewById<EditText>(R.id.etPLocation)
+        val etLocation = findViewById<AutoCompleteTextView>(R.id.etPLocation)
         val etBedrooms = findViewById<EditText>(R.id.etPBedrooms)
         val etBathrooms = findViewById<EditText>(R.id.etPBathrooms)
         val btnPredict = findViewById<Button>(R.id.btnPredictNow)
 
         RealisticPropertyFields.bindCollapse(this)
         RealisticPropertyFields.bindDontKnowSize(this)
+
+        val locationAdapter = ArrayAdapter(
+            this, android.R.layout.simple_dropdown_item_1line, LocationDirectory.getCached(this).toMutableList()
+        )
+        etLocation.setAdapter(locationAdapter)
+        lifecycleScope.launch {
+            LocationDirectory.refresh(this@PredictionFormActivity)
+            locationAdapter.clear()
+            locationAdapter.addAll(LocationDirectory.getCached(this@PredictionFormActivity))
+            locationAdapter.notifyDataSetChanged()
+        }
 
         btnPredict.setOnClickListener {
 
@@ -86,6 +99,13 @@ class PredictionFormActivity : AppCompatActivity() {
 
                     withContext(Dispatchers.Main) {
                         if (pred > 0) {
+                            if (body?.locationRecognised == false) {
+                                Toast.makeText(
+                                    this@PredictionFormActivity,
+                                    "Location not recognised — estimate uses the Nairobi average",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
                             val i = Intent(this@PredictionFormActivity, PredictionResultActivity::class.java).apply {
                                 putExtra("location", location)
                                 putExtra("bedrooms", bedrooms)
