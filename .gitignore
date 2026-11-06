@@ -28,10 +28,15 @@ __pycache__/
 .venv/
 venv/
 
-# Datasets / models (future phases) — documented in README, not committed
+# Datasets — never committed; documented in README (source: rent_ml)
 data/raw/
 data/processed/
-ml/models/
+
+# Model artifacts — only the JSON metrics/feature-importance files are
+# committed (small, text, reviewable); the model binary and any raw
+# per-row CSVs under a model version stay out of git.
+ml/models/**/*.joblib
+ml/models/**/*.csv
 
 # OS cruft
 .DS_Store
