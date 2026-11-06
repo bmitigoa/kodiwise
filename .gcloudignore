@@ -1,8 +1,7 @@
-# Cloud Build upload ignore file for the api/ image.
-# NOTE: gcloud falls back to .gitignore patterns when no .gcloudignore is
-# present -- that would exclude ml/models/**/*.joblib, which the API image
-# actually needs at build time. This file intentionally does NOT inherit
-# that exclusion.
+# Explicit Cloud Build upload ignore file for the kodiwise-api image.
+# Deliberately self-contained -- does NOT rely on gcloud's fallback to
+# .gitignore (which would exclude ml/models/**/*.joblib and **/*.csv,
+# i.e. exactly the model artifacts this image needs at build time).
 
 .git/
 .gitignore
@@ -10,14 +9,36 @@
 # Android app -- irrelevant to the API image, large.
 android_app/
 
+# Datasets -- not needed in the image (only the trained model + its
+# serving-time location lookup are).
+data/
+
 # Python virtual env and caches.
 .venv/
 venv/
 __pycache__/
 *.pyc
 
-# Datasets -- not needed in the API image (only the trained model + lookup are).
-data/raw/
-data/processed/
+# Dev-only: tests, docs, notebooks -- not needed at runtime.
+tests/
+docs/
+*.ipynb
+.ipynb_checkpoints/
+.pytest_cache/
 
-# Keep ml/models/v20261106-appD/ (including model.joblib) -- do not ignore it.
+# Repo-root config irrelevant to the API image (Firebase/Firestore
+# config, the root dev requirements.txt -- the image uses
+# api/requirements.txt, a slim runtime-only subset).
+project rules
+firebase.json
+firestore.rules
+firestore.indexes.json
+.firebaserc
+/requirements.txt
+
+# Model versions: exclude every version, then explicitly re-include only
+# the one being served. (Standard gitignore-style idiom: a directory must
+# be un-excluded via its own negation pattern before per-file negations
+# inside it would even be considered.)
+ml/models/*
+!ml/models/v20261106-appD
