@@ -44,6 +44,7 @@ def test_predict_minimal_input_returns_sane_range(client):
     assert body["predicted_rent_kes"] > 0
     assert body["predicted_rent_low_kes"] <= body["predicted_rent_kes"] <= body["predicted_rent_high_kes"]
     assert body["model_version"] == "v20261106-appD"
+    assert body["location_recognised"] is True
     assert "estimate" in body["note"].lower()
     # No LOW/FAIR/HIGH verdict should ever be in the response.
     assert "verdict" not in body
@@ -111,7 +112,64 @@ def test_predict_unseen_location_falls_back_without_error(client):
         "location_std": "SomeNeighbourhoodNotInTraining",
     })
     assert resp.status_code == 200
-    assert resp.json()["predicted_rent_kes"] > 0
+    body = resp.json()
+    assert body["predicted_rent_kes"] > 0
+    assert body["location_recognised"] is False
+
+
+@pytest.mark.parametrize("variant", ["kilimani", "KILIMANI", "  Kilimani  ", "KiLiMaNi"])
+def test_predict_location_case_variants_match_canonical(client, variant):
+    """The bug report: "kilimani"/"KILIMANI" used to silently fall back to
+    the global mean instead of matching "Kilimani"."""
+    canonical = client.post("/predict", json={
+        "bedrooms_num": 2, "bathrooms_num": 1, "location_std": "Kilimani",
+    }).json()
+    variant_resp = client.post("/predict", json={
+        "bedrooms_num": 2, "bathrooms_num": 1, "location_std": variant,
+    })
+    assert variant_resp.status_code == 200
+    body = variant_resp.json()
+    assert body["location_recognised"] is True
+    assert body["predicted_rent_kes"] == canonical["predicted_rent_kes"]
+
+
+@pytest.mark.parametrize("alias,canonical_name", [
+    ("Westland", "Westlands"),
+    ("westland", "Westlands"),
+    ("Upper Hill", "Upperhill"),
+    ("southb", "South B"),
+])
+def test_predict_known_aliases_match_canonical(client, alias, canonical_name):
+    canonical = client.post("/predict", json={
+        "bedrooms_num": 2, "bathrooms_num": 1, "location_std": canonical_name,
+    }).json()
+    alias_resp = client.post("/predict", json={
+        "bedrooms_num": 2, "bathrooms_num": 1, "location_std": alias,
+    })
+    assert alias_resp.status_code == 200
+    body = alias_resp.json()
+    assert body["location_recognised"] is True
+    assert body["predicted_rent_kes"] == canonical["predicted_rent_kes"]
+
+
+def test_predict_truly_unknown_location_does_not_match_anything(client):
+    resp = client.post("/predict", json={
+        "bedrooms_num": 2, "bathrooms_num": 1, "location_std": "Nowhereville",
+    })
+    assert resp.status_code == 200
+    assert resp.json()["location_recognised"] is False
+
+
+def test_get_locations_returns_known_neighbourhoods(client):
+    resp = client.get("/locations")
+    assert resp.status_code == 200
+    locations = resp.json()["locations"]
+    assert "Kilimani" in locations
+    assert "Westlands" in locations
+    # Internal data-artifact bucket, not a real neighbourhood -- must not
+    # be offered to users as a pickable location.
+    assert "Unknown" not in locations
+    assert locations == sorted(locations)
 
 
 def test_predict_missing_field_returns_422(client):

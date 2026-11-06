@@ -12,7 +12,13 @@ import joblib
 import numpy as np
 import pandas as pd
 
-from ml.features import RUN_D_FEATURE_SET, lookup_location_stats, property_type_flags, recompute_rooms_bath_from_counts
+from ml.features import (
+    RUN_D_FEATURE_SET,
+    lookup_location_stats,
+    property_type_flags,
+    recompute_rooms_bath_from_counts,
+    resolve_location,
+)
 
 MODELS_DIR = Path(__file__).resolve().parent.parent / "ml" / "models"
 
@@ -34,6 +40,12 @@ class Predictor:
     def loaded(self) -> bool:
         return self.pipe is not None
 
+    def known_locations(self) -> list[str]:
+        """Public-facing neighbourhood list for GET /locations -- excludes
+        the internal "Unknown" bucket (a data artifact for unparseable
+        training rows, not a real neighbourhood a user should pick)."""
+        return sorted(loc for loc in self.location_lookup if loc not in ("__global__", "Unknown"))
+
     def predict(
         self,
         bedrooms_num: int,
@@ -52,7 +64,8 @@ class Predictor:
         row = pd.DataFrame([{"bedrooms_num": bedrooms_num, "bathrooms_num": bathrooms_num}])
         row = recompute_rooms_bath_from_counts(row)
 
-        loc_stats = lookup_location_stats(location_std, self.location_lookup)
+        resolved_location, location_recognised = resolve_location(location_std, self.location_lookup)
+        loc_stats = lookup_location_stats(resolved_location, self.location_lookup)
         for key, value in loc_stats.items():
             row[key] = value
 
@@ -87,6 +100,7 @@ class Predictor:
             "predicted_rent_low_kes": round(low, 2),
             "predicted_rent_high_kes": round(high, 2),
             "model_version": self.version,
+            "location_recognised": location_recognised,
             "note": (
                 "Estimate only, not an exact valuation. The range reflects "
                 "10th-90th percentile prediction error observed in 5-fold "

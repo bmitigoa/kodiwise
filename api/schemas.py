@@ -49,7 +49,12 @@ class PredictResponse(BaseModel):
     predicted_rent_low_kes: float
     predicted_rent_high_kes: float
     model_version: str
+    location_recognised: bool
     note: str
+
+
+class LocationsResponse(BaseModel):
+    locations: list[str]
 
 
 class HealthResponse(BaseModel):

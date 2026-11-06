@@ -14,7 +14,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException
 
 from api.predictor import Predictor
-from api.schemas import HealthResponse, ModelVersionResponse, PredictRequest, PredictResponse
+from api.schemas import HealthResponse, LocationsResponse, ModelVersionResponse, PredictRequest, PredictResponse
 
 PRODUCTION_VERSION = "v20261106-appD"
 predictor = Predictor(PRODUCTION_VERSION)
@@ -53,6 +53,13 @@ def model_version() -> ModelVersionResponse:
         test_mape=m["test_metrics"]["MAPE"],
         note="Trained on bedrooms/bathrooms/location plus optional expanded-form fields -- see docs/PROGRESS.md.",
     )
+
+
+@app.get("/locations", response_model=LocationsResponse)
+def locations() -> LocationsResponse:
+    if not predictor.loaded:
+        raise HTTPException(status_code=503, detail="Model not loaded")
+    return LocationsResponse(locations=predictor.known_locations())
 
 
 @app.post("/predict", response_model=PredictResponse)
