@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">KodiWise</string>
+
+    <string name="predict_now">Predict Now</string>
+    <string name="predicting">Predicting…</string>
+
+    <string name="fill_all_fields">Please fill in all fields</string>
+    <string name="must_be_numbers">Bedrooms and bathrooms must be numbers</string>
+
+    <string name="full_screen_image">Full screen image</string>
+    <string name="close">Close</string>
+
+    <string name="back">Back</string>
+    <string name="header_title">Title</string>
+
+</resources>

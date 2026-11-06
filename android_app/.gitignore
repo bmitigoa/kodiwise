@@ -1,0 +1,26 @@
+*.iml
+.gradle
+/local.properties
+.idea/
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+.kotlin/
+
+# Firebase / API credentials — do not commit
+app/google-services.json
+*.keystore
+*.jks
+key.properties
+local.properties
+
+# Large 3D assets — exceed GitHub's file size limits, keep out of git history
+app/src/main/assets/models/modern_apartment.glb
+app/src/main/assets/models/apartment.glb
+
+# Build outputs
+app/build/
+build/

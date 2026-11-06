@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rent Prediction"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:id="@+id/tvPBand"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text=""
+            android:textStyle="bold"
+            android:textSize="16sp"/>
+
+        <EditText
+            android:id="@+id/etPLocation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Location (e.g., Kilimani)"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/etPBedrooms"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Bedrooms (e.g., 1)"
+            android:inputType="number"
+            android:layout_marginTop="10dp" />
+
+        <EditText
+            android:id="@+id/etPBathrooms"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Bathrooms (e.g., 1)"
+            android:inputType="number"
+            android:layout_marginTop="10dp" />
+
+        <Button
+            android:id="@+id/btnPredictNow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Predict Rent"
+            android:layout_marginTop="16dp" />
+
+    </LinearLayout>
+</ScrollView>

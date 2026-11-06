@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/adminRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F2F2F2"
+    android:padding="20dp"
+    android:gravity="top|center_horizontal"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- Card Container -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="6dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp"
+            android:gravity="center_horizontal">
+
+            <!-- Welcome Text -->
+            <TextView
+                android:id="@+id/tvWelcomeAdmin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Welcome Administrator!"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:textColor="#111827"
+                android:layout_marginBottom="20dp"/>
+
+            <!-- Approve Button -->
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnApprovals"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="Approve Properties"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:background="@drawable/btn_black_rounded"
+                android:backgroundTint="@null"
+                android:layout_marginBottom="14dp"/>
+
+            <!-- NEW Performance Test Button -->
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnPerformanceTest"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="Run System Performance Tests"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:background="@drawable/btn_black_rounded"
+                android:backgroundTint="@null"
+                android:layout_marginBottom="14dp"/>
+
+            <!-- Logout Button -->
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnLogoutAdmin"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="Logout"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:background="@drawable/btn_black_rounded"
+                android:backgroundTint="@null"/>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>

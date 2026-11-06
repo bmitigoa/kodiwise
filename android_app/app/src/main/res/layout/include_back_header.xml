@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/backHeaderRoot"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:background="#111111"
+    android:paddingStart="12dp"
+    android:paddingEnd="12dp"
+    android:paddingTop="40dp"
+    android:paddingBottom="14dp">
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/btnBackHeader"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="@drawable/bg_header_icon"
+        android:contentDescription="Back"
+        android:padding="10dp"
+        android:scaleType="centerInside"
+        android:src="@android:drawable/ic_media_previous"
+        app:tint="#FFFFFF" />
+
+    <TextView
+        android:id="@+id/tvHeaderTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="Title"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp" />
+
+    <Space
+        android:layout_width="48dp"
+        android:layout_height="48dp" />
+
+</LinearLayout>
