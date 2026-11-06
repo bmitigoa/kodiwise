@@ -68,7 +68,7 @@ class PropertyListActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        attachListenerNoIndex()
+        attachApprovedListener()
     }
 
     override fun onStop() {
@@ -77,10 +77,14 @@ class PropertyListActivity : AppCompatActivity() {
         reg = null
     }
 
-    private fun attachListenerNoIndex() {
+    private fun attachApprovedListener() {
         reg?.remove()
 
+        // Server-side filter on status is required: Firestore security rules can
+        // only approve this query by checking its filters against the rule, not by
+        // inspecting each document's data after the fact.
         reg = db.collection("properties")
+            .whereEqualTo("status", "approved")
             .orderBy("createdAt", Query.Direction.DESCENDING)
             .addSnapshotListener { snap, e ->
 
@@ -97,9 +101,6 @@ class PropertyListActivity : AppCompatActivity() {
                 val fresh = mutableListOf<Property>()
 
                 snap?.documents?.forEach { doc ->
-                    val status = (doc.getString("status") ?: "").trim()
-                    if (!status.equals("approved", ignoreCase = true)) return@forEach
-
                     val p = doc.toObject(Property::class.java)
                     if (p != null) {
                         p.id = doc.id
