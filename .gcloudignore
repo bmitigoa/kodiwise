@@ -1,0 +1,23 @@
+# Cloud Build upload ignore file for the api/ image.
+# NOTE: gcloud falls back to .gitignore patterns when no .gcloudignore is
+# present -- that would exclude ml/models/**/*.joblib, which the API image
+# actually needs at build time. This file intentionally does NOT inherit
+# that exclusion.
+
+.git/
+.gitignore
+
+# Android app -- irrelevant to the API image, large.
+android_app/
+
+# Python virtual env and caches.
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Datasets -- not needed in the API image (only the trained model + lookup are).
+data/raw/
+data/processed/
+
+# Keep ml/models/v20261106-appC/ (including model.joblib) -- do not ignore it.
