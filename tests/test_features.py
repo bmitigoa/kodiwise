@@ -9,8 +9,10 @@ from ml.features import (
     coerce_dtypes,
     get_feature_names,
     lookup_location_stats,
+    normalize_location,
     property_type_flags,
     recompute_rooms_bath_from_counts,
+    resolve_location,
 )
 
 TINY_FS = FeatureSet(
@@ -134,3 +136,39 @@ def test_property_type_flags_sets_exactly_one_flag():
 
 def test_property_type_flags_none_is_all_zero():
     assert property_type_flags(None) == {"is_apartment": 0, "is_house": 0, "is_bedsitter": 0}
+
+
+KNOWN = ["Kilimani", "Westlands", "South B", "Langata", "Upperhill"]
+
+
+def test_normalize_location_is_case_insensitive():
+    assert normalize_location("kilimani", KNOWN) == "Kilimani"
+    assert normalize_location("KILIMANI", KNOWN) == "Kilimani"
+    assert normalize_location("  Kilimani  ", KNOWN) == "Kilimani"
+
+
+def test_normalize_location_handles_known_aliases():
+    assert normalize_location("Westland", KNOWN) == "Westlands"
+    assert normalize_location("westland", KNOWN) == "Westlands"
+    assert normalize_location("Upper Hill", KNOWN) == "Upperhill"
+    assert normalize_location("southb", KNOWN) == "South B"
+
+
+def test_normalize_location_unknown_returns_none():
+    assert normalize_location("Nowhereville", KNOWN) is None
+    assert normalize_location("", KNOWN) is None
+
+
+def test_resolve_location_recognized_vs_not():
+    lookup = {"Kilimani": {"loc_mean_tr": 1.0}, "__global__": {"loc_mean_tr": 0.0}}
+    name, recognized = resolve_location("KILIMANI", lookup)
+    assert (name, recognized) == ("Kilimani", True)
+
+    name, recognized = resolve_location("Nowhereville", lookup)
+    assert (name, recognized) == ("Nowhereville", False)
+
+
+def test_resolve_location_alias_via_full_lookup():
+    lookup = {"Westlands": {"loc_mean_tr": 1.0}, "__global__": {"loc_mean_tr": 0.0}}
+    name, recognized = resolve_location("Westland", lookup)
+    assert (name, recognized) == ("Westlands", True)

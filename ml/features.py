@@ -239,6 +239,61 @@ def lookup_location_stats(location_std: str, lookup: dict) -> dict:
     return lookup.get(location_std, lookup["__global__"])
 
 
+# Serving-time location normalization. The training data's location_std is
+# already clean (34 canonical names, verified: no two rows differ only by
+# case). The free-text location field on PredictionFormActivity/
+# PropertyUploadActivity is the actual source of mismatches -- "kilimani",
+# "KILIMANI" and "Westland" all used to silently fall back to the global
+# mean via an exact-match-only lookup. This is deliberately a small,
+# defensible alias table, not fuzzy matching -- every entry is a spelling/
+# formatting variant we can justify, not a guess.
+LOCATION_ALIASES = {
+    "westland": "Westlands",
+    "upper hill": "Upperhill",
+    "lang'ata": "Langata",
+    "southb": "South B",
+    "southc": "South C",
+}
+
+
+def normalize_location(raw: str, known_locations: list[str]) -> str | None:
+    """Map free-text input to one of `known_locations` (case- and
+    whitespace-insensitive, plus LOCATION_ALIASES), or None if nothing
+    matches. `known_locations` should come from a training-derived source
+    (e.g. build_location_lookup() keys) so this can never recognize a
+    location the model never saw.
+    """
+    if not raw:
+        return None
+    cleaned = " ".join(raw.strip().split()).lower()
+    if not cleaned:
+        return None
+
+    by_lower = {loc.lower(): loc for loc in known_locations}
+    if cleaned in by_lower:
+        return by_lower[cleaned]
+
+    alias_target = LOCATION_ALIASES.get(cleaned)
+    if alias_target in known_locations:
+        return alias_target
+
+    return None
+
+
+def resolve_location(raw: str, lookup: dict) -> tuple[str, bool]:
+    """Resolve free-text user input against a build_location_lookup()
+    dict. Returns (resolved_name, recognized): resolved_name is the
+    canonical training location if recognized, otherwise the original
+    (trimmed) input -- useful for logging even though an unrecognized
+    location falls back to the global mean via lookup_location_stats.
+    """
+    known = [k for k in lookup if k != "__global__"]
+    normalized = normalize_location(raw, known)
+    if normalized is not None:
+        return normalized, True
+    return (raw or "").strip(), False
+
+
 def build_preprocessor(fs: FeatureSet, scale: bool = False) -> ColumnTransformer:
     """ColumnTransformer matching reviewer_rerun_leakfree.py's pre().
     Categorical and text branches are omitted entirely when the feature set
