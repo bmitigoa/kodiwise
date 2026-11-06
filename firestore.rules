@@ -29,15 +29,32 @@ service cloud.firestore {
       allow delete: if request.auth != null && request.auth.uid == userId;
     }
 
-    // Property listings: any signed-in user can read (browse/search listings);
-    // the owner can create/update/delete their own listing; admins can update
-    // any listing (approve/reject) but cannot delete someone else's.
+    // Property listings:
+    // - read: the owner, an admin, or anyone (signed in) if the listing is approved.
+    // - create: owner-stamped and must start life as 'pending'.
+    // - update: ownerId can never change. The owner may edit their own listing but
+    //   not its status (so landlords can't self-approve). An admin may change status,
+    //   but only to one of the three valid values (approve/reject/revert to pending).
+    // - delete: owner only — admins review/reject, they don't delete other people's listings.
     match /properties/{propertyId} {
-      allow read: if request.auth != null;
+      allow read: if request.auth != null
+                  && (isAdmin()
+                      || resource.data.ownerId == request.auth.uid
+                      || resource.data.status == 'approved');
+
       allow create: if request.auth != null
-                    && request.resource.data.ownerId == request.auth.uid;
+                    && request.resource.data.ownerId == request.auth.uid
+                    && request.resource.data.status == 'pending';
+
       allow update: if request.auth != null
-                    && (resource.data.ownerId == request.auth.uid || isAdmin());
+                    && request.resource.data.ownerId == resource.data.ownerId
+                    && (
+                         (resource.data.ownerId == request.auth.uid
+                          && request.resource.data.status == resource.data.status)
+                         || (isAdmin()
+                             && request.resource.data.status in ['pending', 'approved', 'rejected'])
+                       );
+
       allow delete: if request.auth != null
                     && resource.data.ownerId == request.auth.uid;
 
