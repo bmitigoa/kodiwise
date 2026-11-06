@@ -20,4 +20,4 @@ __pycache__/
 data/raw/
 data/processed/
 
-# Keep ml/models/v20261106-appC/ (including model.joblib) -- do not ignore it.
+# Keep ml/models/v20261106-appD/ (including model.joblib) -- do not ignore it.

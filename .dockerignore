@@ -1,0 +1,8 @@
+.git/
+android_app/
+.venv/
+venv/
+__pycache__/
+*.pyc
+data/raw/
+data/processed/

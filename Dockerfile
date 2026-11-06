@@ -1,5 +1,10 @@
-# Build from the repo root so this can COPY both api/ and ml/:
-#   docker build -f api/Dockerfile -t kodiwise-api .
+# api/ container image. Must live at the repo root (not api/Dockerfile) --
+# gcloud run deploy --source only auto-detects a Dockerfile at the root of
+# the given source path, and this needs the repo root as build context
+# anyway, to COPY both api/ and ml/ (siblings, not nested).
+#
+# Local build:   docker build -t kodiwise-api .
+# Cloud deploy:  gcloud run deploy kodiwise-api --source=. ...  (see docs/PROGRESS.md)
 FROM python:3.12-slim
 
 # LightGBM needs libgomp at runtime.
@@ -16,7 +21,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # training), and the one versioned model directory currently served.
 COPY api/ ./api/
 COPY ml/__init__.py ml/features.py ./ml/
-COPY ml/models/v20261106-appC/ ./ml/models/v20261106-appC/
+COPY ml/models/v20261106-appD/ ./ml/models/v20261106-appD/
 
 # Cloud Run sets PORT; default to 8080 for local runs.
 ENV PORT=8080
