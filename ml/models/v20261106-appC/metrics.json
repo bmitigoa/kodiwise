@@ -1,0 +1,127 @@
+{
+  "version": "v20261106-appC",
+  "generated": "2026-11-06",
+  "feature_set": "app_realistic",
+  "numeric_features": [
+    "bedrooms_num",
+    "bathrooms_num",
+    "rooms_total",
+    "bath_per_bed",
+    "loc_mean_tr",
+    "loc_median_tr",
+    "loc_count_tr"
+  ],
+  "binary_features": [],
+  "categorical_features": [],
+  "text_feature": null,
+  "hyperparameters": "see ml/features.py LGBM_PARAMS",
+  "data_source": "data\\processed\\nairobi_rentals_clean.csv",
+  "n_train": 442,
+  "n_test": 111,
+  "test_metrics": {
+    "MAE": 23575.41964802851,
+    "RMSE": 35498.51089073175,
+    "R2": 0.49982399015876156,
+    "MAPE": 38.40048887647739
+  },
+  "cv_lgbm_log_target": {
+    "MAE": {
+      "mean": 26124.304522506332,
+      "std": 3204.1834565344748
+    },
+    "RMSE": {
+      "mean": 39917.109594535155,
+      "std": 4216.988710479968
+    },
+    "R2": {
+      "mean": 0.5013629299399187,
+      "std": 0.07739809046028458
+    },
+    "MAPE": {
+      "mean": 39.507253014740215,
+      "std": 8.535258539505644
+    }
+  },
+  "test_baselines": {
+    "hedonic_linear_ridge": {
+      "MAE": 27061.30984674904,
+      "RMSE": 47984.94035766103,
+      "R2": 0.08607090057488043,
+      "MAPE": 39.94814482916281
+    },
+    "random_forest": {
+      "MAE": 23082.97931447571,
+      "RMSE": 34814.71879920537,
+      "R2": 0.5189077396565509,
+      "MAPE": 37.54136954131526
+    },
+    "xgboost": {
+      "MAE": 23457.951770129504,
+      "RMSE": 34985.399038266674,
+      "R2": 0.514178991317749,
+      "MAPE": 38.92495602595815
+    }
+  },
+  "cv_baselines": {
+    "hedonic_linear_ridge": {
+      "MAE": {
+        "mean": 24763.521076219426,
+        "std": 3105.0719469079663
+      },
+      "RMSE": {
+        "mean": 37646.78163710131,
+        "std": 4200.251337252236
+      },
+      "R2": {
+        "mean": 0.5578872645533987,
+        "std": 0.06534377553697811
+      },
+      "MAPE": {
+        "mean": 37.06533420557665,
+        "std": 4.15291161589997
+      }
+    },
+    "random_forest": {
+      "MAE": {
+        "mean": 25047.27110498385,
+        "std": 3577.1029846329125
+      },
+      "RMSE": {
+        "mean": 38146.94064017607,
+        "std": 4898.489390129212
+      },
+      "R2": {
+        "mean": 0.5422354423303585,
+        "std": 0.09231066277642543
+      },
+      "MAPE": {
+        "mean": 37.66400842856232,
+        "std": 7.149021368652268
+      }
+    },
+    "xgboost": {
+      "MAE": {
+        "mean": 25884.01210680641,
+        "std": 3044.094477375157
+      },
+      "RMSE": {
+        "mean": 40197.237573276725,
+        "std": 3853.399361403306
+      },
+      "R2": {
+        "mean": 0.4976475715637207,
+        "std": 0.04473457274156007
+      },
+      "MAPE": {
+        "mean": 38.95862839598681,
+        "std": 7.739928883738818
+      }
+    }
+  },
+  "prediction_interval": {
+    "method": "cv_log_residual_quantiles",
+    "q10_log": -0.5607630328149721,
+    "q90_log": 0.6126077405902293,
+    "n_cv_residuals": 442
+  }
+}
