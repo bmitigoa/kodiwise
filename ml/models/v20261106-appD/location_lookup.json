@@ -1,0 +1,172 @@
+{
+  "Dagoretti": {
+    "loc_mean_tr": 65009.04815772463,
+    "loc_median_tr": 32000.0,
+    "loc_count_tr": 2.0
+  },
+  "Donholm": {
+    "loc_mean_tr": 67677.22285067874,
+    "loc_median_tr": 15000.0,
+    "loc_count_tr": 1.0
+  },
+  "Embakasi": {
+    "loc_mean_tr": 49944.902182592494,
+    "loc_median_tr": 36500.0,
+    "loc_count_tr": 12.0
+  },
+  "Garden Estate": {
+    "loc_mean_tr": 115177.22285067874,
+    "loc_median_tr": 300000.0,
+    "loc_count_tr": 1.0
+  },
+  "Gigiri": {
+    "loc_mean_tr": 90177.22285067874,
+    "loc_median_tr": 150000.0,
+    "loc_count_tr": 1.0
+  },
+  "Githurai": {
+    "loc_mean_tr": 50451.48190045249,
+    "loc_median_tr": 16500.0,
+    "loc_count_tr": 4.0
+  },
+  "Hurlingham": {
+    "loc_mean_tr": 93007.03745600805,
+    "loc_median_tr": 90000.0,
+    "loc_count_tr": 4.0
+  },
+  "Kahawa": {
+    "loc_mean_tr": 86301.58342760181,
+    "loc_median_tr": 75000.0,
+    "loc_count_tr": 35.0
+  },
+  "Kahawa Wendani": {
+    "loc_mean_tr": 68843.88951734541,
+    "loc_median_tr": 22000.0,
+    "loc_count_tr": 1.0
+  },
+  "Kahawa West": {
+    "loc_mean_tr": 48785.14606900453,
+    "loc_median_tr": 25000.0,
+    "loc_count_tr": 11.0
+  },
+  "Karen": {
+    "loc_mean_tr": 121180.19630023955,
+    "loc_median_tr": 117500.0,
+    "loc_count_tr": 12.0
+  },
+  "Kasarani": {
+    "loc_mean_tr": 50543.33362339019,
+    "loc_median_tr": 27500.0,
+    "loc_count_tr": 8.0
+  },
+  "Kileleshwa": {
+    "loc_mean_tr": 113876.31952300151,
+    "loc_median_tr": 90000.0,
+    "loc_count_tr": 43.0
+  },
+  "Kilimani": {
+    "loc_mean_tr": 88357.03201512428,
+    "loc_median_tr": 85000.0,
+    "loc_count_tr": 68.0
+  },
+  "Kitisuru": {
+    "loc_mean_tr": 86382.91713800906,
+    "loc_median_tr": 100000.0,
+    "loc_count_tr": 3.0
+  },
+  "Langata": {
+    "loc_mean_tr": 55187.57610037022,
+    "loc_median_tr": 28500.0,
+    "loc_count_tr": 6.0
+  },
+  "Lavington": {
+    "loc_mean_tr": 102821.06077745784,
+    "loc_median_tr": 100000.0,
+    "loc_count_tr": 17.0
+  },
+  "Loresho": {
+    "loc_mean_tr": 87677.22285067874,
+    "loc_median_tr": 135000.0,
+    "loc_count_tr": 1.0
+  },
+  "Mwiki": {
+    "loc_mean_tr": 59509.04815772463,
+    "loc_median_tr": 12750.0,
+    "loc_count_tr": 2.0
+  },
+  "Ngara": {
+    "loc_mean_tr": 54007.03745600805,
+    "loc_median_tr": 25000.0,
+    "loc_count_tr": 4.0
+  },
+  "Parklands": {
+    "loc_mean_tr": 95614.62983911514,
+    "loc_median_tr": 75000.0,
+    "loc_count_tr": 13.0
+  },
+  "Pipeline": {
+    "loc_mean_tr": 73510.55618401208,
+    "loc_median_tr": 50000.0,
+    "loc_count_tr": 1.0
+  },
+  "Riverside": {
+    "loc_mean_tr": 118723.33387201035,
+    "loc_median_tr": 220000.0,
+    "loc_count_tr": 2.0
+  },
+  "Roysambu": {
+    "loc_mean_tr": 54737.555806938166,
+    "loc_median_tr": 40000.0,
+    "loc_count_tr": 10.0
+  },
+  "Runda": {
+    "loc_mean_tr": 87866.1910148675,
+    "loc_median_tr": 112000.0,
+    "loc_count_tr": 2.0
+  },
+  "South B": {
+    "loc_mean_tr": 48171.26674208145,
+    "loc_median_tr": 40000.0,
+    "loc_count_tr": 45.0
+  },
+  "South C": {
+    "loc_mean_tr": 73304.94960921432,
+    "loc_median_tr": 65000.0,
+    "loc_count_tr": 28.0
+  },
+  "Spring Valley": {
+    "loc_mean_tr": 71866.1910148675,
+    "loc_median_tr": 56000.0,
+    "loc_count_tr": 2.0
+  },
+  "Umoja": {
+    "loc_mean_tr": 38504.52407886232,
+    "loc_median_tr": 15000.0,
+    "loc_count_tr": 9.0
+  },
+  "Upperhill": {
+    "loc_mean_tr": 76010.55618401208,
+    "loc_median_tr": 65000.0,
+    "loc_count_tr": 1.0
+  },
+  "Utawala": {
+    "loc_mean_tr": 42572.93659771602,
+    "loc_median_tr": 22000.0,
+    "loc_count_tr": 37.0
+  },
+  "Westlands": {
+    "loc_mean_tr": 116411.26674208145,
+    "loc_median_tr": 120000.0,
+    "loc_count_tr": 45.0
+  },
+  "Zimmerman": {
+    "loc_mean_tr": 38128.95856900453,
+    "loc_median_tr": 15000.0,
+    "loc_count_tr": 11.0
+  },
+  "__global__": {
+    "loc_mean_tr": 78212.66742081448,
+    "loc_median_tr": 65000.0,
+    "loc_count_tr": 0.0
+  }
+}

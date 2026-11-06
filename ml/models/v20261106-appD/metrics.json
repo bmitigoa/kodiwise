@@ -1,0 +1,142 @@
+{
+  "version": "v20261106-appD",
+  "generated": "2026-11-06",
+  "feature_set": "app_expanded_form",
+  "numeric_features": [
+    "bedrooms_num",
+    "bathrooms_num",
+    "rooms_total",
+    "bath_per_bed",
+    "loc_mean_tr",
+    "loc_median_tr",
+    "loc_count_tr",
+    "sq_m"
+  ],
+  "binary_features": [
+    "is_furnished",
+    "is_apartment",
+    "is_house",
+    "is_bedsitter",
+    "has_generator",
+    "has_borehole",
+    "has_cctv",
+    "has_dsq",
+    "has_play_area",
+    "has_garden"
+  ],
+  "categorical_features": [],
+  "text_feature": null,
+  "hyperparameters": "see ml/features.py LGBM_PARAMS",
+  "data_source": "data\\processed\\nairobi_rentals_clean.csv",
+  "n_train": 442,
+  "n_test": 111,
+  "test_metrics": {
+    "MAE": 15700.257248904512,
+    "RMSE": 25978.373548543666,
+    "R2": 0.7321285050559604,
+    "MAPE": 24.030276793217553
+  },
+  "cv_lgbm_log_target": {
+    "MAE": {
+      "mean": 19910.46821317981,
+      "std": 2243.677339903125
+    },
+    "RMSE": {
+      "mean": 31911.94331406615,
+      "std": 2924.871136508273
+    },
+    "R2": {
+      "mean": 0.6802939035215945,
+      "std": 0.04750709881061743
+    },
+    "MAPE": {
+      "mean": 29.301638529978874,
+      "std": 5.782921744051793
+    }
+  },
+  "test_baselines": {
+    "hedonic_linear_ridge": {
+      "MAE": 22734.79199858736,
+      "RMSE": 58836.04831925756,
+      "R2": -0.3740090039542576,
+      "MAPE": 30.944615586724616
+    },
+    "random_forest": {
+      "MAE": 14991.042089774119,
+      "RMSE": 24722.591461384392,
+      "R2": 0.7574001258420473,
+      "MAPE": 22.742639321795075
+    },
+    "xgboost": {
+      "MAE": 15097.828415329392,
+      "RMSE": 25743.6700005811,
+      "R2": 0.7369468808174133,
+      "MAPE": 22.479925719340326
+    }
+  },
+  "cv_baselines": {
+    "hedonic_linear_ridge": {
+      "MAE": {
+        "mean": 22939.085563107856,
+        "std": 1970.206368812028
+      },
+      "RMSE": {
+        "mean": 36902.77077253055,
+        "std": 3993.0180478857337
+      },
+      "R2": {
+        "mean": 0.5623878038337472,
+        "std": 0.1313215289729973
+      },
+      "MAPE": {
+        "mean": 31.890299458282186,
+        "std": 3.2673646223165065
+      }
+    },
+    "random_forest": {
+      "MAE": {
+        "mean": 20233.10047580946,
+        "std": 3654.7259688940376
+      },
+      "RMSE": {
+        "mean": 32670.59230964569,
+        "std": 5024.564310459931
+      },
+      "R2": {
+        "mean": 0.6649788828340716,
+        "std": 0.07398101505164754
+      },
+      "MAPE": {
+        "mean": 29.22439252253479,
+        "std": 6.923313424636876
+      }
+    },
+    "xgboost": {
+      "MAE": {
+        "mean": 20904.882774694364,
+        "std": 3287.8871560263406
+      },
+      "RMSE": {
+        "mean": 34289.917672097145,
+        "std": 4588.330227258982
+      },
+      "R2": {
+        "mean": 0.6315258502960205,
+        "std": 0.07142669720165441
+      },
+      "MAPE": {
+        "mean": 29.798348678699785,
+        "std": 6.898733913089971
+      }
+    }
+  },
+  "prediction_interval": {
+    "method": "cv_log_residual_quantiles",
+    "q10_log": -0.4588970585034369,
+    "q90_log": 0.4329869444059368,
+    "n_cv_residuals": 442,
+    "median_test_range_width_kes": 55822.81281081907,
+    "test_range_width_p25_kes": 30115.470924022356,
+    "test_range_width_p75_kes": 84954.10007346397
+  }
+}
