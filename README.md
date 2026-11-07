@@ -107,7 +107,9 @@ KodiWise/
 │   ├── evaluate.py         metrics, cross-validation, baselines
 │   └── models/<version>/   metrics, feature importance, location lookup
 ├── data_pipeline/
-│   └── clean.py            cleaning rules, logs every dropped row
+│   ├── clean.py            cleaning rules, logs every dropped row
+│   └── geocode.py          neighbourhood centroids, reference points and roads (OpenStreetMap)
+├── data/reference/         neighbourhood_centroids.csv, pois.csv, roads.csv (+ cached OSM responses)
 ├── tests/                  pytest suite (features, cleaning, API, deploy rule)
 ├── docs/screenshots/       before/after app screenshots
 ├── firestore.rules         database security rules
@@ -116,7 +118,7 @@ KodiWise/
 └── requirements.txt        pinned Python dependencies
 ```
 
-Data files and trained model binaries are deliberately **not** committed (see `.gitignore`).
+Raw listing data and trained model binaries are deliberately **not** committed (see `.gitignore`); the OpenStreetMap-derived reference files in `data/reference/` are.
 
 ---
 
@@ -160,6 +162,7 @@ KodiWise therefore trains only on fields a user can enter in the app:
 | Optional | floor area (m², with "don't know"), furnished, property type (apartment / house / bedsitter) |
 | Optional amenities | generator, borehole, CCTV, DSQ, play area, garden |
 | Derived | rooms total, bathrooms per bedroom, location mean/median/count (training data only) |
+| Location geography | neighbourhood latitude/longitude; km to the CBD, Westlands, Upperhill, JKIA, Thika Road and Mombasa Road (looked up from the neighbourhood name) |
 
 ### Model
 
@@ -193,11 +196,14 @@ All figures are on the held-out test set unless marked CV (5-fold cross-validati
 | A: research reproduction | full research feature set, 580 rows | 0.723 | 25.2% | matches the published paper (R² 0.724, MAPE 25.3%) |
 | B: cleaned, all features | includes title text | 0.774 | 20.2% | **not usable**: R² −0.38 with real app inputs |
 | C: app inputs only | neighbourhood, bedrooms, bathrooms | 0.489 | 41.3% | first honest baseline |
-| **D: expanded app form (served)** | C + size, type, furnishing, amenities | **0.736** | **24.7%** | in production (`v20261107-appD`) |
+| D: expanded app form | C + size, type, furnishing, amenities | 0.736 | 24.7% | previous production (`v20261107-appD`) |
+| **E2: D + GPS (served)** | D + neighbourhood coordinates and distances | **0.748** | **24.8%** | in production (`v20261107-appE2`) |
 
-Baselines on the same split for the served model: Random Forest R² 0.746 / MAPE 25.1%, XGBoost 0.729 / 23.3%, Ridge −0.23 / 32.4%.
+Baselines on the same split for the served model: Random Forest R² 0.744 / MAPE 25.0%, XGBoost 0.736 / 23.3%, Ridge −0.235 / 30.9%.
 
 Adding six form fields recovered almost all of the accuracy that title text had been faking, and the typical estimate range became about 31% narrower than with Run C.
+
+**GPS features (Run E2).** Each neighbourhood gets OpenStreetMap coordinates and distances to the CBD, Westlands, Upperhill, JKIA, Thika Road and Mombasa Road; the app request does not change. Compared with Run D on the same rows and folds, averaged over 5 training seeds, mean test MAPE went from 24.91% to 24.66% and CV R² from 0.719 to 0.720. The gain is concentrated where location data is thin: out-of-fold error for neighbourhoods with 3–9 training listings fell by about 5 points (34.6% → 29.5%), while neighbourhoods with fewer than 3 listings did not improve (42.8% → 44.0%), so their "not enough local data" label stays. A variant that also borrowed rents from nearby neighbourhoods (Run E, a spatial prior) added nothing measurable and is not served. On the single split in the table, E2's MAPE is 0.1 points above D's; the 5-seed comparison is the deciding measure, because training noise alone moves test MAPE by up to ~0.8 points at this data size.
 
 ---
 
@@ -232,10 +238,10 @@ FastAPI service in `api/`, containerised with the root `Dockerfile` and deployed
 
 ```json
 {
-  "predicted_rent_kes": 138087.83,
-  "predicted_rent_low_kes": 94985.59,
-  "predicted_rent_high_kes": 203499.67,
-  "model_version": "v20261107-appD",
+  "predicted_rent_kes": 139313.54,
+  "predicted_rent_low_kes": 94734.21,
+  "predicted_rent_high_kes": 208461.66,
+  "model_version": "v20261107-appE2",
   "location_recognised": true,
   "location_confidence": "high",
   "note": "Estimate only, not an exact valuation. ..."
@@ -379,7 +385,7 @@ cd android_app
 
 ## Roadmap
 
-1. **GPS features**: neighbourhood coordinates and distances to the CBD and key roads.
+1. ~~**GPS features**~~: done (Run E2). Next step: per-listing coordinates where listing pages expose a map pin.
 2. **Explanations**: per-prediction SHAP values ("size added KES X").
 3. **Scheduled scraping**: more listings from more sources, prioritising low-data neighbourhoods.
 4. **Monthly retraining**, gated by the deployment rule above.
@@ -403,6 +409,10 @@ The leak-free results reported in the paper are reproduced exactly by Run A abov
 **Baraka Mitigoa**, Nairobi, Kenya
 MSc Computing and Information Systems, Strathmore University
 GitHub: [@bmitigoa](https://github.com/bmitigoa) · ORCID: [0009-0004-0349-2917](https://orcid.org/0009-0004-0349-2917)
+
+## Data credits
+
+Neighbourhood coordinates, reference points and road geometry in `data/reference/` come from OpenStreetMap: © OpenStreetMap contributors, available under the Open Database Licence (ODbL).
 
 ## Licence
 
