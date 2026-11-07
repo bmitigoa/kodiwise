@@ -5,9 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.ContextCompat
+import com.google.android.material.chip.Chip
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
 
 class LandlordPropertyAdapter(
     private val items: MutableList<Property>,
@@ -23,9 +22,12 @@ class LandlordPropertyAdapter(
         val tvLocation: TextView = v.findViewById(R.id.tvLocation)
 
         val tvStatus: TextView = v.findViewById(R.id.tvStatus)
-        val tvMeta: TextView = v.findViewById(R.id.tvMeta)
         val tvBand: TextView = v.findViewById(R.id.tvBand)
         val tvPrice: TextView = v.findViewById(R.id.tvPrice)
+        val chipBeds: Chip = v.findViewById(R.id.chipBeds)
+        val chipBaths: Chip = v.findViewById(R.id.chipBaths)
+        val chipSize: Chip = v.findViewById(R.id.chipSize)
+        val notesBox: View = v.findViewById(R.id.notesBox)
 
         val tvAdminNotesLabel: TextView = v.findViewById(R.id.tvAdminNotesLabel)
         val tvAdminNotes: TextView = v.findViewById(R.id.tvAdminNotes)
@@ -44,41 +46,18 @@ class LandlordPropertyAdapter(
         val p = items[position]
         val ctx = h.itemView.context
 
-        h.tvTitle.text = p.title.ifBlank { "Untitled" }
+        h.tvTitle.text = p.title.ifBlank { ctx.getString(R.string.listing_untitled) }
         h.tvLocation.text = p.location.ifBlank { "-" }
-
-        val approval = p.prettyStatus().uppercase()
-        h.tvStatus.text = approval
-
-        val chipColor = when (approval.lowercase()) {
-            "approved" -> android.R.color.holo_green_light
-            "rejected" -> android.R.color.holo_red_light
-            else -> android.R.color.darker_gray
-        }
-
-        h.tvStatus.setBackgroundColor(
-            ContextCompat.getColor(ctx, chipColor)
-        )
-
-        h.tvMeta.text = "${p.bedrooms} Bedrooms • ${p.bathrooms} Bathrooms"
-
-        val band = p.rentBand.ifBlank { "FAIR" }.uppercase()
-        h.tvBand.text = band
-
-        val bandColor = RentUtils.colorForBand(band)
-        h.tvBand.setTextColor(ContextCompat.getColor(ctx, bandColor))
-
-        h.tvPrice.text = "KES ${p.price}"
-
-        if (p.coverImageUrl.isNotBlank()) {
-            h.ivCover.load(p.coverImageUrl)
-        } else {
-            h.ivCover.setImageResource(android.R.color.darker_gray)
-        }
+        ListingCard.bindStatus(h.tvStatus, p.status)
+        ListingCard.bindBand(h.tvBand, p.rentBand)
+        h.tvPrice.text = ListingCard.priceText(ctx, p.price)
+        ListingCard.bindChips(h.chipBeds, h.chipBaths, h.chipSize, p.bedrooms, p.bathrooms, p.sqM)
+        ListingCard.bindCover(h.ivCover, p.coverImageUrl)
 
         // ✅ SHOW ADMIN REVIEW COMMENT
         val notes = p.adminNotes.trim()
 
+        h.notesBox.visibility = if (notes.isNotEmpty()) View.VISIBLE else View.GONE
         if (notes.isNotEmpty()) {
 
             h.tvAdminNotesLabel.visibility = View.VISIBLE

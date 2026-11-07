@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatButton
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
+import com.google.android.material.chip.Chip
 
 class PendingApprovalAdapter(
     private val items: MutableList<Property>,
@@ -18,8 +18,12 @@ class PendingApprovalAdapter(
         val ivCover: ImageView = v.findViewById(R.id.ivCover)
         val tvTitle: TextView = v.findViewById(R.id.tvTitle)
         val tvLocation: TextView = v.findViewById(R.id.tvLocation)
-        val tvMeta: TextView = v.findViewById(R.id.tvMeta)
+        val tvPrice: TextView = v.findViewById(R.id.tvPrice)
+        val tvBand: TextView = v.findViewById(R.id.tvBand)
         val tvStatus: TextView = v.findViewById(R.id.tvStatus)
+        val chipBeds: Chip = v.findViewById(R.id.chipBeds)
+        val chipBaths: Chip = v.findViewById(R.id.chipBaths)
+        val chipSize: Chip = v.findViewById(R.id.chipSize)
         val btnReview: AppCompatButton = v.findViewById(R.id.btnReview)
     }
 
@@ -32,10 +36,13 @@ class PendingApprovalAdapter(
     override fun onBindViewHolder(holder: VH, position: Int) {
         val item = items[position]
 
-        holder.tvTitle.text = item.title.ifBlank { "Untitled Property" }
+        val ctx = holder.itemView.context
+        holder.tvTitle.text = item.title.ifBlank { ctx.getString(R.string.listing_untitled) }
         holder.tvLocation.text = item.location.ifBlank { "-" }
-        holder.tvMeta.text = "${item.bedrooms} Bedrooms • ${item.bathrooms} Bathrooms • KES ${item.price}"
-        holder.tvStatus.text = item.prettyStatus().uppercase()
+        holder.tvPrice.text = ListingCard.priceText(ctx, item.price)
+        ListingCard.bindStatus(holder.tvStatus, item.status)
+        ListingCard.bindBand(holder.tvBand, item.rentBand)
+        ListingCard.bindChips(holder.chipBeds, holder.chipBaths, holder.chipSize, item.bedrooms, item.bathrooms, item.sqM)
 
         val imageUrl = when {
             item.coverImageUrl.isNotBlank() -> item.coverImageUrl
@@ -43,13 +50,7 @@ class PendingApprovalAdapter(
             else -> ""
         }
 
-        if (imageUrl.isNotBlank()) {
-            holder.ivCover.load(imageUrl) {
-                crossfade(true)
-            }
-        } else {
-            holder.ivCover.setImageResource(android.R.color.darker_gray)
-        }
+        ListingCard.bindCover(holder.ivCover, imageUrl)
 
         holder.btnReview.setOnClickListener {
             onReview(item)

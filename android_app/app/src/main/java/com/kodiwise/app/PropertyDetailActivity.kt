@@ -36,7 +36,7 @@ class PropertyDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_property_detail)
-        ScreenHeader.bind(this, "Property Details")
+        ScreenHeader.bind(this, getString(R.string.title_listing))
 
         propertyId = intent.getStringExtra("PROPERTY_ID") ?: run {
             Toast.makeText(this, "Property missing", Toast.LENGTH_LONG).show()
@@ -93,22 +93,21 @@ class PropertyDetailActivity : AppCompatActivity() {
                         )
 
                 val band = (doc.getString("rentBand") ?: "FAIR").uppercase()
-                val bandColor = ContextCompat.getColor(this, RentUtils.colorForBand(band))
                 val cover = doc.getString("coverImageUrl") ?: ""
 
-                tvStatus.text = "Status: $statusPretty"
+                ListingCard.bindStatus(tvStatus, statusRaw)
                 tvTitle.text = title
                 tvLocation.text = loc
-                tvMeta.text = "$bedrooms bedrooms • $bathrooms bathrooms • KES $quoted"
-                tvBand.text = band
-                tvBand.setTextColor(bandColor)
-                tvDesc.text = desc
+                tvMeta.text = statusPretty
+                findViewById<TextView>(R.id.tvPrice).text = ListingCard.priceText(this, quoted)
+                ListingCard.bindChips(
+                    findViewById(R.id.chipBeds), findViewById(R.id.chipBaths), findViewById(R.id.chipSize),
+                    bedrooms, bathrooms, doc.getDouble("sq_m")
+                )
+                ListingCard.bindBand(tvBand, band)
+                tvDesc.text = desc.ifBlank { getString(R.string.detail_no_description) }
 
-                if (cover.isNotBlank()) {
-                    ivCover.load(cover) { crossfade(true) }
-                } else {
-                    ivCover.setImageResource(android.R.color.darker_gray)
-                }
+                ListingCard.bindCover(ivCover, cover)
             }
             .addOnFailureListener { e ->
                 Toast.makeText(this, "Load failed: ${e.message}", Toast.LENGTH_LONG).show()

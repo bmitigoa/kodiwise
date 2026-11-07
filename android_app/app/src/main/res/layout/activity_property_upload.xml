@@ -1,195 +1,273 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/scrollUpload"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F2F2F2"
-    android:fillViewport="true"
-    android:overScrollMode="never">
+    android:background="?android:attr/colorBackground"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <include layout="@layout/include_back_header" />
+
+    <ScrollView
+        android:id="@+id/scrollUpload"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
-        <!-- Card -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@android:color/white"
-            android:padding="16dp"
-            android:elevation="6dp">
+            android:paddingHorizontal="16dp"
+            android:paddingBottom="24dp">
 
-            <!-- Small subtitle only (no big heading) -->
             <TextView
                 android:id="@+id/tvSubtitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Fill in the details to add a new property"
-                android:textSize="14sp"
-                android:textColor="#6B7280"
-                android:layout_marginBottom="14dp" />
-
-            <!-- Property Title -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Property Title"
-                android:textStyle="bold"
-                android:textColor="#111827"
-                android:layout_marginBottom="6dp" />
-
-            <EditText
-                android:id="@+id/etTitle"
                 android:layout_width="match_parent"
-                android:layout_height="44dp"
-                android:background="@drawable/input_rounded"
-                android:padding="12dp"
-                android:hint="Enter property title"
-                android:inputType="text"
-                android:textColor="#111827"
-                android:textColorHint="#9CA3AF"
-                android:layout_marginBottom="14dp" />
-
-            <!-- Description -->
-            <TextView
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Description"
-                android:textStyle="bold"
-                android:textColor="#111827"
-                android:layout_marginBottom="6dp" />
+                android:text="@string/upload_intro"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant" />
 
-            <EditText
-                android:id="@+id/etDescription"
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
-                android:layout_height="92dp"
-                android:background="@drawable/input_rounded"
-                android:padding="12dp"
-                android:hint="Enter property description"
-                android:inputType="textMultiLine"
-                android:gravity="top"
-                android:textColor="#111827"
-                android:textColorHint="#9CA3AF"
-                android:layout_marginBottom="14dp" />
-
-            <!-- Location -->
-            <TextView
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Location"
-                android:textStyle="bold"
-                android:textColor="#111827"
-                android:layout_marginBottom="6dp" />
+                android:layout_marginTop="16dp">
 
-            <AutoCompleteTextView
-                android:id="@+id/etLocation"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        style="@style/Widget.KodiWise.SectionTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/upload_section_listing" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:hint="@string/upload_field_title">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etTitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textCapSentences" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:hint="@string/upload_field_description">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etDescription"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textMultiLine|textCapSentences"
+                            android:gravity="top"
+                            android:minLines="3" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
-                android:layout_height="44dp"
-                android:background="@drawable/input_rounded"
-                android:padding="12dp"
-                android:hint="Start typing a neighbourhood"
-                android:inputType="text"
-                android:completionThreshold="1"
-                android:textColor="#111827"
-                android:textColorHint="#9CA3AF"
-                android:layout_marginBottom="14dp" />
-
-            <!-- Bedrooms -->
-            <TextView
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Bedrooms"
-                android:textStyle="bold"
-                android:textColor="#111827"
-                android:layout_marginBottom="6dp" />
+                android:layout_marginTop="12dp">
 
-            <EditText
-                android:id="@+id/etBedrooms"
-                android:layout_width="match_parent"
-                android:layout_height="44dp"
-                android:background="@drawable/input_rounded"
-                android:padding="12dp"
-                android:hint="Enter bedrooms"
-                android:inputType="number"
-                android:textColor="#111827"
-                android:textColorHint="#9CA3AF"
-                android:layout_marginBottom="14dp" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
-            <!-- Bathrooms -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Bathrooms"
-                android:textStyle="bold"
-                android:textColor="#111827"
-                android:layout_marginBottom="6dp" />
+                    <TextView
+                        style="@style/Widget.KodiWise.SectionTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/section_basics" />
 
-            <EditText
-                android:id="@+id/etBathrooms"
-                android:layout_width="match_parent"
-                android:layout_height="44dp"
-                android:background="@drawable/input_rounded"
-                android:padding="12dp"
-                android:hint="Enter bathrooms"
-                android:inputType="number"
-                android:textColor="#111827"
-                android:textColorHint="#9CA3AF"
-                android:layout_marginBottom="14dp" />
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:hint="@string/field_location"
+                        app:startIconContentDescription="@string/field_location"
+                        app:startIconDrawable="@drawable/ic_place"
+                        app:helperText="@string/field_location_helper">
 
-            <!-- Rent -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Monthly Rent (KES)"
-                android:textStyle="bold"
-                android:textColor="#111827"
-                android:layout_marginBottom="6dp" />
+                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                            android:id="@+id/etLocation"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textCapWords"
+                            style="@style/Widget.Material3.AutoCompleteTextView.FilledBox"
+                            android:completionThreshold="1" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
-            <EditText
-                android:id="@+id/etPrice"
-                android:layout_width="match_parent"
-                android:layout_height="44dp"
-                android:background="@drawable/input_rounded"
-                android:padding="12dp"
-                android:hint="Enter rent"
-                android:inputType="numberDecimal"
-                android:textColor="#111827"
-                android:textColorHint="#9CA3AF"
-                android:layout_marginBottom="14dp" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_bed"
+                            app:tint="?attr/colorOnSurfaceVariant" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:layout_weight="1"
+                            android:labelFor="@id/etBedrooms"
+                            android:text="@string/bedrooms"
+                            android:textAppearance="?attr/textAppearanceBodyLarge"
+                            android:textColor="?attr/colorOnSurface" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnBedroomsMinus"
+                            style="@style/Widget.KodiWise.Button.Icon"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:contentDescription="@string/cd_decrease_bedrooms"
+                            app:icon="@drawable/ic_remove" />
+
+                        <EditText
+                            android:id="@+id/etBedrooms"
+                            android:layout_width="56dp"
+                            android:layout_height="48dp"
+                            android:background="@null"
+                            android:gravity="center"
+                            android:importantForAutofill="no"
+                            android:inputType="number"
+                            android:maxLength="2"
+                            android:text="1"
+                            android:textAppearance="?attr/textAppearanceTitleLarge"
+                            android:textColor="?attr/colorOnSurface" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnBedroomsPlus"
+                            style="@style/Widget.KodiWise.Button.Icon"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:contentDescription="@string/cd_increase_bedrooms"
+                            app:icon="@drawable/ic_add" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_bathtub"
+                            app:tint="?attr/colorOnSurfaceVariant" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:layout_weight="1"
+                            android:labelFor="@id/etBathrooms"
+                            android:text="@string/bathrooms"
+                            android:textAppearance="?attr/textAppearanceBodyLarge"
+                            android:textColor="?attr/colorOnSurface" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnBathroomsMinus"
+                            style="@style/Widget.KodiWise.Button.Icon"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:contentDescription="@string/cd_decrease_bathrooms"
+                            app:icon="@drawable/ic_remove" />
+
+                        <EditText
+                            android:id="@+id/etBathrooms"
+                            android:layout_width="56dp"
+                            android:layout_height="48dp"
+                            android:background="@null"
+                            android:gravity="center"
+                            android:importantForAutofill="no"
+                            android:inputType="number"
+                            android:maxLength="2"
+                            android:text="1"
+                            android:textAppearance="?attr/textAppearanceTitleLarge"
+                            android:textColor="?attr/colorOnSurface" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnBathroomsPlus"
+                            style="@style/Widget.KodiWise.Button.Icon"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:contentDescription="@string/cd_increase_bathrooms"
+                            app:icon="@drawable/ic_add" />
+                    </LinearLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:hint="@string/upload_field_rent"
+                        app:prefixText="@string/currency_kes"
+                        app:suffixText="@string/per_month">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etPrice"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="number" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
             <include layout="@layout/include_realistic_property_fields" />
 
-            <!-- Photo upload disabled: Firebase Storage is not enabled on the KodiWise
-                 Firebase project (Spark/free plan) and will not be added. See project rules. -->
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnSubmitUpload"
-                android:layout_width="match_parent"
-                android:layout_height="44dp"
-                android:text="Upload Property"
-                android:textAllCaps="false"
-                android:textSize="13sp"
-                android:textColor="#FFFFFF"
-                android:background="@drawable/btn_black_rounded"
-                android:backgroundTint="@null"
-                android:layout_marginBottom="12dp" />
-
-            <!-- Status -->
-            <TextView
-                android:id="@+id/tvUploadStatus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:textSize="12sp"
-                android:textColor="#6B7280" />
-
         </LinearLayout>
+    </ScrollView>
 
-        <Space
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorSurfaceContainer"
+        android:orientation="vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="12dp">
+
+        <TextView
+            android:id="@+id/tvUploadStatus"
             android:layout_width="match_parent"
-            android:layout_height="18dp" />
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:gravity="center"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            android:visibility="gone" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSubmitUpload"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/upload_button"
+            app:icon="@drawable/ic_add" />
 
     </LinearLayout>
-</ScrollView>
+</LinearLayout>

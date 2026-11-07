@@ -5,9 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.ContextCompat
+import com.google.android.material.chip.Chip
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
 
 class BrowsePropertyAdapter(
     private val items: MutableList<Property>,
@@ -20,8 +19,12 @@ class BrowsePropertyAdapter(
         val ivCover: ImageView = v.findViewById(R.id.ivCover)
         val tvTitle: TextView = v.findViewById(R.id.tvTitle)
         val tvLocation: TextView = v.findViewById(R.id.tvLocation)
-        val tvMetaPrice: TextView = v.findViewById(R.id.tvMetaPrice)
+        val tvPrice: TextView = v.findViewById(R.id.tvPrice)
+        val tvStatus: TextView = v.findViewById(R.id.tvStatus)
         val tvBand: TextView = v.findViewById(R.id.tvBand)
+        val chipBeds: Chip = v.findViewById(R.id.chipBeds)
+        val chipBaths: Chip = v.findViewById(R.id.chipBaths)
+        val chipSize: Chip = v.findViewById(R.id.chipSize)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
@@ -33,23 +36,15 @@ class BrowsePropertyAdapter(
     override fun onBindViewHolder(h: VH, position: Int) {
         val p = items[position]
 
-        h.tvTitle.text = p.title.ifBlank { "Untitled" }
+        val ctx = h.itemView.context
+        h.tvTitle.text = p.title.ifBlank { ctx.getString(R.string.listing_untitled) }
         h.tvLocation.text = p.location.ifBlank { "-" }
-        h.tvMetaPrice.text = "${p.bedrooms} bedrooms • ${p.bathrooms} bathrooms • KES ${p.price}"
-
-        val band = p.rentBand.ifBlank { "FAIR" }.uppercase()
-        h.tvBand.text = band
-        h.tvBand.setTextColor(
-            ContextCompat.getColor(h.itemView.context, RentUtils.colorForBand(band))
-        )
-
-        if (p.coverImageUrl.isNotBlank()) {
-            h.ivCover.load(p.coverImageUrl) {
-                crossfade(true)
-            }
-        } else {
-            h.ivCover.setImageResource(android.R.color.darker_gray)
-        }
+        h.tvPrice.text = ListingCard.priceText(ctx, p.price)
+        // Browse only lists approved listings, so the status badge is hidden.
+        h.tvStatus.visibility = View.GONE
+        ListingCard.bindBand(h.tvBand, p.rentBand)
+        ListingCard.bindChips(h.chipBeds, h.chipBaths, h.chipSize, p.bedrooms, p.bathrooms, p.sqM)
+        ListingCard.bindCover(h.ivCover, p.coverImageUrl)
 
         h.itemView.setOnClickListener { onClick(p) }
     }

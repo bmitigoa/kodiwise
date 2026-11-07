@@ -24,7 +24,7 @@ class AdminApprovalsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_admin_approvals)
-        ScreenHeader.bind(this, "Pending Properties")
+        ScreenHeader.bind(this, getString(R.string.title_approvals))
 
         rv = findViewById(R.id.rvPending)
         tvEmpty = findViewById(R.id.tvEmpty)

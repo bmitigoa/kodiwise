@@ -1,6 +1,5 @@
 package com.kodiwise.app
 
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -9,7 +8,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -39,11 +37,7 @@ class LandlordPropertiesActivity : AppCompatActivity() {
         }
 
         setContentView(R.layout.activity_landlord_properties)
-        ScreenHeader.bind(this, "My Properties")
-
-        // Make the top system bar blend with the black header
-        window.statusBarColor = Color.parseColor("#111111")
-        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = false
+        ScreenHeader.bind(this, getString(R.string.title_my_listings))
 
         rv = findViewById(R.id.rvLandlordProperties)
         tvEmpty = findViewById(R.id.tvEmpty)

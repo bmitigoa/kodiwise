@@ -28,7 +28,11 @@ class PropertyListActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_property_list)
-        ScreenHeader.bind(this, "Available Properties")
+        ScreenHeader.bind(this, getString(R.string.title_browse))
+        // Opened from an "AR" entry point: explain that AR starts from a listing.
+        if (intent.getBooleanExtra(DashboardChrome.EXTRA_AR_HINT, false)) {
+            findViewById<android.view.View>(R.id.tvArHint).visibility = android.view.View.VISIBLE
+        }
 
         etSearch = findViewById(R.id.etSearch)
 

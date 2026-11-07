@@ -1,153 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="8dp"
-    android:layout_marginVertical="10dp"
-    card_view:cardCornerRadius="14dp"
-    card_view:cardElevation="6dp"
-    card_view:cardUseCompatPadding="true">
+    android:layout_marginBottom="12dp"
+    android:clickable="true"
+    android:focusable="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="14dp">
+        android:orientation="vertical"
+        android:padding="16dp">
 
-        <!-- Cover -->
-        <ImageView
-            android:id="@+id/ivCover"
-            android:layout_width="96dp"
-            android:layout_height="96dp"
-            android:scaleType="centerCrop"
-            android:background="#E5E7EB"
-            android:contentDescription="Property cover"/>
+        <include layout="@layout/include_listing_body" />
 
-        <!-- Right -->
+        <!-- Admin review comment (shown only when present) -->
         <LinearLayout
-            android:layout_width="0dp"
+            android:id="@+id/notesBox"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_info_chip"
+            android:visibility="gone"
+            android:backgroundTint="@color/kw_surface_container_high"
             android:orientation="vertical"
-            android:layout_marginStart="12dp">
+            android:padding="12dp">
 
-            <!-- Title row + Status -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-
-                <TextView
-                    android:id="@+id/tvTitle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Apartment in Westlands"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="#111827"
-                    android:maxLines="1"
-                    android:ellipsize="end"/>
-
-                <TextView
-                    android:id="@+id/tvStatus"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="PENDING"
-                    android:textSize="11sp"
-                    android:textStyle="bold"
-                    android:textColor="#111827"
-                    android:paddingHorizontal="10dp"
-                    android:paddingVertical="6dp"
-                    android:background="#E5E7EB"/>
-            </LinearLayout>
-
-            <!-- Location -->
-            <TextView
-                android:id="@+id/tvLocation"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Westlands"
-                android:textSize="13sp"
-                android:textColor="#6B7280"
-                android:layout_marginTop="2dp"/>
-
-            <!-- Bedrooms + Bathrooms -->
-            <TextView
-                android:id="@+id/tvMeta"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="2 Bedrooms • 2 Bathrooms"
-                android:textSize="13sp"
-                android:textColor="#6B7280"
-                android:layout_marginTop="2dp"/>
-
-            <!-- Rent band -->
-            <TextView
-                android:id="@+id/tvBand"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="LOW"
-                android:textStyle="bold"
-                android:textSize="13sp"
-                android:textColor="#FF9800"
-                android:layout_marginTop="6dp"/>
-
-            <!-- Price + Delete -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="8dp"
-                android:gravity="center_vertical">
-
-                <TextView
-                    android:id="@+id/tvPrice"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="KES 100000"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:textColor="#2563EB"/>
-
-                <TextView
-                    android:id="@+id/btnDelete"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="DELETE"
-                    android:textStyle="bold"
-                    android:textColor="#DC2626"
-                    android:paddingHorizontal="8dp"
-                    android:paddingVertical="6dp"/>
-            </LinearLayout>
-
-            <!-- ✅ Admin Comment (shows only when not empty) -->
             <TextView
                 android:id="@+id/tvAdminNotesLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Admin Comment:"
-                android:textStyle="bold"
-                android:textSize="12sp"
-                android:textColor="#111827"
-                android:layout_marginTop="10dp"
-                android:visibility="gone"/>
+                android:text="@string/admin_note_label"
+                android:textAppearance="?attr/textAppearanceLabelMedium"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/tvAdminNotes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Good"
-                android:textSize="12sp"
-                android:textColor="#374151"
                 android:layout_marginTop="2dp"
-                android:visibility="gone"/>
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurface"
+                android:visibility="gone" />
         </LinearLayout>
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnDelete"
+            style="@style/Widget.KodiWise.Button.Text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginTop="4dp"
+            android:text="@string/listing_delete"
+            android:textColor="?attr/colorError"
+            app:icon="@drawable/ic_delete"
+            app:iconTint="?attr/colorError" />
     </LinearLayout>
-
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>

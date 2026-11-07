@@ -1,181 +1,261 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:fitsSystemWindows="true"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F2F2F2"
-    android:fillViewport="true">
+    android:background="?android:attr/colorBackground"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <include layout="@layout/include_back_header" />
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <include layout="@layout/include_back_header" />
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:paddingHorizontal="16dp"
+            android:paddingBottom="24dp">
 
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="14dp"
-                android:padding="0dp"
-                android:elevation="6dp"
-                card_view:cardCornerRadius="14dp"
-                card_view:cardUseCompatPadding="true">
+                android:layout_marginTop="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp"
-                    android:background="@android:color/white">
+                    android:padding="16dp">
 
                     <TextView
+                        style="@style/Widget.KodiWise.SectionTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Review Property"
-                        android:textStyle="bold"
-                        android:textSize="20sp"
-                        android:textColor="#111827"
-                        android:layout_marginBottom="10dp" />
+                        android:text="@string/review_photos" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rvGallery"
                         android:layout_width="match_parent"
-                        android:layout_height="170dp"
-                        android:background="#E5E7EB"
-                        android:padding="8dp"
-                        android:overScrollMode="never"
-                        android:layout_marginBottom="12dp" />
-
-                    <TextView
-                        android:id="@+id/tvTitle"
-                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Property Title"
-                        android:textStyle="bold"
-                        android:textSize="18sp"
-                        android:textColor="#111827" />
+                        android:layout_marginTop="12dp"
+                        android:clipToPadding="false"
+                        android:minHeight="110dp"
+                        android:orientation="horizontal" />
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tvTitle"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textAppearance="?attr/textAppearanceTitleLarge"
+                            android:textColor="?attr/colorOnSurface" />
+
+                        <TextView
+                            android:id="@+id/tvStatus"
+                            style="@style/Widget.KodiWise.Badge"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp" />
+                    </LinearLayout>
 
                     <TextView
                         android:id="@+id/tvLocation"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Westlands"
-                        android:textSize="14sp"
-                        android:textColor="#6B7280"
-                        android:layout_marginTop="4dp" />
+                        android:layout_marginTop="4dp"
+                        android:drawablePadding="4dp"
+                        android:gravity="center_vertical"
+                        android:textAppearance="?attr/textAppearanceBodyLarge"
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        app:drawableStartCompat="@drawable/ic_place_16" />
 
-                    <TextView
-                        android:id="@+id/tvPrice"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="KES 100000"
-                        android:textStyle="bold"
-                        android:textSize="18sp"
-                        android:textColor="#2563EB"
-                        android:layout_marginTop="10dp" />
+                        android:layout_marginTop="12dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tvPrice"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                            android:textColor="?attr/colorPrimary" />
+
+                        <TextView
+                            android:id="@+id/tvBand"
+                            style="@style/Widget.KodiWise.Badge"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone" />
+                    </LinearLayout>
+
+                    <com.google.android.material.chip.ChipGroup
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp">
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chipBeds"
+                            style="@style/Widget.KodiWise.Chip.Info"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:chipIcon="@drawable/ic_bed" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chipBaths"
+                            style="@style/Widget.KodiWise.Chip.Info"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:chipIcon="@drawable/ic_bathtub" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chipSize"
+                            style="@style/Widget.KodiWise.Chip.Info"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"
+                            app:chipIcon="@drawable/ic_aspect_ratio" />
+                    </com.google.android.material.chip.ChipGroup>
 
                     <TextView
                         android:id="@+id/tvRooms"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="2 Bedrooms • 2 Bathrooms"
-                        android:textSize="14sp"
-                        android:textColor="#6B7280"
-                        android:layout_marginTop="8dp" />
+                        android:visibility="gone" />
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
                     <TextView
+                        style="@style/Widget.KodiWise.SectionTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Description"
-                        android:textStyle="bold"
-                        android:textSize="16sp"
-                        android:textColor="#111827"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginBottom="6dp" />
+                        android:text="@string/detail_about" />
 
                     <TextView
                         android:id="@+id/tvDescription"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Description here..."
-                        android:textSize="14sp"
-                        android:textColor="#374151" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Review Notes (Optional)"
-                        android:textStyle="bold"
-                        android:textSize="16sp"
-                        android:textColor="#111827"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginBottom="6dp" />
-
-                    <EditText
-                        android:id="@+id/etNotes"
-                        android:layout_width="match_parent"
-                        android:layout_height="110dp"
-                        android:background="@drawable/input_rounded"
-                        android:padding="12dp"
-                        android:hint="Add any notes about your decision..."
-                        android:gravity="top"
-                        android:inputType="textMultiLine"
-                        android:textColor="#111827"
-                        android:textColorHint="#9CA3AF" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginTop="16dp">
-
-                        <androidx.appcompat.widget.AppCompatButton
-                            android:id="@+id/btnApprove"
-                            android:layout_width="0dp"
-                            android:layout_height="48dp"
-                            android:layout_weight="1"
-                            android:text="Approve"
-                            android:textAllCaps="false"
-                            android:textColor="#FFFFFF"
-                            android:background="@drawable/btn_black_rounded"
-                            android:backgroundTint="@null"
-                            android:layout_marginEnd="10dp" />
-
-                        <androidx.appcompat.widget.AppCompatButton
-                            android:id="@+id/btnReject"
-                            android:layout_width="0dp"
-                            android:layout_height="48dp"
-                            android:layout_weight="1"
-                            android:text="Reject"
-                            android:textAllCaps="false"
-                            android:textColor="#FFFFFF"
-                            android:backgroundTint="@null"
-                            android:background="#DC2626" />
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/tvStatus"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text=""
-                        android:textSize="12sp"
-                        android:textColor="#6B7280"
-                        android:layout_marginTop="10dp" />
+                        android:layout_marginTop="8dp"
+                        android:textAppearance="?attr/textAppearanceBodyLarge"
+                        android:textColor="?attr/colorOnSurface" />
 
                 </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-            </androidx.cardview.widget.CardView>
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp">
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        style="@style/Widget.KodiWise.SectionTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/review_notes" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:hint="@string/review_notes_hint"
+                        app:helperText="@string/review_notes_helper">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etNotes"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="top"
+                            android:inputType="textMultiLine|textCapSentences"
+                            android:minLines="3" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorSurfaceContainer"
+        android:orientation="vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="12dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnReject"
+                style="@style/Widget.KodiWise.Button.Outlined"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="6dp"
+                android:layout_weight="1"
+                android:text="@string/review_reject"
+                android:textColor="?attr/colorError"
+                app:icon="@drawable/ic_close"
+                app:iconTint="?attr/colorError"
+                app:strokeColor="?attr/colorError" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnApprove"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:layout_weight="1"
+                android:text="@string/review_approve"
+                app:icon="@drawable/ic_check_circle" />
         </LinearLayout>
 
     </LinearLayout>
-</ScrollView>
+</LinearLayout>

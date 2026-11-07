@@ -1,46 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:fitsSystemWindows="true"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#F2F2F2">
-
-    <include layout="@layout/include_back_header" />
+    android:background="?android:attr/colorBackground"
+    android:fitsSystemWindows="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:orientation="vertical">
+
+        <include layout="@layout/include_back_header" />
+
+        <!-- AR entry point hint (only when opened from an "AR" tab/button) -->
+        <TextView
+            android:id="@+id/tvArHint"
+            style="@style/Widget.KodiWise.InfoChip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginBottom="8dp"
+            android:backgroundTint="@color/kw_primary_container"
+            android:text="@string/ar_pick_listing"
+            android:textColor="@color/kw_on_primary_container"
+            android:visibility="gone"
+            app:drawableStartCompat="@drawable/ic_view_in_ar"
+            app:drawableTint="@color/kw_on_primary_container" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilSearch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="12dp"
-            app:boxBackgroundMode="filled"
-            app:boxCornerRadiusTopStart="16dp"
-            app:boxCornerRadiusTopEnd="16dp"
-            app:boxCornerRadiusBottomStart="16dp"
-            app:boxCornerRadiusBottomEnd="16dp"
-            app:boxBackgroundColor="@android:color/white"
-            app:startIconDrawable="@android:drawable/ic_menu_search"
-            app:startIconTint="#6B7280"
+            android:layout_marginHorizontal="16dp"
+            android:hint="@string/search_listings"
             app:endIconMode="clear_text"
-            app:endIconTint="#6B7280">
+            app:startIconContentDescription="@string/search_listings"
+            app:startIconDrawable="@drawable/ic_search">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etSearch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Search by title, location, price..."
-                android:inputType="text"
-                android:padding="12dp"
-                android:textColor="#111827"
-                android:textColorHint="#9CA3AF" />
+                android:imeOptions="actionSearch"
+                android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <androidx.recyclerview.widget.RecyclerView
@@ -49,8 +52,28 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:clipToPadding="false"
-            android:paddingBottom="12dp" />
-
+            android:paddingHorizontal="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="16dp" />
     </LinearLayout>
 
-</LinearLayout>
+    <!-- Empty state (shown by the activity when the list is empty) -->
+    <TextView
+        android:id="@+id/tvEmpty"
+        style="@style/Widget.KodiWise.EmptyState"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/empty_browse"
+        android:visibility="gone"
+        app:drawableTopCompat="@drawable/ic_inbox" />
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:contentDescription="@string/loading"
+        android:indeterminate="true"
+        android:visibility="gone" />
+</FrameLayout>

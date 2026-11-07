@@ -124,4 +124,53 @@
         <item quantity="one">%d bath</item>
         <item quantity="other">%d baths</item>
     </plurals>
+
+    <!-- Listings -->
+    <string name="title_browse">Browse listings</string>
+    <string name="title_my_listings">My listings</string>
+    <string name="title_approvals">Pending approvals</string>
+    <string name="title_listing">Listing</string>
+    <string name="title_review">Review listing</string>
+    <string name="title_add_listing">Add a listing</string>
+    <string name="listing_price_month">%1$s / month</string>
+    <string name="listing_size_sqm">%1$d m²</string>
+    <string name="listing_untitled">Untitled listing</string>
+    <string name="cd_listing_photo">Listing photo</string>
+    <string name="status_pending">Pending</string>
+    <string name="status_approved">Approved</string>
+    <string name="status_rejected">Rejected</string>
+    <string name="band_fair">Fair rent</string>
+    <string name="band_low">Below estimate</string>
+    <string name="band_high">Above estimate</string>
+    <string name="admin_note_label">Note from the reviewer</string>
+    <string name="listing_delete">Delete</string>
+    <string name="listing_review">Review</string>
+    <string name="search_listings">Search title, area or price</string>
+    <string name="ar_pick_listing">Pick a listing, then tap View in AR on its page.</string>
+    <string name="empty_browse">No approved listings yet.
+Check back soon.</string>
+    <string name="empty_my_listings">You have no listings yet.
+Add one from your dashboard.</string>
+    <string name="empty_approvals">All caught up.
+No listings are waiting for review.</string>
+    <string name="detail_about">About this home</string>
+    <string name="detail_gallery">Photos</string>
+    <string name="detail_no_photos">No photos for this listing.</string>
+    <string name="detail_no_description">No description provided.</string>
+    <string name="detail_view_ar">View in AR</string>
+    <string name="review_photos">Photos</string>
+    <string name="review_notes">Review notes</string>
+    <string name="review_notes_hint">Note for the landlord</string>
+    <string name="review_notes_helper">Optional. Shown on the landlord’s listing.</string>
+    <string name="review_approve">Approve</string>
+    <string name="review_reject">Reject</string>
+    <string name="upload_intro">New listings are checked by an admin before tenants can see them.</string>
+    <string name="upload_section_listing">Listing</string>
+    <string name="upload_field_title">Title</string>
+    <string name="upload_field_description">Description</string>
+    <string name="upload_field_rent">Monthly rent</string>
+    <string name="currency_kes" translatable="false">KES </string>
+    <string name="per_month">/ month</string>
+    <string name="upload_button">Submit listing</string>
+    <string name="upload_button_busy">Submitting…</string>
 </resources>

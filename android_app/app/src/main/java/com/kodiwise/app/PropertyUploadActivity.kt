@@ -36,6 +36,7 @@ class PropertyUploadActivity : AppCompatActivity() {
         }
 
         setContentView(R.layout.activity_property_upload)
+        ScreenHeader.bind(this, getString(R.string.title_add_listing))
 
         // Inputs
         val etTitle = findViewById<EditText>(R.id.etTitle)
@@ -48,6 +49,11 @@ class PropertyUploadActivity : AppCompatActivity() {
         // UI
         btnSubmit = findViewById(R.id.btnSubmitUpload)
         tvUploadStatus = findViewById(R.id.tvUploadStatus)
+
+        // Steppers only edit the number fields; validation below is unchanged
+        // (it accepts 0 bedrooms, e.g. a bedsitter, so the stepper allows 0).
+        FormWidgets.bindStepper(findViewById(R.id.btnBedroomsMinus), etBedrooms, findViewById(R.id.btnBedroomsPlus), min = 0)
+        FormWidgets.bindStepper(findViewById(R.id.btnBathroomsMinus), etBathrooms, findViewById(R.id.btnBathroomsPlus), min = 0)
 
         RealisticPropertyFields.bindCollapse(this)
         RealisticPropertyFields.bindDontKnowSize(this)
@@ -182,7 +188,10 @@ class PropertyUploadActivity : AppCompatActivity() {
 
     private fun setUploading(uploading: Boolean) {
         btnSubmit.isEnabled = !uploading
-        btnSubmit.text = if (uploading) "Uploading..." else "Upload Property"
+        btnSubmit.setText(if (uploading) R.string.upload_button_busy else R.string.upload_button)
+        // The status line starts hidden; once an upload starts it stays visible
+        // so its last message ("Upload failed", ...) remains readable.
+        if (uploading) tvUploadStatus.visibility = android.view.View.VISIBLE
     }
 
     private fun cleanTitle(title: String): String {

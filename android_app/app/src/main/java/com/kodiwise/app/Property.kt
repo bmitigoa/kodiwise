@@ -20,6 +20,12 @@ data class Property(
 
     var description: String = "",
 
+    // Size in m2, already saved by PropertyUploadActivity as "sq_m".
+    // Read-only here: shown as the size chip on listing cards.
+    @get:PropertyName("sq_m")
+    @set:PropertyName("sq_m")
+    var sqM: Double? = null,
+
     var coverImageUrl: String = "",
 
     // Optional (if you later decide to save imageUrls directly on property doc)

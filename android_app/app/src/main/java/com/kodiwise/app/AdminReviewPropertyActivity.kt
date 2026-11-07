@@ -31,7 +31,7 @@ class AdminReviewPropertyActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_admin_review_property)
-        ScreenHeader.bind(this, "Review Property")
+        ScreenHeader.bind(this, getString(R.string.title_review))
 
         propertyId = intent.getStringExtra("propertyId") ?: ""
 
@@ -78,12 +78,16 @@ class AdminReviewPropertyActivity : AppCompatActivity() {
 
                 p.id = doc.id
 
-                tvTitle.text = p.title.ifBlank { "Untitled" }
+                tvTitle.text = p.title.ifBlank { getString(R.string.listing_untitled) }
                 tvLocation.text = p.location.ifBlank { "-" }
-                tvPrice.text = "KES ${p.price}"
-                tvRooms.text = "${p.bedrooms} Bedrooms • ${p.bathrooms} Bathrooms"
-                tvDescription.text = p.description.ifBlank { "-" }
-                tvStatus.text = "Status: ${p.prettyStatus()}"
+                tvPrice.text = ListingCard.priceText(this, p.price)
+                tvRooms.text = p.prettyStatus()
+                ListingCard.bindChips(
+                    findViewById(R.id.chipBeds), findViewById(R.id.chipBaths), findViewById(R.id.chipSize),
+                    p.bedrooms, p.bathrooms, p.sqM
+                )
+                tvDescription.text = p.description.ifBlank { getString(R.string.detail_no_description) }
+                ListingCard.bindStatus(tvStatus, p.status)
 
                 val galleryUrls: List<String> =
                     if (p.imageUrls.isNotEmpty()) p.imageUrls
