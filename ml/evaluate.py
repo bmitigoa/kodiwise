@@ -33,8 +33,12 @@ def metrics(y_true: np.ndarray, y_pred: np.ndarray) -> dict:
     )
 
 
-def make_lgbm_log_pipeline(fs: FeatureSet) -> Pipeline:
-    model = TransformedTargetRegressor(LGBMRegressor(**LGBM_PARAMS), func=np.log1p, inverse_func=np.expm1)
+def make_lgbm_log_pipeline(fs: FeatureSet, model_seed: int | None = None) -> Pipeline:
+    """LightGBM log-target pipeline. model_seed overrides LGBM_PARAMS'
+    random_state (bagging/column-sampling draws) -- used only by the deploy
+    comparison to average over training noise."""
+    params = dict(LGBM_PARAMS) if model_seed is None else {**LGBM_PARAMS, "random_state": model_seed}
+    model = TransformedTargetRegressor(LGBMRegressor(**params), func=np.log1p, inverse_func=np.expm1)
     return Pipeline([("pre", build_preprocessor(fs)), ("m", model)])
 
 
@@ -97,9 +101,11 @@ def cross_validate(
 
 
 def cross_validate_lgbm(
-    train_df: pd.DataFrame, fs: FeatureSet, k: int = 5, seed: int = RANDOM_STATE, folds: np.ndarray | None = None
+    train_df: pd.DataFrame, fs: FeatureSet, k: int = 5, seed: int = RANDOM_STATE, folds: np.ndarray | None = None,
+    model_seed: int | None = None,
 ) -> dict:
-    return cross_validate(lambda: make_lgbm_log_pipeline(fs), train_df, fs, k, seed, folds)
+    """`seed` picks the KFold split; `model_seed` the LightGBM training seed."""
+    return cross_validate(lambda: make_lgbm_log_pipeline(fs, model_seed), train_df, fs, k, seed, folds)
 
 
 def cross_validate_baselines(train_df: pd.DataFrame, fs: FeatureSet, k: int = 5, seed: int = RANDOM_STATE) -> dict:
@@ -160,6 +166,10 @@ def prediction_interval_widths(pipe, df: pd.DataFrame, q10_log: float, q90_log: 
 
 DEPLOY_MAX_MAPE_WORSE_PP = 0.5
 DEPLOY_MAX_CV_R2_DROP = 0.01
+# Training seeds averaged over in the deploy comparison. Same rows, same
+# folds, same row order for every seed -- only LightGBM's bagging/column
+# sampling draws change. 42 (the production seed) is included.
+DEPLOY_SEEDS = (42, 43, 44, 45, 46)
 
 
 def eval_rows_record(train: pd.DataFrame, test: pd.DataFrame, k: int = 5, seed: int = RANDOM_STATE) -> dict:
@@ -193,19 +203,21 @@ def _in_recorded_order(df: pd.DataFrame, ordered_ids: list[str]) -> pd.DataFrame
     return pd.concat([known, df[~ids.isin(pos)]])
 
 
-def _fit_and_score(train: pd.DataFrame, test: pd.DataFrame, fs: FeatureSet) -> dict:
+def _fit_and_score(train: pd.DataFrame, test: pd.DataFrame, fs: FeatureSet, model_seed: int | None = None) -> dict:
     tr, te, _ = add_location_stats(train, test)
-    pipe = make_lgbm_log_pipeline(fs)
+    pipe = make_lgbm_log_pipeline(fs, model_seed)
     pipe.fit(tr, tr[TARGET].values)
     return metrics(te[TARGET].values, pipe.predict(te))
 
 
 def compare_on_same_rows(
     current_df: pd.DataFrame, current_rows: dict, candidate_df: pd.DataFrame, fs: FeatureSet,
-    current_version: str,
+    current_version: str, seeds: tuple[int, ...] = DEPLOY_SEEDS,
 ) -> dict:
     """Score the current version's data and the candidate's data on the
-    same evaluation rows, both with the same features/hyperparameters.
+    same evaluation rows, both with the same features/hyperparameters,
+    each trained once per seed in `seeds`. The gate applies to the means
+    over seeds; the per-seed values and spread are reported alongside.
 
     - Test: the current version's test rows that still exist in the
       candidate data. Rows the candidate dropped leave both sides alike;
@@ -233,23 +245,39 @@ def compare_on_same_rows(
     cand_fold_ids = cand_train[ID_COL].astype(str)
     cand_folds = np.array([fold_of.get(i, _fold_for_new_row(i, k)) for i in cand_fold_ids])
 
-    cur_test_m = _fit_and_score(cur_train, cur_test, fs)
-    cand_test_m = _fit_and_score(cand_train, cand_test, fs)
-    cur_cv = cross_validate_lgbm(cur_train, fs, k=k, folds=cur_folds)
-    cand_cv = cross_validate_lgbm(cand_train, fs, k=k, folds=cand_folds)
+    def run_side(train: pd.DataFrame, test: pd.DataFrame, folds: np.ndarray) -> dict:
+        per_seed = []
+        for s in seeds:
+            test_m = _fit_and_score(train, test, fs, model_seed=s)
+            cv = cross_validate_lgbm(train, fs, k=k, folds=folds, model_seed=s)
+            per_seed.append({
+                "seed": s, "test": test_m,
+                "cv_r2_mean": cv["R2"]["mean"], "cv_mape_mean": cv["MAPE"]["mean"],
+            })
+        return {"per_seed": per_seed, "summary": {
+            "test_mape": _spread([r["test"]["MAPE"] for r in per_seed]),
+            "test_r2": _spread([r["test"]["R2"] for r in per_seed]),
+            "cv_r2": _spread([r["cv_r2_mean"] for r in per_seed]),
+            "cv_mape": _spread([r["cv_mape_mean"] for r in per_seed]),
+        }}
 
-    mape_delta = cand_test_m["MAPE"] - cur_test_m["MAPE"]
-    cv_r2_delta = cand_cv["R2"]["mean"] - cur_cv["R2"]["mean"]
+    cur = run_side(cur_train, cur_test, cur_folds)
+    cand = run_side(cand_train, cand_test, cand_folds)
+
+    mape_delta = cand["summary"]["test_mape"]["mean"] - cur["summary"]["test_mape"]["mean"]
+    cv_r2_delta = cand["summary"]["cv_r2"]["mean"] - cur["summary"]["cv_r2"]["mean"]
     passes = bool(mape_delta <= DEPLOY_MAX_MAPE_WORSE_PP and cv_r2_delta >= -DEPLOY_MAX_CV_R2_DROP)
-
-    def side(test_m: dict, cv: dict) -> dict:
-        return {"test": test_m, "cv_mape_mean": cv["MAPE"]["mean"], "cv_r2_mean": cv["R2"]["mean"],
-                "cv_r2_std": cv["R2"]["std"]}
+    # Paired per-seed deltas: same seed on both sides, so these show how
+    # much of the mean delta is stable vs. seed noise.
+    paired_mape = [c["test"]["MAPE"] - o["test"]["MAPE"] for c, o in zip(cand["per_seed"], cur["per_seed"])]
+    paired_cv_r2 = [c["cv_r2_mean"] - o["cv_r2_mean"] for c, o in zip(cand["per_seed"], cur["per_seed"])]
 
     return {
-        "rule": (f"project rules #4: on the same evaluation rows, test MAPE not worse by "
-                 f"> {DEPLOY_MAX_MAPE_WORSE_PP} pp and CV R2 not lower by > {DEPLOY_MAX_CV_R2_DROP}"),
+        "rule": (f"project rules #4: on the same evaluation rows, averaged over {len(seeds)} training seeds, "
+                 f"mean test MAPE not worse by > {DEPLOY_MAX_MAPE_WORSE_PP} pp and mean CV R2 not lower "
+                 f"by > {DEPLOY_MAX_CV_R2_DROP}"),
         "current_version": current_version,
+        "seeds": list(seeds),
         "rows": {
             "test_rows_shared": len(shared_test),
             "test_rows_dropped_by_candidate": len(cur_test_ids - shared_test),
@@ -258,9 +286,16 @@ def compare_on_same_rows(
             "train_rows_new_in_candidate": int((~cand_fold_ids.isin(fold_of.keys())).sum()),
             "train_rows_dropped_by_candidate": int((~cur_train[ID_COL].astype(str).isin(set(cand_ids))).sum()),
         },
-        "current": side(cur_test_m, cur_cv),
-        "candidate": side(cand_test_m, cand_cv),
+        "current": cur,
+        "candidate": cand,
         "test_mape_delta_pp": float(mape_delta),
         "cv_r2_delta": float(cv_r2_delta),
+        "paired_seed_deltas": {"test_mape_pp": _spread(paired_mape), "cv_r2": _spread(paired_cv_r2)},
         "passes": passes,
     }
+
+
+def _spread(values: list[float]) -> dict:
+    v = np.asarray(values, dtype=float)
+    return {"mean": float(v.mean()), "std": float(v.std(ddof=1)) if len(v) > 1 else 0.0,
+            "min": float(v.min()), "max": float(v.max())}
