@@ -49,7 +49,7 @@ class LandlordPropertyAdapter(
         h.tvTitle.text = p.title.ifBlank { ctx.getString(R.string.listing_untitled) }
         h.tvLocation.text = p.location.ifBlank { "-" }
         ListingCard.bindStatus(h.tvStatus, p.status)
-        ListingCard.bindBand(h.tvBand, p.rentBand)
+        ListingCard.bindRange(h.tvBand, p.price, p.predictedLow, p.predictedHigh, p.locationConfidence)
         h.tvPrice.text = ListingCard.priceText(ctx, p.price)
         ListingCard.bindChips(h.chipBeds, h.chipBaths, h.chipSize, p.bedrooms, p.bathrooms, p.sqM)
         ListingCard.bindCover(h.ivCover, p.coverImageUrl)

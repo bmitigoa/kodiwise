@@ -87,13 +87,12 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:gravity="center_vertical"
-                        android:orientation="horizontal">
+                        android:orientation="vertical">
 
                         <TextView
                             android:id="@+id/tvPrice"
-                            android:layout_width="0dp"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
                             android:textAppearance="?attr/textAppearanceHeadlineSmall"
                             android:textColor="?attr/colorPrimary" />
 
@@ -102,6 +101,7 @@
                             style="@style/Widget.KodiWise.Badge"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
                             android:visibility="visible" />
                     </LinearLayout>
 
@@ -187,7 +187,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:clipToPadding="false"
-                        android:minHeight="110dp"
                         android:orientation="horizontal" />
 
                     <TextView

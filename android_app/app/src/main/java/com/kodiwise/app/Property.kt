@@ -38,6 +38,12 @@ data class Property(
 
     var rentBand: String = "FAIR",
     var predictedRent: Double = 0.0,
+
+    // Prediction range + location confidence saved at upload (newer listings
+    // only). Drive the "Below / Within / Above estimated range" badge.
+    var predictedLow: Double? = null,
+    var predictedHigh: Double? = null,
+    var locationConfidence: String? = null,
     var rentRatio: Double = 1.0,
 
     var ownerId: String = "",

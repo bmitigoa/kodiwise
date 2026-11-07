@@ -96,6 +96,7 @@
                         android:text="@string/section_basics" />
 
                     <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilLocation"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"

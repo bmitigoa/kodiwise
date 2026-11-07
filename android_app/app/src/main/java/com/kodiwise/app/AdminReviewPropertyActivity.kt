@@ -88,6 +88,7 @@ class AdminReviewPropertyActivity : AppCompatActivity() {
                 )
                 tvDescription.text = p.description.ifBlank { getString(R.string.detail_no_description) }
                 ListingCard.bindStatus(tvStatus, p.status)
+                ListingCard.bindRange(findViewById(R.id.tvBand), p.price, p.predictedLow, p.predictedHigh, p.locationConfidence)
 
                 val galleryUrls: List<String> =
                     if (p.imageUrls.isNotEmpty()) p.imageUrls
@@ -95,6 +96,8 @@ class AdminReviewPropertyActivity : AppCompatActivity() {
                     else emptyList()
 
                 galleryAdapter.replaceAll(galleryUrls)
+                findViewById<View>(R.id.tvGalleryEmpty).visibility =
+                    if (galleryUrls.isEmpty()) View.VISIBLE else View.GONE
             }
             .addOnFailureListener {
                 Toast.makeText(this, "Failed to load property", Toast.LENGTH_SHORT).show()

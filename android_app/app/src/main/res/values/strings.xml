@@ -139,9 +139,6 @@
     <string name="status_pending">Pending</string>
     <string name="status_approved">Approved</string>
     <string name="status_rejected">Rejected</string>
-    <string name="band_fair">Fair rent</string>
-    <string name="band_low">Below estimate</string>
-    <string name="band_high">Above estimate</string>
     <string name="admin_note_label">Note from the reviewer</string>
     <string name="listing_delete">Delete</string>
     <string name="listing_review">Review</string>
@@ -201,4 +198,11 @@
     <string name="perf_no_results">No results yet.</string>
     <string name="perf_export">Export CSV</string>
     <string name="perf_clear">Clear</string>
+
+    <!-- Listing price vs prediction range -->
+    <string name="range_within">Within estimated range</string>
+    <string name="range_below">Below estimated range</string>
+    <string name="range_above">Above estimated range</string>
+    <string name="error_location_pick">Pick a neighbourhood from the list</string>
+    <string name="tab_home">Home</string>
 </resources>

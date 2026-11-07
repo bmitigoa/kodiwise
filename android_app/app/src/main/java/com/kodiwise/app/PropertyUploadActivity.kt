@@ -62,6 +62,12 @@ class PropertyUploadActivity : AppCompatActivity() {
             this, android.R.layout.simple_dropdown_item_1line, LocationDirectory.getCached(this).toMutableList()
         )
         etLocation.setAdapter(locationAdapter)
+        val tilLocation = findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.tilLocation)
+        etLocation.addTextChangedListener(object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: android.text.Editable?) { tilLocation.error = null }
+        })
         lifecycleScope.launch {
             LocationDirectory.refresh(this@PropertyUploadActivity)
             locationAdapter.clear()
@@ -77,11 +83,21 @@ class PropertyUploadActivity : AppCompatActivity() {
             }
 
             val title = etTitle.text.toString().trim()
-            val locationName = etLocation.text.toString().trim()
+            // Must be one of the /locations neighbourhoods (case-insensitive);
+            // saved with its canonical spelling.
+            val locationName = LocationDirectory.match(
+                etLocation.text.toString(), LocationDirectory.getCached(this)
+            ) ?: ""
             val bedrooms = etBedrooms.text.toString().toIntOrNull()
             val bathrooms = etBathrooms.text.toString().toIntOrNull()
             val quotedRent = etPrice.text.toString().toDoubleOrNull()
             val description = etDescription.text.toString().trim()
+
+            if (locationName.isEmpty()) {
+                tilLocation.error = getString(R.string.error_location_pick)
+                tilLocation.requestFocus()
+                return@setOnClickListener
+            }
 
             if (title.isEmpty() || locationName.isEmpty() ||
                 bedrooms == null || bathrooms == null ||
@@ -115,14 +131,15 @@ class PropertyUploadActivity : AppCompatActivity() {
                         hasGarden = realistic.hasGarden
                     )
 
-                    val predictedRent = withContext(Dispatchers.IO) {
+                    val prediction = withContext(Dispatchers.IO) {
                         val resp = ApiClient.api.predict(req)
                         if (!resp.isSuccessful) {
                             val err = resp.errorBody()?.string()
                             throw RuntimeException("API ${resp.code()}: ${err ?: "unknown error"}")
                         }
-                        resp.body()?.bestValue() ?: 0.0
+                        resp.body()
                     }
+                    val predictedRent = prediction?.bestValue() ?: 0.0
 
                     val bandResult = RentUtils.bandFromQuotedVsPredicted(quotedRent, predictedRent)
                     val rentBand = bandResult.band
@@ -145,6 +162,12 @@ class PropertyUploadActivity : AppCompatActivity() {
                         "createdAt" to FieldValue.serverTimestamp(),
 
                         "predictedRent" to predictedRent,
+                        // Prediction range + confidence: drive the listing's range badge.
+                        "predictedLow" to prediction?.predictedRentLowKes,
+                        "predictedHigh" to prediction?.predictedRentHighKes,
+                        "locationConfidence" to prediction?.locationConfidence,
+                        // Legacy fixed-tolerance band: still written for compatibility,
+                        // no longer displayed.
                         "rentBand" to rentBand,
                         "rentRatio" to rentRatio,
 

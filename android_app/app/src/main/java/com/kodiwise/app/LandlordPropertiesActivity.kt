@@ -6,7 +6,7 @@ import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -115,6 +115,9 @@ class LandlordPropertiesActivity : AppCompatActivity() {
                         status = status,
                         rentBand = band,
                         predictedRent = doc.getDouble("predictedRent") ?: 0.0,
+                        predictedLow = doc.getDouble("predictedLow"),
+                        predictedHigh = doc.getDouble("predictedHigh"),
+                        locationConfidence = doc.getString("locationConfidence"),
                         rentRatio = doc.getDouble("rentRatio") ?: 1.0,
                         ownerId = doc.getString("ownerId") ?: uid,
                         createdAt = doc.getTimestamp("createdAt"),
@@ -141,7 +144,7 @@ class LandlordPropertiesActivity : AppCompatActivity() {
     }
 
     private fun confirmDelete(propertyId: String, title: String) {
-        AlertDialog.Builder(this)
+        MaterialAlertDialogBuilder(this)
             .setTitle("Delete property?")
             .setMessage("This will permanently delete:\n$title")
             .setPositiveButton("Delete") { _, _ -> deleteProperty(propertyId) }

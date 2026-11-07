@@ -53,22 +53,31 @@ object ListingCard {
         }
     }
 
-    /** Quoted rent vs the model's estimate (stored rentBand LOW/FAIR/HIGH). */
-    fun bindBand(tv: TextView, bandRaw: String) {
-        when (bandRaw.ifBlank { "FAIR" }.uppercase()) {
-            "HIGH" -> {
-                tv.setText(R.string.band_high)
+    /**
+     * Quoted rent vs the prediction range saved with the listing. Hidden when
+     * there is no range (older listings) or the location confidence is "none".
+     * The legacy rentBand field is no longer displayed.
+     */
+    fun bindRange(tv: TextView, quoted: Number, low: Double?, high: Double?, locationConfidence: String?) {
+        when (RentRange.position(quoted.toDouble(), low, high, locationConfidence)) {
+            RangePosition.ABOVE -> {
+                tv.setText(R.string.range_above)
                 tint(tv, R.color.kw_error_container, R.color.kw_on_error_container)
             }
-            "LOW" -> {
-                tv.setText(R.string.band_low)
+            RangePosition.BELOW -> {
+                tv.setText(R.string.range_below)
                 tint(tv, R.color.kw_tertiary_container, R.color.kw_on_tertiary_container)
             }
-            else -> {
-                tv.setText(R.string.band_fair)
+            RangePosition.WITHIN -> {
+                tv.setText(R.string.range_within)
                 tint(tv, R.color.kw_primary_container, R.color.kw_on_primary_container)
             }
+            null -> {
+                tv.visibility = View.GONE
+                return
+            }
         }
+        tv.visibility = View.VISIBLE
     }
 
     fun bindChips(beds: Chip, baths: Chip, size: Chip?, bedrooms: Int, bathrooms: Int, sqM: Double?) {

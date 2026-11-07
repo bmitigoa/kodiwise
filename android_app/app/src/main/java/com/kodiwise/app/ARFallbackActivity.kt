@@ -42,7 +42,6 @@ class ARFallbackActivity : AppCompatActivity() {
                     ?: doc.getString("quotedRent")?.toIntOrNull()
                     ?: 0)
 
-                val band = (doc.getString("rentBand") ?: "FAIR").uppercase()
                 val cover = doc.getString("coverImageUrl") ?: ""
 
                 findViewById<TextView>(R.id.tvFallbackTitle).text = title
@@ -50,7 +49,10 @@ class ARFallbackActivity : AppCompatActivity() {
                 findViewById<TextView>(R.id.tvFallbackMeta).text =
                     "${bedrooms} beds • ${bathrooms} baths • KES $quoted"
 
-                ListingCard.bindBand(findViewById(R.id.tvFallbackBand), band)
+                ListingCard.bindRange(
+                    findViewById(R.id.tvFallbackBand), quoted, doc.getDouble("predictedLow"),
+                    doc.getDouble("predictedHigh"), doc.getString("locationConfidence")
+                )
                 ListingCard.bindCover(findViewById<ImageView>(R.id.ivFallbackCover), cover)
             }
             .addOnFailureListener { e ->

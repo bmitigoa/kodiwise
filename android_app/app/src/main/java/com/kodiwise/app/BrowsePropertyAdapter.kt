@@ -42,7 +42,7 @@ class BrowsePropertyAdapter(
         h.tvPrice.text = ListingCard.priceText(ctx, p.price)
         // Browse only lists approved listings, so the status badge is hidden.
         h.tvStatus.visibility = View.GONE
-        ListingCard.bindBand(h.tvBand, p.rentBand)
+        ListingCard.bindRange(h.tvBand, p.price, p.predictedLow, p.predictedHigh, p.locationConfidence)
         ListingCard.bindChips(h.chipBeds, h.chipBaths, h.chipSize, p.bedrooms, p.bathrooms, p.sqM)
         ListingCard.bindCover(h.ivCover, p.coverImageUrl)
 
@@ -72,14 +72,12 @@ class BrowsePropertyAdapter(
             val filtered = allItems.filter { p ->
                 val title = p.title.lowercase()
                 val location = p.location.lowercase()
-                val band = p.rentBand.lowercase()
                 val price = p.price.toString().lowercase()
                 val beds = p.bedrooms.toString().lowercase()
                 val baths = p.bathrooms.toString().lowercase()
 
                 title.contains(q) ||
                         location.contains(q) ||
-                        band.contains(q) ||
                         price.contains(q) ||
                         beds.contains(q) ||
                         baths.contains(q)

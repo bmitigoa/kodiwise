@@ -92,7 +92,6 @@ class PropertyDetailActivity : AppCompatActivity() {
                             ?: 0
                         )
 
-                val band = (doc.getString("rentBand") ?: "FAIR").uppercase()
                 val cover = doc.getString("coverImageUrl") ?: ""
 
                 ListingCard.bindStatus(tvStatus, statusRaw)
@@ -104,7 +103,10 @@ class PropertyDetailActivity : AppCompatActivity() {
                     findViewById(R.id.chipBeds), findViewById(R.id.chipBaths), findViewById(R.id.chipSize),
                     bedrooms, bathrooms, doc.getDouble("sq_m")
                 )
-                ListingCard.bindBand(tvBand, band)
+                ListingCard.bindRange(
+                    tvBand, quoted, doc.getDouble("predictedLow"), doc.getDouble("predictedHigh"),
+                    doc.getString("locationConfidence")
+                )
                 tvDesc.text = desc.ifBlank { getString(R.string.detail_no_description) }
 
                 ListingCard.bindCover(ivCover, cover)

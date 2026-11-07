@@ -41,7 +41,7 @@ class PendingApprovalAdapter(
         holder.tvLocation.text = item.location.ifBlank { "-" }
         holder.tvPrice.text = ListingCard.priceText(ctx, item.price)
         ListingCard.bindStatus(holder.tvStatus, item.status)
-        ListingCard.bindBand(holder.tvBand, item.rentBand)
+        ListingCard.bindRange(holder.tvBand, item.price, item.predictedLow, item.predictedHigh, item.locationConfidence)
         ListingCard.bindChips(holder.chipBeds, holder.chipBaths, holder.chipSize, item.bedrooms, item.bathrooms, item.sqM)
 
         val imageUrl = when {

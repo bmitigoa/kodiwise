@@ -26,6 +26,17 @@ object LocationDirectory {
         "Westlands", "Zimmerman"
     )
 
+    /**
+     * The canonical neighbourhood name for [input] if it is one of [known]
+     * (case- and surrounding-whitespace-insensitive), else null. Used to make
+     * Add listing accept only /locations neighbourhoods.
+     */
+    fun match(input: String, known: List<String>): String? {
+        val key = input.trim()
+        if (key.isEmpty()) return null
+        return known.firstOrNull { it.equals(key, ignoreCase = true) }
+    }
+
     fun getCached(context: Context): List<String> {
         val prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
         val stored = prefs.getStringSet(KEY_LOCATIONS, null)

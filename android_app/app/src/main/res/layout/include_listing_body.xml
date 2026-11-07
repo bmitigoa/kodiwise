@@ -75,13 +75,12 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/tvPrice"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:textAppearance="?attr/textAppearanceTitleLarge"
             android:textColor="?attr/colorPrimary"
             tools:text="KES 55,000 / month" />
@@ -91,6 +90,7 @@
             style="@style/Widget.KodiWise.Badge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
             tools:text="Fair rent" />
     </LinearLayout>
 
