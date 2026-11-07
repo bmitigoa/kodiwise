@@ -246,19 +246,11 @@
         <item name="titleTextAppearance">@style/TextAppearance.KodiWise.TitleLarge</item>
         <item name="subtitleTextAppearance">@style/TextAppearance.KodiWise.BodyMedium</item>
     </style>
-    <!-- Dashboard bottom bar: every tab opens another screen and the dashboard
-         is "home", so no tab is drawn as selected (no indicator, one colour). -->
+    <!-- Dashboard bottom bar: Home (the dashboard) is the selected tab -->
     <style name="Widget.KodiWise.BottomNav" parent="Widget.Material3.BottomNavigationView">
         <item name="itemTextAppearanceActive">@style/TextAppearance.KodiWise.LabelMedium</item>
         <item name="itemTextAppearanceInactive">@style/TextAppearance.KodiWise.LabelMedium</item>
-        <item name="itemTextAppearanceActiveBoldEnabled">false</item>
-        <item name="itemIconTint">@color/kw_on_surface_variant</item>
-        <item name="itemTextColor">@color/kw_on_surface_variant</item>
-        <item name="itemActiveIndicatorStyle">@style/Widget.KodiWise.BottomNav.NoIndicator</item>
         <item name="backgroundTint">@color/kw_surface_container</item>
-    </style>
-    <style name="Widget.KodiWise.BottomNav.NoIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
-        <item name="android:color">@android:color/transparent</item>
     </style>
     <style name="Widget.KodiWise.CheckBox" parent="Widget.Material3.CompoundButton.CheckBox">
         <item name="android:minHeight">48dp</item>

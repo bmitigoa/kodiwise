@@ -49,17 +49,19 @@ object DashboardChrome {
         }
 
         val nav = activity.findViewById<BottomNavigationView>(R.id.bottomNav) ?: return
-        // Tabs open other screens; the dashboard itself is "home", so no tab
-        // is shown as the current one.
-        nav.menu.setGroupCheckable(0, false, true)
+        // The dashboard is the Home tab. Every other tab opens its screen (or
+        // the profile sheet) without changing the selection, so Home stays
+        // highlighted whenever the dashboard is showing.
+        nav.selectedItemId = R.id.nav_home
         nav.setOnItemSelectedListener { item ->
-            if (item.itemId == R.id.nav_profile) {
-                showProfile(activity, email, roleLabel, logoutButton)
-            } else {
-                tabActions[item.itemId]?.invoke()
+            when (item.itemId) {
+                R.id.nav_home -> return@setOnItemSelectedListener true
+                R.id.nav_profile -> showProfile(activity, email, roleLabel, logoutButton)
+                else -> tabActions[item.itemId]?.invoke()
             }
             false
         }
+        nav.setOnItemReselectedListener { /* already on Home */ }
     }
 
     private fun showProfile(activity: AppCompatActivity, email: String?, @StringRes roleLabel: Int, logoutButton: View) {
