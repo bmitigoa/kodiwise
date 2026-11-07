@@ -207,4 +207,8 @@
     <string name="tab_home">Home</string>
     <string name="ar_fallback_unsupported">AR isn’t supported on this phone. Here are the listing details.</string>
     <string name="ar_fallback_camera">AR needs camera access. Here are the listing details.</string>
+    <string name="ar_fallback_unknown">We couldn’t check AR support on this phone. Here are the listing details.</string>
+    <string name="ar_try_anyway">Try AR anyway</string>
+    <string name="ar_try_checking">Checking AR…</string>
+    <string name="ar_try_failed">AR still isn’t available on this phone.</string>
 </resources>

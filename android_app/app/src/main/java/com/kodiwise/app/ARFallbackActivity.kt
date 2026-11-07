@@ -18,9 +18,14 @@ class ARFallbackActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ar_fallback)
         ScreenHeader.bind(this, getString(R.string.title_listing))
+        val note = findViewById<TextView>(R.id.tvFallbackNote)
         when (intent.getStringExtra(ArLauncher.EXTRA_FALLBACK_REASON)) {
-            ArLauncher.REASON_UNSUPPORTED -> findViewById<TextView>(R.id.tvFallbackNote).setText(R.string.ar_fallback_unsupported)
-            ArLauncher.REASON_CAMERA_DENIED -> findViewById<TextView>(R.id.tvFallbackNote).setText(R.string.ar_fallback_camera)
+            ArLauncher.REASON_UNSUPPORTED -> note.setText(R.string.ar_fallback_unsupported)
+            ArLauncher.REASON_CAMERA_DENIED -> note.setText(R.string.ar_fallback_camera)
+            ArLauncher.REASON_UNKNOWN -> {
+                note.setText(R.string.ar_fallback_unknown)
+                bindTryArAnyway()
+            }
         }
 
         propertyId = intent.getStringExtra("PROPERTY_ID") ?: ""
@@ -31,6 +36,26 @@ class ARFallbackActivity : AppCompatActivity() {
         }
 
         loadProperty()
+    }
+
+    /** Only for "unknown": re-run the ARCore check; open AR if it now passes. */
+    private fun bindTryArAnyway() {
+        val btn = findViewById<com.google.android.material.button.MaterialButton>(R.id.btnTryArAnyway)
+        btn.visibility = android.view.View.VISIBLE
+        btn.setOnClickListener {
+            btn.isEnabled = false
+            btn.setText(R.string.ar_try_checking)
+            ArLauncher.check(this, { reason ->
+                if (reason == null) {
+                    ArLauncher.openAr(this, propertyId)
+                    finish()
+                } else {
+                    btn.isEnabled = true
+                    btn.setText(R.string.ar_try_anyway)
+                    Toast.makeText(this, R.string.ar_try_failed, Toast.LENGTH_SHORT).show()
+                }
+            })
+        }
     }
 
     private fun loadProperty() {

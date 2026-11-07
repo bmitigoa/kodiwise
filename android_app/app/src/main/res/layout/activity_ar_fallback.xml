@@ -42,6 +42,18 @@
             android:textAppearance="?attr/textAppearanceBodyMedium"
             android:textColor="?attr/colorOnSurfaceVariant" />
 
+        <!-- Shown only when ARCore couldn't determine support ("unknown") -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnTryArAnyway"
+            style="@style/Widget.KodiWise.Button.Tonal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="12dp"
+            android:text="@string/ar_try_anyway"
+            android:visibility="gone"
+            app:icon="@drawable/ic_view_in_ar" />
+
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
