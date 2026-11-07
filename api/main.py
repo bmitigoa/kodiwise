@@ -16,7 +16,7 @@ from fastapi import FastAPI, HTTPException
 from api.predictor import Predictor
 from api.schemas import HealthResponse, LocationsResponse, ModelVersionResponse, PredictRequest, PredictResponse
 
-PRODUCTION_VERSION = "v20261106-appD"
+PRODUCTION_VERSION = "v20261107-appD"
 predictor = Predictor(PRODUCTION_VERSION)
 
 

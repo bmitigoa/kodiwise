@@ -43,7 +43,7 @@ def test_predict_minimal_input_returns_sane_range(client):
     body = resp.json()
     assert body["predicted_rent_kes"] > 0
     assert body["predicted_rent_low_kes"] <= body["predicted_rent_kes"] <= body["predicted_rent_high_kes"]
-    assert body["model_version"] == "v20261106-appD"
+    assert body["model_version"] == "v20261107-appD"
     assert body["location_recognised"] is True
     assert "estimate" in body["note"].lower()
     # No LOW/FAIR/HIGH verdict should ever be in the response.
@@ -198,7 +198,7 @@ def test_predict_blank_location_returns_422(client):
 @pytest.mark.parametrize("location,expected", [
     ("Kilimani", "high"),       # 68 training rows
     ("Langata", "low"),         # 6 training rows
-    ("Pipeline", "none"),       # 1 training row
+    ("Pipeline", "none"),       # 0 rows since the Nakuru listing was dropped
     ("Nowhereville", "none"),   # unrecognised -> global fallback, count 0
 ])
 def test_predict_reports_location_confidence(client, location, expected):
