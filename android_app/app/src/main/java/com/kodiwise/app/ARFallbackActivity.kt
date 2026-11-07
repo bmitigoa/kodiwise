@@ -17,6 +17,11 @@ class ARFallbackActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ar_fallback)
+        ScreenHeader.bind(this, getString(R.string.title_listing))
+        when (intent.getStringExtra(ArLauncher.EXTRA_FALLBACK_REASON)) {
+            ArLauncher.REASON_UNSUPPORTED -> findViewById<TextView>(R.id.tvFallbackNote).setText(R.string.ar_fallback_unsupported)
+            ArLauncher.REASON_CAMERA_DENIED -> findViewById<TextView>(R.id.tvFallbackNote).setText(R.string.ar_fallback_camera)
+        }
 
         propertyId = intent.getStringExtra("PROPERTY_ID") ?: ""
         if (propertyId.isBlank()) {

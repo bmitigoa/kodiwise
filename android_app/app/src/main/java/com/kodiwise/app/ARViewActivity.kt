@@ -315,7 +315,8 @@ class ARViewActivity : AppCompatActivity(), GLSurfaceView.Renderer {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 onResume()
             } else {
-                Toast.makeText(this, "Camera permission is required for AR", Toast.LENGTH_LONG).show()
+                // No camera, no AR: show the listing details instead of closing.
+                ArLauncher.openFallback(this, propertyId, ArLauncher.REASON_CAMERA_DENIED)
                 finish()
             }
         }

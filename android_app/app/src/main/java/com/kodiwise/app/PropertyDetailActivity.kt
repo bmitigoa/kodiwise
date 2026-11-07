@@ -63,11 +63,8 @@ class PropertyDetailActivity : AppCompatActivity() {
         }
         rvGallery.adapter = mediaAdapter
 
-        btnViewAr.setOnClickListener {
-            val i = Intent(this, ARViewActivity::class.java)
-            i.putExtra("PROPERTY_ID", propertyId)
-            startActivity(i)
-        }
+        // AR view when ARCore is supported/installable, otherwise the fallback.
+        btnViewAr.setOnClickListener { ArLauncher.open(this, propertyId) }
 
         loadProperty()
         loadGallery()

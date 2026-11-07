@@ -205,4 +205,6 @@
     <string name="range_above">Above estimated range</string>
     <string name="error_location_pick">Pick a neighbourhood from the list</string>
     <string name="tab_home">Home</string>
+    <string name="ar_fallback_unsupported">AR isn’t supported on this phone. Here are the listing details.</string>
+    <string name="ar_fallback_camera">AR needs camera access. Here are the listing details.</string>
 </resources>

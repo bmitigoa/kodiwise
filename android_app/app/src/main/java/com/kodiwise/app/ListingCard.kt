@@ -97,9 +97,11 @@ object ListingCard {
     /** Loads the cover, or shows the branded placeholder when there is none. */
     fun bindCover(iv: ImageView, url: String) {
         if (url.isNotBlank()) {
+            iv.imageTintList = null // never tint real photos
             iv.scaleType = ImageView.ScaleType.CENTER_CROP
             iv.load(url) { crossfade(true) }
         } else {
+            iv.imageTintList = ContextCompat.getColorStateList(iv.context, R.color.kw_on_primary_container)
             iv.scaleType = ImageView.ScaleType.CENTER
             iv.setImageResource(R.drawable.ic_home)
         }
