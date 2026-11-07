@@ -140,7 +140,7 @@
     "test_range_width_p75_kes": 72825.32333944763
   },
   "deploy_comparison": {
-    "rule": "project rules #4: on the same evaluation rows, averaged over 5 training seeds, mean test MAPE not worse by > 0.5 pp and mean CV R2 not lower by > 0.01",
+    "rule": "Deploy rule: on the same evaluation rows, averaged over 5 training seeds, mean test MAPE not worse by > 0.5 pp and mean CV R2 not lower by > 0.01",
     "current_version": "v20261106-appD",
     "seeds": [
       42,

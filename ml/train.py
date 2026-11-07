@@ -2,11 +2,11 @@
 
 Runs two experiments side by side (per Baraka's instructions):
   Run A - paper reproduction: raw 580-row dataset, no cleaning, the
-          paper's exact leak-free feature set (project rules check target).
+          paper's exact leak-free feature set (reproduction check target).
   Run B - KodiWise baseline: cleaned dataset, dead columns dropped.
 
 Both use the same split seed (42) and LightGBM hyperparameters
-(project rules #3). Only Run B is saved as a versioned, deployable model
+(project reproducibility rules). Only Run B is saved as a versioned, deployable model
 (ml/models/v{date}/) -- Run A exists purely to validate the pipeline
 against the published paper.
 
@@ -69,7 +69,7 @@ def load_version_eval(version: str, fs: FeatureSet) -> tuple[pd.DataFrame, dict]
 
 
 def deploy_comparison(candidate_df: pd.DataFrame, fs: FeatureSet, current_version: str) -> dict:
-    """project rules #4 gate on the same evaluation rows. If the current
+    """Deploy-rule gate on the same evaluation rows. If the current
     version has no recorded rows/snapshot, the gate cannot be evaluated and
     fails closed (deploying then needs Baraka's explicit decision)."""
     loaded = load_version_eval(current_version, fs)
@@ -125,7 +125,7 @@ def run_experiment(
         version = version or date.today().strftime("v%Y%m%d")
         out_dir = MODELS_DIR / version
         if (out_dir / "model.joblib").exists():
-            # Versions are immutable (project rules #4): a deployed model must
+            # Versions are immutable (deploy rule): a deployed model must
             # stay reproducible from its own folder. Bump the version instead.
             raise FileExistsError(f"{out_dir} already holds a model; refusing to overwrite")
         out_dir.mkdir(parents=True, exist_ok=True)

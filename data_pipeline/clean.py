@@ -1,6 +1,6 @@
 """Leak-free cleaning pipeline for the KodiWise baseline dataset.
 
-Applies the project rules section 10 rules, in order, to the raw 580-row
+Applies the project's data-cleaning rules, in order, to the raw 580-row
 enriched dataset copied from rent_ml. Logs row counts before/after each
 rule and writes every dropped row (title, price, neighbourhood, reason)
 to data/processed/dropped_rows.csv for manual review.
@@ -20,7 +20,7 @@ CLEAN_PATH = Path("data/processed/nairobi_rentals_clean.csv")
 DROPPED_PATH = Path("data/processed/dropped_rows.csv")
 LOG_PATH = Path("data/processed/clean_log.json")
 
-# Scope rule: Nairobi County only (paper scope; project rules Phase 3 cleaning
+# Scope rule: Nairobi County only (paper scope; listing-cleaning
 # rules). The platform's own `location` field is "<area>, <sub-area>" --
 # e.g. "Nakuru, Nakuru Town East" -- so a first segment naming one of
 # Kenya's other 46 counties means the listing is outside Nairobi, whatever

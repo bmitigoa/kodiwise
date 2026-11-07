@@ -161,7 +161,7 @@ def prediction_interval_widths(pipe, df: pd.DataFrame, q10_log: float, q90_log: 
 
 
 # ---------------------------------------------------------------------------
-# Deploy comparison (project rules #4): candidate vs current on the same rows.
+# Deploy comparison (deploy rule): candidate vs current on the same rows.
 # ---------------------------------------------------------------------------
 
 DEPLOY_MAX_MAPE_WORSE_PP = 0.5
@@ -273,7 +273,7 @@ def compare_on_same_rows(
     paired_cv_r2 = [c["cv_r2_mean"] - o["cv_r2_mean"] for c, o in zip(cand["per_seed"], cur["per_seed"])]
 
     return {
-        "rule": (f"project rules #4: on the same evaluation rows, averaged over {len(seeds)} training seeds, "
+        "rule": (f"Deploy rule: on the same evaluation rows, averaged over {len(seeds)} training seeds, "
                  f"mean test MAPE not worse by > {DEPLOY_MAX_MAPE_WORSE_PP} pp and mean CV R2 not lower "
                  f"by > {DEPLOY_MAX_CV_R2_DROP}"),
         "current_version": current_version,

@@ -18,8 +18,8 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         // Points at the deployed KodiWise API (kodiwise-api, Run D / Cloud Run,
-        // project rent-prediction-ar, region africa-south1). Set KODIWISE_API_URL
-        // in local.properties or gradle.properties to override (e.g. for a local
+        // project rent-prediction-ar, region africa-south1). Set the Gradle property
+        // KODIWISE_API_URL (~/.gradle/gradle.properties or -P) to override (e.g. for a local
         // `uvicorn api.main:app` dev server).
         buildConfigField(
             "String",

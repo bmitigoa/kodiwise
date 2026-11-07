@@ -26,10 +26,10 @@ docs/
 .ipynb_checkpoints/
 .pytest_cache/
 
-# Repo-root config irrelevant to the API image (Firebase/Firestore
-# config, the root dev requirements.txt -- the image uses
+# Repo-root config and docs irrelevant to the API image (Firebase/Firestore
+# config, Markdown docs, the root dev requirements.txt -- the image uses
 # api/requirements.txt, a slim runtime-only subset).
-project rules
+*.md
 firebase.json
 firestore.rules
 firestore.indexes.json

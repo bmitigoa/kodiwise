@@ -3,7 +3,7 @@
 Imported by ml/train.py, ml/evaluate.py, and (in a later phase) api/.
 Ports the leak-free feature set from rent_ml/reviewer_rerun_leakfree.py.
 
-Ground rule (project rules #1): no feature may be derived from price_kes
+Ground rule (no target leakage): no feature may be derived from price_kes
 except the smoothed/fallback location statistics below, which are always
 computed from the training split only.
 """
@@ -38,7 +38,7 @@ PAPER_BINARY = [
     "has_borehole", "has_generator", "has_cctv", "has_garden", "has_play_area",
     "has_dsq", "is_bedsitter", "is_apartment", "is_house",
 ]
-# KodiWise baseline drops is_furnished_page: project rules #10.3 dead column
+# KodiWise baseline drops is_furnished_page: dead column (cleaning rules)
 # (~99% constant at 1.0).
 KODIWISE_BINARY = [c for c in PAPER_BINARY if c != "is_furnished_page"]
 
@@ -47,7 +47,7 @@ PAPER_CATEGORICAL = [
     "property_type_std", "estate_name", "source_host",
 ]
 # KodiWise baseline drops property_type_std (100% "unknown") and
-# estate_name (100% empty): project rules #10.3 dead columns.
+# estate_name (100% empty): dead columns (cleaning rules).
 KODIWISE_CATEGORICAL = [c for c in PAPER_CATEGORICAL if c not in ("property_type_std", "estate_name")]
 
 # Features that must never be used: derived from price_kes (target leakage).
