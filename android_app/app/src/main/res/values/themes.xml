@@ -1,9 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+
     <style name="Base.Theme.KodiWise" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/kw_primary</item>
+        <item name="colorOnPrimary">@color/kw_on_primary</item>
+        <item name="colorPrimaryContainer">@color/kw_primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/kw_on_primary_container</item>
+        <item name="colorSecondary">@color/kw_secondary</item>
+        <item name="colorOnSecondary">@color/kw_on_secondary</item>
+        <item name="colorSecondaryContainer">@color/kw_secondary_container</item>
+        <item name="colorOnSecondaryContainer">@color/kw_on_secondary_container</item>
+        <item name="colorTertiary">@color/kw_tertiary</item>
+        <item name="colorOnTertiary">@color/kw_on_tertiary</item>
+        <item name="colorTertiaryContainer">@color/kw_tertiary_container</item>
+        <item name="colorOnTertiaryContainer">@color/kw_on_tertiary_container</item>
+        <item name="colorError">@color/kw_error</item>
+        <item name="colorOnError">@color/kw_on_error</item>
+        <item name="colorErrorContainer">@color/kw_error_container</item>
+        <item name="colorOnErrorContainer">@color/kw_on_error_container</item>
+        <item name="android:colorBackground">@color/kw_background</item>
+        <item name="colorOnBackground">@color/kw_on_background</item>
+        <item name="colorSurface">@color/kw_surface</item>
+        <item name="colorOnSurface">@color/kw_on_surface</item>
+        <item name="colorSurfaceVariant">@color/kw_surface_variant</item>
+        <item name="colorOnSurfaceVariant">@color/kw_on_surface_variant</item>
+        <item name="colorOutline">@color/kw_outline</item>
+        <item name="colorOutlineVariant">@color/kw_outline_variant</item>
+        <item name="colorSurfaceContainerLowest">@color/kw_surface_container_lowest</item>
+        <item name="colorSurfaceContainerLow">@color/kw_surface_container_low</item>
+        <item name="colorSurfaceContainer">@color/kw_surface_container</item>
+        <item name="colorSurfaceContainerHigh">@color/kw_surface_container_high</item>
+        <item name="colorSurfaceContainerHighest">@color/kw_surface_container_highest</item>
+        <item name="colorSurfaceDim">@color/kw_surface_dim</item>
+        <item name="colorSurfaceBright">@color/kw_surface_bright</item>
+        <item name="colorSurfaceInverse">@color/kw_inverse_surface</item>
+        <item name="colorOnSurfaceInverse">@color/kw_inverse_on_surface</item>
+        <item name="colorPrimaryInverse">@color/kw_inverse_primary</item>
+
+        <item name="android:windowBackground">@color/kw_background</item>
+        <item name="android:statusBarColor">@color/kw_background</item>
+        <item name="android:navigationBarColor">@color/kw_background</item>
+
+        <!-- Type: Inter for body, Poppins for headings -->
+        <!-- Body font comes from the default TextView text appearance (Inter);
+             a theme-wide fontFamily would override heading appearances. -->
+        <item name="android:textViewStyle">@style/Widget.KodiWise.TextView</item>
+        <item name="textAppearanceDisplaySmall">@style/TextAppearance.KodiWise.DisplaySmall</item>
+        <item name="textAppearanceHeadlineLarge">@style/TextAppearance.KodiWise.HeadlineLarge</item>
+        <item name="textAppearanceHeadlineMedium">@style/TextAppearance.KodiWise.HeadlineMedium</item>
+        <item name="textAppearanceHeadlineSmall">@style/TextAppearance.KodiWise.HeadlineSmall</item>
+        <item name="textAppearanceTitleLarge">@style/TextAppearance.KodiWise.TitleLarge</item>
+        <item name="textAppearanceTitleMedium">@style/TextAppearance.KodiWise.TitleMedium</item>
+        <item name="textAppearanceTitleSmall">@style/TextAppearance.KodiWise.TitleSmall</item>
+        <item name="textAppearanceBodyLarge">@style/TextAppearance.KodiWise.BodyLarge</item>
+        <item name="textAppearanceBodyMedium">@style/TextAppearance.KodiWise.BodyMedium</item>
+        <item name="textAppearanceBodySmall">@style/TextAppearance.KodiWise.BodySmall</item>
+        <item name="textAppearanceLabelLarge">@style/TextAppearance.KodiWise.LabelLarge</item>
+        <item name="textAppearanceLabelMedium">@style/TextAppearance.KodiWise.LabelMedium</item>
+        <item name="textAppearanceLabelSmall">@style/TextAppearance.KodiWise.LabelSmall</item>
+
+        <!-- Shapes: 16dp cards, 12dp buttons/inputs -->
+        <item name="shapeAppearanceCornerMedium">@style/ShapeAppearance.KodiWise.Medium</item>
+        <item name="shapeAppearanceCornerLarge">@style/ShapeAppearance.KodiWise.Large</item>
+        <item name="materialButtonStyle">@style/Widget.KodiWise.Button</item>
+        <item name="materialButtonOutlinedStyle">@style/Widget.KodiWise.Button.Outlined</item>
+        <item name="borderlessButtonStyle">@style/Widget.KodiWise.Button.Text</item>
+        <item name="materialCardViewStyle">@style/Widget.KodiWise.Card</item>
+        <item name="textInputStyle">@style/Widget.KodiWise.TextInput</item>
+        <item name="chipStyle">@style/Widget.KodiWise.Chip</item>
+        <item name="toolbarStyle">@style/Widget.KodiWise.Toolbar</item>
+        <item name="bottomNavigationStyle">@style/Widget.KodiWise.BottomNav</item>
+        <item name="checkboxStyle">@style/Widget.KodiWise.CheckBox</item>
+
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>
     </style>
 
     <style name="Theme.KodiWise" parent="Base.Theme.KodiWise" />
+
+    <!-- Splash (androidx.core:core-splashscreen), used by LauncherActivity only -->
+    <style name="Theme.KodiWise.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/kw_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash</item>
+        <item name="postSplashScreenTheme">@style/Theme.KodiWise</item>
+    </style>
+
+    <!-- ===== Text appearances ===== -->
+    <style name="TextAppearance.KodiWise.DisplaySmall" parent="TextAppearance.Material3.DisplaySmall">
+        <item name="fontFamily">@font/poppins_semibold</item>
+        <item name="android:fontFamily">@font/poppins_semibold</item>
+    </style>
+    <style name="TextAppearance.KodiWise.HeadlineLarge" parent="TextAppearance.Material3.HeadlineLarge">
+        <item name="fontFamily">@font/poppins_semibold</item>
+        <item name="android:fontFamily">@font/poppins_semibold</item>
+    </style>
+    <style name="TextAppearance.KodiWise.HeadlineMedium" parent="TextAppearance.Material3.HeadlineMedium">
+        <item name="fontFamily">@font/poppins_semibold</item>
+        <item name="android:fontFamily">@font/poppins_semibold</item>
+    </style>
+    <style name="TextAppearance.KodiWise.HeadlineSmall" parent="TextAppearance.Material3.HeadlineSmall">
+        <item name="fontFamily">@font/poppins_semibold</item>
+        <item name="android:fontFamily">@font/poppins_semibold</item>
+    </style>
+    <style name="TextAppearance.KodiWise.TitleLarge" parent="TextAppearance.Material3.TitleLarge">
+        <item name="fontFamily">@font/poppins_semibold</item>
+        <item name="android:fontFamily">@font/poppins_semibold</item>
+    </style>
+    <style name="TextAppearance.KodiWise.TitleMedium" parent="TextAppearance.Material3.TitleMedium">
+        <item name="fontFamily">@font/poppins_medium</item>
+        <item name="android:fontFamily">@font/poppins_medium</item>
+    </style>
+    <style name="TextAppearance.KodiWise.TitleSmall" parent="TextAppearance.Material3.TitleSmall">
+        <item name="fontFamily">@font/inter_medium</item>
+        <item name="android:fontFamily">@font/inter_medium</item>
+    </style>
+    <style name="TextAppearance.KodiWise.BodyLarge" parent="TextAppearance.Material3.BodyLarge">
+        <!-- Body font comes from the default TextView text appearance (Inter);
+             a theme-wide fontFamily would override heading appearances. -->
+        <item name="android:textViewStyle">@style/Widget.KodiWise.TextView</item>
+    </style>
+    <style name="TextAppearance.KodiWise.BodyMedium" parent="TextAppearance.Material3.BodyMedium">
+        <!-- Body font comes from the default TextView text appearance (Inter);
+             a theme-wide fontFamily would override heading appearances. -->
+        <item name="android:textViewStyle">@style/Widget.KodiWise.TextView</item>
+    </style>
+    <style name="TextAppearance.KodiWise.BodySmall" parent="TextAppearance.Material3.BodySmall">
+        <!-- Body font comes from the default TextView text appearance (Inter);
+             a theme-wide fontFamily would override heading appearances. -->
+        <item name="android:textViewStyle">@style/Widget.KodiWise.TextView</item>
+    </style>
+    <style name="TextAppearance.KodiWise.LabelLarge" parent="TextAppearance.Material3.LabelLarge">
+        <item name="fontFamily">@font/inter_medium</item>
+        <item name="android:fontFamily">@font/inter_medium</item>
+    </style>
+    <style name="TextAppearance.KodiWise.LabelMedium" parent="TextAppearance.Material3.LabelMedium">
+        <item name="fontFamily">@font/inter_medium</item>
+        <item name="android:fontFamily">@font/inter_medium</item>
+    </style>
+    <style name="TextAppearance.KodiWise.LabelSmall" parent="TextAppearance.Material3.LabelSmall">
+        <item name="fontFamily">@font/inter_medium</item>
+        <item name="android:fontFamily">@font/inter_medium</item>
+    </style>
+    <style name="TextAppearance.KodiWise.Hero" parent="TextAppearance.Material3.DisplaySmall">
+        <item name="fontFamily">@font/poppins_semibold</item>
+        <item name="android:fontFamily">@font/poppins_semibold</item>
+        <item name="android:textSize">34sp</item>
+    </style>
+
+    <!-- ===== Shapes ===== -->
+    <style name="ShapeAppearance.KodiWise.Medium" parent="ShapeAppearance.Material3.Corner.Medium">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">12dp</item>
+    </style>
+    <style name="ShapeAppearance.KodiWise.Large" parent="ShapeAppearance.Material3.Corner.Large">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
+    </style>
+
+    <!-- ===== Components ===== -->
+    <style name="Widget.KodiWise.Button" parent="Widget.Material3.Button">
+        <item name="shapeAppearance">@style/ShapeAppearance.KodiWise.Medium</item>
+        <item name="android:minHeight">52dp</item>
+        <item name="android:textAppearance">@style/TextAppearance.KodiWise.LabelLarge</item>
+    </style>
+    <style name="Widget.KodiWise.Button.Tonal" parent="Widget.Material3.Button.TonalButton">
+        <item name="shapeAppearance">@style/ShapeAppearance.KodiWise.Medium</item>
+        <item name="android:minHeight">52dp</item>
+        <item name="android:textAppearance">@style/TextAppearance.KodiWise.LabelLarge</item>
+    </style>
+    <style name="Widget.KodiWise.Button.Outlined" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="shapeAppearance">@style/ShapeAppearance.KodiWise.Medium</item>
+        <item name="android:minHeight">52dp</item>
+        <item name="android:textAppearance">@style/TextAppearance.KodiWise.LabelLarge</item>
+    </style>
+    <style name="Widget.KodiWise.Button.Text" parent="Widget.Material3.Button.TextButton">
+        <item name="shapeAppearance">@style/ShapeAppearance.KodiWise.Medium</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:textAppearance">@style/TextAppearance.KodiWise.LabelLarge</item>
+    </style>
+
+    <!-- Round icon buttons (steppers, AR controls): 48dp touch target -->
+    <style name="Widget.KodiWise.Button.Icon" parent="Widget.Material3.Button.IconButton.Filled.Tonal">
+        <item name="android:minWidth">48dp</item>
+        <item name="android:minHeight">48dp</item>
+    </style>
+
+    <!-- Flat card: white (light) / raised green surface (dark) with a hairline outline -->
+    <style name="Widget.KodiWise.Card" parent="Widget.Material3.CardView.Outlined">
+        <item name="cardCornerRadius">16dp</item>
+        <item name="cardBackgroundColor">@color/kw_card</item>
+        <item name="strokeColor">@color/kw_card_stroke</item>
+        <item name="strokeWidth">1dp</item>
+    </style>
+    <style name="Widget.KodiWise.Card.Filled" parent="Widget.Material3.CardView.Filled">
+        <item name="cardCornerRadius">16dp</item>
+    </style>
+    <style name="Widget.KodiWise.Card.Outlined" parent="Widget.Material3.CardView.Outlined">
+        <item name="cardCornerRadius">16dp</item>
+    </style>
+
+    <style name="Widget.KodiWise.TextInput" parent="Widget.Material3.TextInputLayout.FilledBox">
+        <item name="boxCornerRadiusTopStart">12dp</item>
+        <item name="boxCornerRadiusTopEnd">12dp</item>
+        <item name="boxCornerRadiusBottomStart">12dp</item>
+        <item name="boxCornerRadiusBottomEnd">12dp</item>
+        <item name="boxStrokeWidth">0dp</item>
+        <item name="boxStrokeWidthFocused">2dp</item>
+        <item name="boxBackgroundColor">@color/kw_surface_container_high</item>
+    </style>
+    <style name="Widget.KodiWise.TextInput.Dropdown" parent="Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu">
+        <item name="boxCornerRadiusTopStart">12dp</item>
+        <item name="boxCornerRadiusTopEnd">12dp</item>
+        <item name="boxCornerRadiusBottomStart">12dp</item>
+        <item name="boxCornerRadiusBottomEnd">12dp</item>
+        <item name="boxStrokeWidth">0dp</item>
+        <item name="boxStrokeWidthFocused">2dp</item>
+        <item name="boxBackgroundColor">@color/kw_surface_container_high</item>
+    </style>
+
+    <style name="Widget.KodiWise.Chip" parent="Widget.Material3.Chip.Filter" />
+    <!-- Read-only info chips (beds/baths/size, confidence hint) -->
+    <style name="Widget.KodiWise.Chip.Info" parent="Widget.Material3.Chip.Assist">
+        <item name="android:clickable">false</item>
+        <item name="android:focusable">false</item>
+        <item name="ensureMinTouchTargetSize">false</item>
+        <item name="android:textAppearance">@style/TextAppearance.KodiWise.LabelMedium</item>
+    </style>
+    <style name="Widget.KodiWise.Toolbar" parent="Widget.Material3.Toolbar">
+        <item name="titleTextAppearance">@style/TextAppearance.KodiWise.TitleLarge</item>
+        <item name="subtitleTextAppearance">@style/TextAppearance.KodiWise.BodyMedium</item>
+    </style>
+    <style name="Widget.KodiWise.BottomNav" parent="Widget.Material3.BottomNavigationView">
+        <item name="itemTextAppearanceActive">@style/TextAppearance.KodiWise.LabelMedium</item>
+        <item name="itemTextAppearanceInactive">@style/TextAppearance.KodiWise.LabelMedium</item>
+    </style>
+    <style name="Widget.KodiWise.CheckBox" parent="Widget.Material3.CompoundButton.CheckBox">
+        <item name="android:minHeight">48dp</item>
+    </style>
+    <style name="Widget.KodiWise.TextView" parent="Widget.AppCompat.TextView">
+        <item name="android:textAppearance">@style/TextAppearance.KodiWise.BodyMedium</item>
+    </style>
+    <!-- Register role choice: RadioButton drawn as a selectable card -->
+    <style name="Widget.KodiWise.RoleCard" parent="">
+        <item name="android:background">@drawable/bg_role_card</item>
+        <item name="android:button">@null</item>
+        <item name="android:gravity">center</item>
+        <item name="android:minHeight">104dp</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:drawablePadding">8dp</item>
+        <item name="android:textAppearance">@style/TextAppearance.KodiWise.TitleSmall</item>
+        <item name="android:textColor">@color/kw_role_card_text</item>
+    </style>
+    <!-- Small status / confidence badge (pill); background tint set per state -->
+    <style name="Widget.KodiWise.Badge" parent="">
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">10dp</item>
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingBottom">4dp</item>
+        <item name="android:background">@drawable/bg_badge</item>
+        <item name="android:textAppearance">@style/TextAppearance.KodiWise.LabelMedium</item>
+        <item name="android:textColor">@color/kw_on_neutral_chip</item>
+    </style>
 </resources>
