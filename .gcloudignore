@@ -41,4 +41,4 @@ firestore.indexes.json
 # be un-excluded via its own negation pattern before per-file negations
 # inside it would even be considered.)
 ml/models/*
-!ml/models/v20261107-appD
+!ml/models/v20261107-appE2

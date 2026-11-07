@@ -27,7 +27,7 @@ def test_model_version(client):
     resp = client.get("/model-version")
     assert resp.status_code == 200
     body = resp.json()
-    assert body["feature_set"] == "app_expanded_form"
+    assert body["feature_set"] == "app_expanded_form_gps_no_prior"
     assert body["n_train"] > 0
 
 
@@ -43,7 +43,7 @@ def test_predict_minimal_input_returns_sane_range(client):
     body = resp.json()
     assert body["predicted_rent_kes"] > 0
     assert body["predicted_rent_low_kes"] <= body["predicted_rent_kes"] <= body["predicted_rent_high_kes"]
-    assert body["model_version"] == "v20261107-appD"
+    assert body["model_version"] == "v20261107-appE2"
     assert body["location_recognised"] is True
     assert "estimate" in body["note"].lower()
     # No LOW/FAIR/HIGH verdict should ever be in the response.
@@ -207,3 +207,29 @@ def test_predict_reports_location_confidence(client, location, expected):
     })
     assert resp.status_code == 200
     assert resp.json()["location_confidence"] == expected
+
+
+def test_served_model_uses_gps_features_looked_up_from_the_name():
+    from api.main import predictor
+    from ml.features import GEO_FEATURES, RUN_E2_FEATURE_SET
+
+    assert predictor.feature_set == RUN_E2_FEATURE_SET
+    for loc, stats in predictor.location_lookup.items():
+        for col in GEO_FEATURES:
+            assert col in stats, (loc, col)
+
+
+def test_all_known_locations_predict_with_unchanged_confidence(client):
+    from ml.features import location_confidence
+
+    locations = client.get("/locations").json()["locations"]
+    assert len(locations) == 32
+    from api.main import predictor
+    for loc in locations:
+        resp = client.post("/predict", json={"bedrooms_num": 2, "bathrooms_num": 1, "location_std": loc})
+        assert resp.status_code == 200, loc
+        body = resp.json()
+        assert body["location_recognised"] is True
+        assert body["predicted_rent_low_kes"] <= body["predicted_rent_kes"] <= body["predicted_rent_high_kes"]
+        expected = location_confidence(predictor.location_lookup[loc]["loc_count_tr"])
+        assert body["location_confidence"] == expected, loc

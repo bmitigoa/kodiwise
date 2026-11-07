@@ -21,7 +21,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # training), and the one versioned model directory currently served.
 COPY api/ ./api/
 COPY ml/__init__.py ml/features.py ./ml/
-COPY ml/models/v20261107-appD/ ./ml/models/v20261107-appD/
+COPY ml/models/v20261107-appE2/ ./ml/models/v20261107-appE2/
 
 # Cloud Run sets PORT; default to 8080 for local runs.
 ENV PORT=8080
