@@ -192,6 +192,8 @@ class PropertyUploadActivity : AppCompatActivity() {
         // The status line starts hidden; once an upload starts it stays visible
         // so its last message ("Upload failed", ...) remains readable.
         if (uploading) tvUploadStatus.visibility = android.view.View.VISIBLE
+        findViewById<android.view.View>(R.id.progressUpload).visibility =
+            if (uploading) android.view.View.VISIBLE else android.view.View.GONE
     }
 
     private fun cleanTitle(title: String): String {

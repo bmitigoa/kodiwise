@@ -47,4 +47,9 @@
     <color name="kw_ar_scrim">#B3101A14</color>
     <color name="kw_ar_on_scrim">#FFFFFF</color>
     <color name="kw_ar_on_scrim_variant">#D7E0D9</color>
+    <color name="kw_ar_primary">#8FD5AE</color>
+    <color name="kw_ar_on_primary">#00391F</color>
+    <color name="kw_ar_tonal">#33FFFFFF</color>
+    <color name="kw_ar_card">#FFFFFF</color>
+    <color name="kw_media_bg">#000000</color>
 </resources>

@@ -49,6 +49,7 @@ class PerformanceTestActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_performance_test)
+        ScreenHeader.bind(this, getString(R.string.title_performance))
 
         etRuns = findViewById(R.id.etRuns)
         btnPredictionTest = findViewById(R.id.btnPredictionTest)

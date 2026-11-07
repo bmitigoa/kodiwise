@@ -262,6 +262,16 @@
             android:textColor="?attr/colorOnSurfaceVariant"
             android:visibility="gone" />
 
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/progressUpload"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:contentDescription="@string/upload_button_busy"
+            android:indeterminate="true"
+            android:visibility="gone"
+            app:trackCornerRadius="4dp" />
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSubmitUpload"
             android:layout_width="match_parent"

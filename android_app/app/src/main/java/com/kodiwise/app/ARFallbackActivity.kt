@@ -50,12 +50,8 @@ class ARFallbackActivity : AppCompatActivity() {
                 findViewById<TextView>(R.id.tvFallbackMeta).text =
                     "${bedrooms} beds • ${bathrooms} baths • KES $quoted"
 
-                val tvBand = findViewById<TextView>(R.id.tvFallbackBand)
-                tvBand.text = band
-                tvBand.setTextColor(ContextCompat.getColor(this, RentUtils.colorForBand(band)))
-
-                val iv = findViewById<ImageView>(R.id.ivFallbackCover)
-                if (cover.isNotBlank()) iv.load(cover) { crossfade(true) }
+                ListingCard.bindBand(findViewById(R.id.tvFallbackBand), band)
+                ListingCard.bindCover(findViewById<ImageView>(R.id.ivFallbackCover), cover)
             }
             .addOnFailureListener { e ->
                 Toast.makeText(this, "Load failed: ${e.message}", Toast.LENGTH_LONG).show()

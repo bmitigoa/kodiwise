@@ -11,5 +11,5 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:contentDescription="Thumbnail" />
+        android:contentDescription="@string/cd_listing_photo" />
 </FrameLayout>

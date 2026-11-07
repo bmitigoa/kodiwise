@@ -127,6 +127,8 @@ class PropertyDetailActivity : AppCompatActivity() {
                     mediaItems.add(MediaItem(url))
                 }
                 mediaAdapter.notifyDataSetChanged()
+                findViewById<android.view.View>(R.id.tvGalleryEmpty).visibility =
+                    if (mediaItems.isEmpty()) android.view.View.VISIBLE else android.view.View.GONE
             }
             .addOnFailureListener { e ->
                 Toast.makeText(this, "Gallery load failed: ${e.message}", Toast.LENGTH_LONG).show()

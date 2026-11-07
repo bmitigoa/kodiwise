@@ -21,6 +21,8 @@ class PropertyListActivity : AppCompatActivity() {
     private lateinit var rv: RecyclerView
     private lateinit var adapter: BrowsePropertyAdapter
     private lateinit var etSearch: TextInputEditText
+    private lateinit var progress: android.view.View
+    private lateinit var tvEmpty: android.widget.TextView
 
     private var lastQuery: String = ""
     private var shownLoadError = false
@@ -35,6 +37,8 @@ class PropertyListActivity : AppCompatActivity() {
         }
 
         etSearch = findViewById(R.id.etSearch)
+        progress = findViewById(R.id.progress)
+        tvEmpty = findViewById(R.id.tvEmpty)
 
         rv = findViewById(R.id.rvBrowseProperties)
         rv.layoutManager = LinearLayoutManager(this)
@@ -66,6 +70,7 @@ class PropertyListActivity : AppCompatActivity() {
             ) {
                 lastQuery = s?.toString().orEmpty()
                 adapter.filter(lastQuery)
+                updateEmptyState()
             }
         })
     }
@@ -81,8 +86,19 @@ class PropertyListActivity : AppCompatActivity() {
         reg = null
     }
 
+    /** Empty-state message for the current list + search text (display only). */
+    private fun updateEmptyState() {
+        val empty = adapter.itemCount == 0
+        tvEmpty.setText(if (lastQuery.isBlank()) R.string.empty_browse else R.string.empty_search)
+        tvEmpty.visibility = if (empty) android.view.View.VISIBLE else android.view.View.GONE
+    }
+
     private fun attachApprovedListener() {
         reg?.remove()
+        if (adapter.itemCount == 0) {
+            progress.visibility = android.view.View.VISIBLE
+            tvEmpty.visibility = android.view.View.GONE
+        }
 
         // Server-side filter on status is required: Firestore security rules can
         // only approve this query by checking its filters against the rule, not by
@@ -93,6 +109,11 @@ class PropertyListActivity : AppCompatActivity() {
             .addSnapshotListener { snap, e ->
 
                 if (e != null) {
+                    progress.visibility = android.view.View.GONE
+                    if (adapter.itemCount == 0) {
+                        tvEmpty.setText(R.string.load_failed_listings)
+                        tvEmpty.visibility = android.view.View.VISIBLE
+                    }
                     if (!shownLoadError) {
                         shownLoadError = true
                         Toast.makeText(this, "Load failed: ${e.message}", Toast.LENGTH_LONG).show()
@@ -114,6 +135,8 @@ class PropertyListActivity : AppCompatActivity() {
 
                 adapter.replaceAll(fresh)
                 adapter.filter(lastQuery)
+                progress.visibility = android.view.View.GONE
+                updateEmptyState()
             }
     }
 }

@@ -1,156 +1,170 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- AR gallery. Only the overlays are styled; the GL surface, the placed card
+     (cardAnchor, positioned by ARViewActivity) and all ids are unchanged. -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/arRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000000">
+    android:background="@color/kw_media_bg"
+    android:theme="@style/ThemeOverlay.KodiWise.AR">
 
     <android.opengl.GLSurfaceView
         android:id="@+id/glSurfaceView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <include layout="@layout/include_back_header" />
-
-        <LinearLayout
-            android:id="@+id/topInfoBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="12dp"
-            android:background="#AA111111"
-            android:orientation="vertical"
-            android:padding="12dp">
-
-            <TextView
-                android:id="@+id/tvArTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Property"
-                android:textColor="#FFFFFF"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tvArLocation"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="Location"
-                android:textColor="#E0E0E0"
-                android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/tvArMeta"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="2 beds • 2 baths • KES 100000"
-                android:textColor="#E0E0E0"
-                android:textSize="14sp" />
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/tvArHint"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="12dp"
-            android:background="#66000000"
-            android:paddingHorizontal="12dp"
-            android:paddingVertical="8dp"
-            android:text="Move phone slowly, then tap a floor or flat surface to place the property gallery"
-            android:textColor="#FFFFFF"
-            android:textSize="12sp" />
-    </LinearLayout>
-
+    <!-- Placed AR card -->
     <FrameLayout
         android:id="@+id/cardAnchor"
         android:layout_width="360dp"
         android:layout_height="270dp"
         android:layout_gravity="center"
-        android:background="#F7FFFFFF"
+        android:background="@drawable/bg_ar_card"
         android:elevation="12dp"
+        android:padding="4dp"
         android:visibility="gone">
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/ivArPhoto"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:adjustViewBounds="false"
-            android:background="#FFFFFF"
-            android:contentDescription="AR property image"
-            android:scaleType="centerCrop" />
+            android:contentDescription="@string/cd_ar_photo"
+            android:scaleType="centerCrop"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.KodiWise.Medium" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnFullscreen"
-            android:layout_width="110dp"
-            android:layout_height="40dp"
+            style="@style/Widget.KodiWise.Button.Icon"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_gravity="top|end"
             android:layout_margin="8dp"
-            android:text="Fullscreen" />
+            android:contentDescription="@string/cd_fullscreen"
+            app:backgroundTint="@color/kw_ar_scrim"
+            app:icon="@drawable/ic_fullscreen"
+            app:iconTint="@color/kw_ar_on_scrim" />
     </FrameLayout>
 
-    <LinearLayout
-        android:id="@+id/bottomControls"
+    <!-- Overlays: one container fits the system bars so the camera stays full-bleed -->
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_margin="12dp"
-        android:background="#AA111111"
-        android:orientation="vertical"
-        android:padding="10dp">
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:layout_gravity="top"
+            android:orientation="vertical">
 
-            <Button
-                android:id="@+id/btnPrev"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:text="◀"
-                android:textSize="20sp" />
-
-            <Button
-                android:id="@+id/btnResetAnchor"
-                android:layout_width="0dp"
-                android:layout_height="48dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_weight="1"
-                android:text="Re-place AR panel" />
-
-            <Button
-                android:id="@+id/btnNext"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:text="▶"
-                android:textSize="20sp" />
-        </LinearLayout>
-
-        <HorizontalScrollView
-            android:id="@+id/thumbnailScroll"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:scrollbars="none">
+            <include layout="@layout/include_back_header" />
 
             <LinearLayout
-                android:id="@+id/thumbnailStrip"
+                android:id="@+id/topInfoBar"
+                style="@style/Widget.KodiWise.ArPanel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="12dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvArTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?attr/textAppearanceTitleMedium"
+                    android:textColor="@color/kw_ar_on_scrim" />
+
+                <TextView
+                    android:id="@+id/tvArLocation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:drawablePadding="4dp"
+                    android:gravity="center_vertical"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="@color/kw_ar_on_scrim_variant"
+                    app:drawableStartCompat="@drawable/ic_place_16"
+                    app:drawableTint="@color/kw_ar_on_scrim_variant" />
+
+                <TextView
+                    android:id="@+id/tvArMeta"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="@color/kw_ar_on_scrim_variant" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvArHint"
+                style="@style/Widget.KodiWise.InfoChip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal" />
-        </HorizontalScrollView>
-    </LinearLayout>
+                android:layout_marginHorizontal="12dp"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="@color/kw_ar_scrim"
+                android:text="@string/ar_hint_place"
+                android:textColor="@color/kw_ar_on_scrim"
+                app:drawableStartCompat="@drawable/ic_view_in_ar"
+                app:drawableTint="@color/kw_ar_on_scrim" />
+        </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/bottomControls"
+            style="@style/Widget.KodiWise.ArPanel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_margin="12dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnPrev"
+                    style="@style/Widget.KodiWise.Button.Icon"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:contentDescription="@string/cd_previous_photo"
+                    app:icon="@drawable/ic_chevron_left" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnResetAnchor"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:layout_weight="1"
+                    android:text="@string/ar_replace_panel"
+                    app:icon="@drawable/ic_refresh" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnNext"
+                    style="@style/Widget.KodiWise.Button.Icon"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:contentDescription="@string/cd_next_photo"
+                    app:icon="@drawable/ic_chevron_right" />
+            </LinearLayout>
+
+            <HorizontalScrollView
+                android:id="@+id/thumbnailScroll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:id="@+id/thumbnailStrip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" />
+            </HorizontalScrollView>
+        </LinearLayout>
+    </FrameLayout>
 </FrameLayout>

@@ -85,6 +85,22 @@
         <item name="postSplashScreenTheme">@style/Theme.KodiWise</item>
     </style>
 
+    <!-- Overlays drawn over the camera / photos: fixed light-on-dark in both themes -->
+    <style name="ThemeOverlay.KodiWise.AR" parent="ThemeOverlay.Material3.Dark">
+        <item name="android:colorBackground">@color/kw_ar_scrim</item>
+        <item name="colorOnSurface">@color/kw_ar_on_scrim</item>
+        <item name="colorOnSurfaceVariant">@color/kw_ar_on_scrim_variant</item>
+        <item name="colorPrimary">@color/kw_ar_primary</item>
+        <item name="colorOnPrimary">@color/kw_ar_on_primary</item>
+        <item name="colorSecondaryContainer">@color/kw_ar_tonal</item>
+        <item name="colorOnSecondaryContainer">@color/kw_ar_on_scrim</item>
+        <item name="android:textColorPrimary">@color/kw_ar_on_scrim</item>
+    </style>
+    <style name="Widget.KodiWise.ArPanel" parent="">
+        <item name="android:background">@drawable/bg_ar_panel</item>
+        <item name="android:padding">12dp</item>
+    </style>
+
     <!-- ===== Text appearances ===== -->
     <style name="TextAppearance.KodiWise.DisplaySmall" parent="TextAppearance.Material3.DisplaySmall">
         <item name="fontFamily">@font/poppins_semibold</item>

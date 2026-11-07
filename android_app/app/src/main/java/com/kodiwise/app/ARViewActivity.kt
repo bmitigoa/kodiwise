@@ -93,7 +93,7 @@ class ARViewActivity : AppCompatActivity(), GLSurfaceView.Renderer {
         }
 
         setContentView(R.layout.activity_ar_view)
-        ScreenHeader.bind(this, "AR Gallery")
+        ScreenHeader.bind(this, getString(R.string.title_ar_gallery))
 
         glSurfaceView = findViewById(R.id.glSurfaceView)
         tvHint = findViewById(R.id.tvArHint)

@@ -12,7 +12,7 @@ class FullscreenImageActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_fullscreen_image)
-        ScreenHeader.bind(this, "Image Viewer")
+        ScreenHeader.bind(this, getString(R.string.title_photo))
 
         val url = intent.getStringExtra(EXTRA_URL)
             ?: intent.getStringExtra("IMAGE_URL")

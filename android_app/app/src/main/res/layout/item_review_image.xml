@@ -9,6 +9,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:background="#E5E7EB"
-        android:contentDescription="Review image"/>
+        android:background="@color/kw_surface_container_high"
+        android:contentDescription="@string/cd_listing_photo"/>
 </FrameLayout>

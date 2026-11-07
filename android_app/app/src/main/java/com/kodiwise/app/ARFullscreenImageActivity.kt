@@ -20,7 +20,7 @@ class ARFullscreenImageActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ar_fullscreen)
-        ScreenHeader.bind(this, "Fullscreen Gallery")
+        ScreenHeader.bind(this, getString(R.string.title_gallery))
 
         ivFullscreen = findViewById(R.id.ivFullscreen)
         btnPrevFull = findViewById(R.id.btnPrevFull)

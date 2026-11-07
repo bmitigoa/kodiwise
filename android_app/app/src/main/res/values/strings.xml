@@ -147,12 +147,9 @@
     <string name="listing_review">Review</string>
     <string name="search_listings">Search title, area or price</string>
     <string name="ar_pick_listing">Pick a listing, then tap View in AR on its page.</string>
-    <string name="empty_browse">No approved listings yet.
-Check back soon.</string>
-    <string name="empty_my_listings">You have no listings yet.
-Add one from your dashboard.</string>
-    <string name="empty_approvals">All caught up.
-No listings are waiting for review.</string>
+    <string name="empty_browse">No approved listings yet.\nCheck back soon.</string>
+    <string name="empty_my_listings">You have no listings yet.\nAdd one from your dashboard.</string>
+    <string name="empty_approvals">All caught up.\nNo listings are waiting for review.</string>
     <string name="detail_about">About this home</string>
     <string name="detail_gallery">Photos</string>
     <string name="detail_no_photos">No photos for this listing.</string>
@@ -173,4 +170,35 @@ No listings are waiting for review.</string>
     <string name="per_month">/ month</string>
     <string name="upload_button">Submit listing</string>
     <string name="upload_button_busy">Submitting…</string>
+
+    <!-- AR and photo viewers -->
+    <string name="title_ar_gallery">AR view</string>
+    <string name="title_photo">Photo</string>
+    <string name="title_gallery">Photos</string>
+    <string name="ar_hint_place">Move your phone slowly, then tap a floor or flat surface to place the gallery</string>
+    <string name="ar_replace_panel">Re-place</string>
+    <string name="cd_ar_photo">Listing photo placed in AR</string>
+    <string name="cd_fullscreen">Open full screen</string>
+    <string name="cd_previous_photo">Previous photo</string>
+    <string name="cd_next_photo">Next photo</string>
+    <string name="ar_fallback_title">AR preview</string>
+    <string name="ar_fallback_body">AR needs a phone that supports ARCore. This is what the listing will look like.</string>
+
+    <!-- Empty / loading states -->
+    <string name="empty_search">No listings match your search.</string>
+    <string name="load_failed_listings">Couldn’t load listings.\nCheck your connection and try again.</string>
+
+    <!-- Performance tests (admin) -->
+    <string name="title_performance">Performance tests</string>
+    <string name="perf_intro">Time the prediction API and Firestore from this device.</string>
+    <string name="perf_runs_label">Runs per test</string>
+    <string name="perf_runs_hint">Number of runs</string>
+    <string name="perf_runs_default" translatable="false">5</string>
+    <string name="perf_run_prediction">Run prediction API test</string>
+    <string name="perf_run_save">Run Firestore save test</string>
+    <string name="perf_run_read">Run Firestore read test</string>
+    <string name="perf_results">Results</string>
+    <string name="perf_no_results">No results yet.</string>
+    <string name="perf_export">Export CSV</string>
+    <string name="perf_clear">Clear</string>
 </resources>
