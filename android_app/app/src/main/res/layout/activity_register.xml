@@ -1,157 +1,158 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F2F2F2">
+    android:background="?android:attr/colorBackground"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:padding="24dp"
-        android:layout_marginTop="60dp">
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="32dp">
 
-        <!-- Card Container -->
-        <LinearLayout
+        <ImageView
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:contentDescription="@string/cd_logo"
+            android:src="@drawable/ic_logo" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="@string/register_title"
+            android:textAppearance="?attr/textAppearanceHeadlineSmall"
+            android:textColor="?attr/colorOnBackground" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:gravity="center"
+            android:text="@string/register_subtitle"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="?attr/colorOnSurfaceVariant" />
+
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@android:color/white"
-            android:padding="24dp"
-            android:elevation="6dp">
+            android:layout_marginTop="24dp">
 
-            <!-- Title (like Image 1) -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Register"
-                android:textSize="28sp"
-                android:textStyle="bold"
-                android:textColor="#000000"
-                android:layout_gravity="center"
-                android:layout_marginBottom="8dp" />
-
-            <!-- Subtitle (Image 1 wording but with RentPredictAR) -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Join RentPredictAR to find your perfect property or list yours"
-                android:textSize="14sp"
-                android:textColor="#666666"
-                android:gravity="center"
-                android:layout_gravity="center"
-                android:layout_marginBottom="24dp" />
-
-            <!-- Email -->
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Email"
-                android:textStyle="bold"
-                android:layout_marginBottom="4dp" />
+                android:orientation="vertical"
+                android:padding="20dp">
 
-            <EditText
-                android:id="@+id/etRegEmail"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:background="@android:drawable/edit_text"
-                android:padding="12dp"
-                android:hint="Enter your email"
-                android:inputType="textEmailAddress" />
-
-            <!-- Password -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Password"
-                android:textStyle="bold"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="4dp" />
-
-            <EditText
-                android:id="@+id/etRegPassword"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:background="@android:drawable/edit_text"
-                android:padding="12dp"
-                android:hint="Create a password"
-                android:inputType="textPassword" />
-
-            <!-- Confirm Password -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Confirm Password"
-                android:textStyle="bold"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="4dp" />
-
-            <EditText
-                android:id="@+id/etRegConfirm"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:background="@android:drawable/edit_text"
-                android:padding="12dp"
-                android:hint="Confirm your password"
-                android:inputType="textPassword" />
-
-            <!-- Role label (keep your wording) -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="I am registering as:"
-                android:textStyle="bold"
-                android:textColor="#000000"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="8dp" />
-
-            <!-- Role Group (keep your IDs exactly) -->
-            <RadioGroup
-                android:id="@+id/roleGroup"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <RadioButton
-                    android:id="@+id/rbTenant"
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Tenant"
-                    android:checked="true"
-                    android:layout_marginEnd="24dp" />
+                    android:text="@string/register_role_label"
+                    android:textAppearance="?attr/textAppearanceTitleSmall"
+                    android:textColor="?attr/colorOnSurface" />
 
-                <RadioButton
-                    android:id="@+id/rbLandlord"
-                    android:layout_width="wrap_content"
+                <!-- Same RadioGroup / RadioButton ids as before, so
+                     RegisterActivity's role logic is unchanged; the buttons
+                     are drawn as selectable cards. -->
+                <RadioGroup
+                    android:id="@+id/roleGroup"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Landlord" />
-            </RadioGroup>
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
 
-            <!-- Create Account Button (like Image 1) -->
-            <Button
-                android:id="@+id/btnRegister"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:text="Create Account"
-                android:textAllCaps="false"
-                android:backgroundTint="#000000"
-                android:textColor="#FFFFFF"
-                android:layout_marginTop="24dp" />
+                    <RadioButton
+                        android:id="@+id/rbTenant"
+                        style="@style/Widget.KodiWise.RoleCard"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="6dp"
+                        android:layout_weight="1"
+                        android:checked="true"
+                        android:drawableTop="@drawable/ic_role_tenant"
+                        android:text="@string/role_tenant_card" />
 
-            <!-- Already have account -->
-            <TextView
-                android:id="@+id/tvGoLogin"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Already have an account? Login"
-                android:textColor="#000000"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:layout_marginTop="16dp" />
+                    <RadioButton
+                        android:id="@+id/rbLandlord"
+                        style="@style/Widget.KodiWise.RoleCard"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:layout_weight="1"
+                        android:drawableTop="@drawable/ic_role_landlord"
+                        android:text="@string/role_landlord_card" />
+                </RadioGroup>
 
-        </LinearLayout>
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:hint="@string/email"
+                    app:startIconContentDescription="@string/email"
+                    app:startIconDrawable="@drawable/ic_mail">
 
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etRegEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:autofillHints="emailAddress"
+                        android:inputType="textEmailAddress" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:hint="@string/password_create"
+                    app:endIconMode="password_toggle"
+                    app:helperText="@string/password_helper"
+                    app:startIconContentDescription="@string/password"
+                    app:startIconDrawable="@drawable/ic_lock">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etRegPassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:autofillHints="password"
+                        android:inputType="textPassword" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:hint="@string/password_confirm"
+                    app:endIconMode="password_toggle"
+                    app:startIconContentDescription="@string/password_confirm"
+                    app:startIconDrawable="@drawable/ic_lock">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etRegConfirm"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:autofillHints="password"
+                        android:inputType="textPassword" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnRegister"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/register_button" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/tvGoLogin"
+                    style="@style/Widget.KodiWise.Button.Text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="@string/register_go_login" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
-
 </ScrollView>
