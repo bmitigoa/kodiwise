@@ -50,6 +50,7 @@ class PredictResponse(BaseModel):
     predicted_rent_high_kes: float
     model_version: str
     location_recognised: bool
+    location_confidence: Literal["high", "low", "none"]
     note: str
 
 

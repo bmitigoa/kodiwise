@@ -193,3 +193,17 @@ def test_predict_blank_location_returns_422(client):
         "location_std": "   ",
     })
     assert resp.status_code == 422
+
+
+@pytest.mark.parametrize("location,expected", [
+    ("Kilimani", "high"),       # 68 training rows
+    ("Langata", "low"),         # 6 training rows
+    ("Pipeline", "none"),       # 1 training row
+    ("Nowhereville", "none"),   # unrecognised -> global fallback, count 0
+])
+def test_predict_reports_location_confidence(client, location, expected):
+    resp = client.post("/predict", json={
+        "bedrooms_num": 2, "bathrooms_num": 1, "location_std": location,
+    })
+    assert resp.status_code == 200
+    assert resp.json()["location_confidence"] == expected

@@ -239,6 +239,28 @@ def lookup_location_stats(location_std: str, lookup: dict) -> dict:
     return lookup.get(location_std, lookup["__global__"])
 
 
+LocationConfidence = str  # "high" | "low" | "none"
+
+
+def location_confidence(loc_count_tr: float) -> LocationConfidence:
+    """How much training data actually backs a location's stats.
+    "high" (n>=10): enough rows that loc_mean_tr/median reflect the area,
+    not noise. "low" (3-9): some signal, but a handful of listings can
+    swing the number a lot. "none" (<3, including an unrecognized location
+    whose loc_count_tr is 0 via the global fallback): too little data to
+    say anything neighbourhood-specific -- at n=1 or 2, a single atypical
+    listing (or, as found for "Pipeline", a plain data error -- a Nakuru
+    listing mislabeled into Nairobi's "Pipeline" bucket) can dominate the
+    whole estimate. Recognised-but-sparse and unrecognised both end up
+    "none" on purpose: neither has anything trustworthy to say.
+    """
+    if loc_count_tr >= 10:
+        return "high"
+    if loc_count_tr >= 3:
+        return "low"
+    return "none"
+
+
 # Serving-time location normalization. The training data's location_std is
 # already clean (34 canonical names, verified: no two rows differ only by
 # case). The free-text location field on PredictionFormActivity/

@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import pytest
 
 from ml.features import (
     FeatureSet,
@@ -8,6 +9,7 @@ from ml.features import (
     build_preprocessor,
     coerce_dtypes,
     get_feature_names,
+    location_confidence,
     lookup_location_stats,
     normalize_location,
     property_type_flags,
@@ -172,3 +174,12 @@ def test_resolve_location_alias_via_full_lookup():
     lookup = {"Westlands": {"loc_mean_tr": 1.0}, "__global__": {"loc_mean_tr": 0.0}}
     name, recognized = resolve_location("Westland", lookup)
     assert (name, recognized) == ("Westlands", True)
+
+
+@pytest.mark.parametrize("n,expected", [
+    (0, "none"), (1, "none"), (2, "none"),
+    (3, "low"), (9, "low"),
+    (10, "high"), (68, "high"),
+])
+def test_location_confidence_thresholds(n, expected):
+    assert location_confidence(n) == expected

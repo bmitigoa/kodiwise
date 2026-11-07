@@ -14,6 +14,7 @@ import pandas as pd
 
 from ml.features import (
     RUN_D_FEATURE_SET,
+    location_confidence,
     lookup_location_stats,
     property_type_flags,
     recompute_rooms_bath_from_counts,
@@ -101,6 +102,7 @@ class Predictor:
             "predicted_rent_high_kes": round(high, 2),
             "model_version": self.version,
             "location_recognised": location_recognised,
+            "location_confidence": location_confidence(loc_stats["loc_count_tr"]),
             "note": (
                 "Estimate only, not an exact valuation. The range reflects "
                 "10th-90th percentile prediction error observed in 5-fold "
