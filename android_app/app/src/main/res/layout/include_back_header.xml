@@ -1,43 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Shared top app bar for inner screens (bound by ScreenHeader.kt: same ids).
+     The host screen's root uses fitsSystemWindows, so no status-bar padding here. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/backHeaderRoot"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
+    android:background="?android:attr/colorBackground"
     android:gravity="center_vertical"
-    android:background="#111111"
-    android:paddingStart="12dp"
-    android:paddingEnd="12dp"
-    android:paddingTop="40dp"
-    android:paddingBottom="14dp">
+    android:minHeight="64dp"
+    android:orientation="horizontal"
+    android:paddingStart="4dp"
+    android:paddingEnd="16dp">
 
-    <androidx.appcompat.widget.AppCompatImageButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnBackHeader"
+        style="@style/Widget.Material3.Button.IconButton"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:background="@drawable/bg_header_icon"
-        android:contentDescription="Back"
-        android:padding="10dp"
-        android:scaleType="centerInside"
-        android:src="@android:drawable/ic_media_previous"
-        app:tint="#FFFFFF" />
+        android:contentDescription="@string/back"
+        app:icon="@drawable/ic_arrow_back"
+        app:iconTint="?attr/colorOnSurface" />
 
     <TextView
         android:id="@+id/tvHeaderTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_weight="1"
-        android:gravity="center"
-        android:text="Title"
-        android:textColor="#FFFFFF"
-        android:textStyle="bold"
-        android:textSize="18sp"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp" />
-
-    <Space
-        android:layout_width="48dp"
-        android:layout_height="48dp" />
-
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="@string/header_title"
+        android:textAppearance="?attr/textAppearanceTitleLarge"
+        android:textColor="?attr/colorOnSurface" />
 </LinearLayout>

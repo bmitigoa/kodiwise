@@ -73,4 +73,55 @@
     <string name="action_approvals_sub">Approve or reject new listings</string>
     <string name="action_performance">Performance tests</string>
     <string name="action_performance_sub">API and app timing checks</string>
+
+    <!-- Prediction form -->
+    <string name="predict_title">Estimate a fair rent</string>
+    <string name="predict_intro">Tell us about the home. Only the basics are required.</string>
+    <string name="predict_button">Estimate rent</string>
+    <string name="section_basics">Basics</string>
+    <string name="section_size_type">Size and type</string>
+    <string name="section_amenities">Amenities</string>
+    <string name="optional">Optional</string>
+    <string name="field_location">Neighbourhood</string>
+    <string name="field_location_helper">Start typing, e.g. Kilimani</string>
+    <string name="bedrooms">Bedrooms</string>
+    <string name="bathrooms">Bathrooms</string>
+    <string name="stepper_default" translatable="false">1</string>
+    <string name="cd_decrease_bedrooms">Fewer bedrooms</string>
+    <string name="cd_increase_bedrooms">More bedrooms</string>
+    <string name="cd_decrease_bathrooms">Fewer bathrooms</string>
+    <string name="cd_increase_bathrooms">More bathrooms</string>
+    <string name="field_size">Size</string>
+    <string name="unit_sqm">m²</string>
+    <string name="dont_know_size">I don’t know the size</string>
+    <string name="field_property_type">Property type</string>
+    <string name="type_apartment">Apartment</string>
+    <string name="type_house">House</string>
+    <string name="type_bedsitter">Bedsitter</string>
+    <string name="furnished">Furnished</string>
+    <string name="cd_toggle_amenities">Show or hide amenities</string>
+    <string name="amenity_generator">Generator</string>
+    <string name="amenity_borehole">Borehole</string>
+    <string name="amenity_cctv">CCTV</string>
+    <string name="amenity_dsq">DSQ (servant quarter)</string>
+    <string name="amenity_play_area">Play area</string>
+    <string name="amenity_garden">Garden</string>
+
+    <!-- Prediction result -->
+    <string name="result_title">Your estimate</string>
+    <string name="result_label">Typical monthly rent (estimate)</string>
+    <string name="result_range">Likely range %1$s – %2$s</string>
+    <string name="result_point_only">No range available from this server</string>
+    <string name="result_note_range">This is an estimate, not an exact valuation. Most similar homes rent somewhere in the range above.</string>
+    <string name="result_note_point">This is an estimate, not an exact valuation.</string>
+    <string name="result_for">Estimate for</string>
+    <string name="result_ar_unavailable">AR is available for saved listings</string>
+    <plurals name="beds">
+        <item quantity="one">%d bed</item>
+        <item quantity="other">%d beds</item>
+    </plurals>
+    <plurals name="baths">
+        <item quantity="one">%d bath</item>
+        <item quantity="other">%d baths</item>
+    </plurals>
 </resources>

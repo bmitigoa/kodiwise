@@ -1,64 +1,215 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="?android:attr/colorBackground"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
 
+    <include layout="@layout/include_back_header" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            android:paddingBottom="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/predict_intro"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant" />
+
+            <!-- Unused by the current flow; kept because PredictionFormActivity's
+                 layout contract included it. -->
+            <TextView
+                android:id="@+id/tvPBand"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
+            <!-- Basics -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        style="@style/Widget.KodiWise.SectionTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/section_basics" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:hint="@string/field_location"
+                        app:helperText="@string/field_location_helper"
+                        app:startIconContentDescription="@string/field_location"
+                        app:startIconDrawable="@drawable/ic_place">
+
+                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                            android:id="@+id/etPLocation"
+                            style="@style/Widget.Material3.AutoCompleteTextView.FilledBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:completionThreshold="1"
+                            android:inputType="textCapWords" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_bed"
+                            app:tint="?attr/colorOnSurfaceVariant" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:layout_weight="1"
+                            android:labelFor="@id/etPBedrooms"
+                            android:text="@string/bedrooms"
+                            android:textAppearance="?attr/textAppearanceBodyLarge"
+                            android:textColor="?attr/colorOnSurface" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnBedroomsMinus"
+                            style="@style/Widget.KodiWise.Button.Icon"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:contentDescription="@string/cd_decrease_bedrooms"
+                            app:icon="@drawable/ic_remove" />
+
+                        <EditText
+                            android:id="@+id/etPBedrooms"
+                            android:layout_width="56dp"
+                            android:layout_height="48dp"
+                            android:background="@null"
+                            android:gravity="center"
+                            android:importantForAutofill="no"
+                            android:inputType="number"
+                            android:maxLength="2"
+                            android:text="@string/stepper_default"
+                            android:textAppearance="?attr/textAppearanceTitleLarge"
+                            android:textColor="?attr/colorOnSurface" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnBedroomsPlus"
+                            style="@style/Widget.KodiWise.Button.Icon"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:contentDescription="@string/cd_increase_bedrooms"
+                            app:icon="@drawable/ic_add" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_bathtub"
+                            app:tint="?attr/colorOnSurfaceVariant" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:layout_weight="1"
+                            android:labelFor="@id/etPBathrooms"
+                            android:text="@string/bathrooms"
+                            android:textAppearance="?attr/textAppearanceBodyLarge"
+                            android:textColor="?attr/colorOnSurface" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnBathroomsMinus"
+                            style="@style/Widget.KodiWise.Button.Icon"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:contentDescription="@string/cd_decrease_bathrooms"
+                            app:icon="@drawable/ic_remove" />
+
+                        <EditText
+                            android:id="@+id/etPBathrooms"
+                            android:layout_width="56dp"
+                            android:layout_height="48dp"
+                            android:background="@null"
+                            android:gravity="center"
+                            android:importantForAutofill="no"
+                            android:inputType="number"
+                            android:maxLength="2"
+                            android:text="@string/stepper_default"
+                            android:textAppearance="?attr/textAppearanceTitleLarge"
+                            android:textColor="?attr/colorOnSurface" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnBathroomsPlus"
+                            style="@style/Widget.KodiWise.Button.Icon"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:contentDescription="@string/cd_increase_bathrooms"
+                            app:icon="@drawable/ic_add" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <include layout="@layout/include_realistic_property_fields" />
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Bottom action bar -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="?attr/colorSurfaceContainer"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="12dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Rent Prediction"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="16dp" />
-
-        <TextView
-            android:id="@+id/tvPBand"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text=""
-            android:textStyle="bold"
-            android:textSize="16sp"/>
-
-        <AutoCompleteTextView
-            android:id="@+id/etPLocation"
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/progressPredict"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Start typing a neighbourhood (e.g., Kilimani)"
-            android:inputType="text"
-            android:completionThreshold="1" />
+            android:layout_marginBottom="8dp"
+            android:contentDescription="@string/predicting"
+            android:indeterminate="true"
+            android:visibility="gone"
+            app:trackCornerRadius="4dp" />
 
-        <EditText
-            android:id="@+id/etPBedrooms"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Bedrooms (e.g., 1)"
-            android:inputType="number"
-            android:layout_marginTop="10dp" />
-
-        <EditText
-            android:id="@+id/etPBathrooms"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Bathrooms (e.g., 1)"
-            android:inputType="number"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="14dp" />
-
-        <include layout="@layout/include_realistic_property_fields" />
-
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnPredictNow"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Predict Rent"
-            android:layout_marginTop="16dp" />
-
+            android:text="@string/predict_button"
+            app:icon="@drawable/ic_trending_up" />
     </LinearLayout>
-</ScrollView>
+</LinearLayout>

@@ -4,8 +4,7 @@ import android.app.Activity
 import android.view.View
 import android.widget.CheckBox
 import android.widget.EditText
-import android.widget.RadioGroup
-import android.widget.TextView
+import com.google.android.material.chip.ChipGroup
 
 /**
  * Shared binding for include_realistic_property_fields.xml, used by both
@@ -30,11 +29,11 @@ object RealisticPropertyFields {
     fun bindCollapse(activity: Activity) {
         val header = activity.findViewById<View>(R.id.headerAmenities)
         val body = activity.findViewById<View>(R.id.layoutAmenities)
-        val arrow = activity.findViewById<TextView>(R.id.tvAmenitiesArrow)
+        val chevron = activity.findViewById<View>(R.id.ivAmenitiesChevron)
         header.setOnClickListener {
             val expand = body.visibility != View.VISIBLE
             body.visibility = if (expand) View.VISIBLE else View.GONE
-            arrow.text = if (expand) "▾" else "▸"
+            chevron.animate().rotation(if (expand) 180f else 0f).setDuration(150).start()
         }
     }
 
@@ -50,11 +49,11 @@ object RealisticPropertyFields {
     fun read(activity: Activity): Values {
         val etSqm = activity.findViewById<EditText>(R.id.etSqm)
         val cbDontKnow = activity.findViewById<CheckBox>(R.id.cbDontKnowSize)
-        val rgType = activity.findViewById<RadioGroup>(R.id.rgPropertyType)
+        val rgType = activity.findViewById<ChipGroup>(R.id.rgPropertyType)
 
         val sqM = if (cbDontKnow.isChecked) null else etSqm.text.toString().trim().toDoubleOrNull()
 
-        val propertyType = when (rgType.checkedRadioButtonId) {
+        val propertyType = when (rgType.checkedChipId) {
             R.id.rbApartment -> "apartment"
             R.id.rbHouse -> "house"
             R.id.rbBedsitter -> "bedsitter"

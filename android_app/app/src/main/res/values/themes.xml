@@ -273,6 +273,23 @@
         <item name="cardCornerRadius">16dp</item>
         <item name="cardBackgroundColor">@color/kw_hero</item>
     </style>
+    <!-- Info chip that can wrap (Material Chip is single-line only) -->
+    <style name="Widget.KodiWise.InfoChip" parent="">
+        <item name="android:background">@drawable/bg_info_chip</item>
+        <item name="android:paddingStart">12dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:drawablePadding">8dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:minHeight">40dp</item>
+        <item name="android:textAppearance">@style/TextAppearance.KodiWise.LabelLarge</item>
+    </style>
+    <!-- Card section heading -->
+    <style name="Widget.KodiWise.SectionTitle" parent="">
+        <item name="android:textAppearance">@style/TextAppearance.KodiWise.TitleMedium</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
     <style name="Widget.KodiWise.TextView" parent="Widget.AppCompat.TextView">
         <item name="android:textAppearance">@style/TextAppearance.KodiWise.BodyMedium</item>
     </style>

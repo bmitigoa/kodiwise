@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Range bar track on the green hero card: fades from white to gold -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <corners android:radius="4dp" />
+    <gradient
+        android:angle="0"
+        android:endColor="@color/kw_brand_gold"
+        android:startColor="@color/kw_range_track_start" />
+</shape>

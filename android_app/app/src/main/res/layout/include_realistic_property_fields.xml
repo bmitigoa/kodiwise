@@ -1,158 +1,194 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
+<!-- Shared by PredictionFormActivity and PropertyUploadActivity (bound by
+     RealisticPropertyFields.kt). Must sit inside a vertical LinearLayout.
+     All view ids are unchanged from the original form. -->
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!-- Size -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Size (sq. m) — optional"
-        android:textStyle="bold"
-        android:textColor="#111827"
-        android:layout_marginBottom="6dp" />
-
-    <EditText
-        android:id="@+id/etSqm"
-        android:layout_width="match_parent"
-        android:layout_height="44dp"
-        android:background="@drawable/input_rounded"
-        android:padding="12dp"
-        android:hint="e.g. 65"
-        android:inputType="numberDecimal"
-        android:textColor="#111827"
-        android:textColorHint="#9CA3AF"
-        android:layout_marginBottom="6dp" />
-
-    <CheckBox
-        android:id="@+id/cbDontKnowSize"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="I don't know the size"
-        android:textColor="#6B7280"
-        android:layout_marginBottom="14dp" />
-
-    <CheckBox
-        android:id="@+id/cbFurnished"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Furnished"
-        android:textColor="#111827"
-        android:layout_marginBottom="14dp" />
-
-    <!-- Property type -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Property Type"
-        android:textStyle="bold"
-        android:textColor="#111827"
-        android:layout_marginBottom="6dp" />
-
-    <RadioGroup
-        android:id="@+id/rgPropertyType"
+    <!-- Size and type -->
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="14dp">
+        android:layout_marginTop="12dp">
 
-        <RadioButton
-            android:id="@+id/rbApartment"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Apartment"
-            android:checked="true"
-            android:textSize="12sp" />
+            android:orientation="vertical"
+            android:padding="16dp">
 
-        <RadioButton
-            android:id="@+id/rbHouse"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="House"
-            android:textSize="12sp" />
+            <TextView
+                style="@style/Widget.KodiWise.SectionTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/section_size_type" />
 
-        <RadioButton
-            android:id="@+id/rbBedsitter"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Bedsitter"
-            android:textSize="12sp" />
-    </RadioGroup>
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:hint="@string/field_size"
+                app:helperText="@string/optional"
+                app:startIconContentDescription="@string/field_size"
+                app:startIconDrawable="@drawable/ic_aspect_ratio"
+                app:suffixText="@string/unit_sqm">
 
-    <!-- Amenities: collapsible, collapsed by default to keep the form short -->
-    <LinearLayout
-        android:id="@+id/headerAmenities"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etSqm"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/cbDontKnowSize"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dont_know_size" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/field_property_type"
+                android:textAppearance="?attr/textAppearanceLabelLarge"
+                android:textColor="?attr/colorOnSurfaceVariant" />
+
+            <!-- Was a RadioGroup; same ids, now single-select chips -->
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/rgPropertyType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                app:checkedChip="@id/rbApartment"
+                app:selectionRequired="true"
+                app:singleSelection="true">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/rbApartment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="@string/type_apartment" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/rbHouse"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/type_house" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/rbBedsitter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/type_bedsitter" />
+            </com.google.android.material.chip.ChipGroup>
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/cbFurnished"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/furnished" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Amenities (collapsed by default) -->
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:clickable="true"
-        android:focusable="true"
-        android:background="@drawable/bg_light_button"
-        android:padding="10dp"
-        android:layout_marginBottom="8dp">
+        android:layout_marginTop="12dp">
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Amenities (optional)"
-            android:textStyle="bold"
-            android:textColor="#111827" />
-
-        <TextView
-            android:id="@+id/tvAmenitiesArrow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="▸"
-            android:textColor="#111827" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/layoutAmenities"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="gone"
-        android:layout_marginBottom="14dp">
-
-        <CheckBox
-            android:id="@+id/cbGenerator"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Generator" />
+            android:orientation="vertical">
 
-        <CheckBox
-            android:id="@+id/cbBorehole"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Borehole" />
+            <LinearLayout
+                android:id="@+id/headerAmenities"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:minHeight="56dp"
+                android:orientation="horizontal"
+                android:paddingHorizontal="16dp">
 
-        <CheckBox
-            android:id="@+id/cbCctv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="CCTV" />
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
-        <CheckBox
-            android:id="@+id/cbDsq"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="DSQ (Servant Quarter)" />
+                    <TextView
+                        style="@style/Widget.KodiWise.SectionTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/section_amenities" />
 
-        <CheckBox
-            android:id="@+id/cbPlayArea"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Play Area" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/optional"
+                        android:textAppearance="?attr/textAppearanceBodySmall"
+                        android:textColor="?attr/colorOnSurfaceVariant" />
+                </LinearLayout>
 
-        <CheckBox
-            android:id="@+id/cbGarden"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Garden" />
+                <ImageView
+                    android:id="@+id/ivAmenitiesChevron"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="@string/cd_toggle_amenities"
+                    android:src="@drawable/ic_expand_more" />
+            </LinearLayout>
 
-    </LinearLayout>
+            <LinearLayout
+                android:id="@+id/layoutAmenities"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="12dp"
+                android:paddingBottom="8dp"
+                android:visibility="gone">
 
+                <com.google.android.material.checkbox.MaterialCheckBox
+                    android:id="@+id/cbGenerator"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/amenity_generator" />
+
+                <com.google.android.material.checkbox.MaterialCheckBox
+                    android:id="@+id/cbBorehole"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/amenity_borehole" />
+
+                <com.google.android.material.checkbox.MaterialCheckBox
+                    android:id="@+id/cbCctv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/amenity_cctv" />
+
+                <com.google.android.material.checkbox.MaterialCheckBox
+                    android:id="@+id/cbDsq"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/amenity_dsq" />
+
+                <com.google.android.material.checkbox.MaterialCheckBox
+                    android:id="@+id/cbPlayArea"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/amenity_play_area" />
+
+                <com.google.android.material.checkbox.MaterialCheckBox
+                    android:id="@+id/cbGarden"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/amenity_garden" />
+            </LinearLayout>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 </merge>

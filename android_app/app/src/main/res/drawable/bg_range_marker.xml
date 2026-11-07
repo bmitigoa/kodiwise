@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Point-estimate marker on the range bar -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
+    <solid android:color="@color/kw_on_hero" />
+    <stroke android:width="4dp" android:color="@color/kw_brand_gold" />
+</shape>

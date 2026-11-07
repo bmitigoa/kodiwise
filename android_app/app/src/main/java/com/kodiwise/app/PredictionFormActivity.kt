@@ -19,11 +19,21 @@ class PredictionFormActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_prediction_form)
+        ScreenHeader.bind(this, getString(R.string.predict_title))
 
         val etLocation = findViewById<AutoCompleteTextView>(R.id.etPLocation)
         val etBedrooms = findViewById<EditText>(R.id.etPBedrooms)
         val etBathrooms = findViewById<EditText>(R.id.etPBathrooms)
         val btnPredict = findViewById<Button>(R.id.btnPredictNow)
+        val progress = findViewById<android.view.View>(R.id.progressPredict)
+        FormWidgets.bindStepper(findViewById(R.id.btnBedroomsMinus), etBedrooms, findViewById(R.id.btnBedroomsPlus))
+        FormWidgets.bindStepper(findViewById(R.id.btnBathroomsMinus), etBathrooms, findViewById(R.id.btnBathroomsPlus))
+        // Busy state while the API call runs (display only).
+        fun setBusy(busy: Boolean) {
+            btnPredict.isEnabled = !busy
+            btnPredict.setText(if (busy) R.string.predicting else R.string.predict_button)
+            progress.visibility = if (busy) android.view.View.VISIBLE else android.view.View.GONE
+        }
 
         RealisticPropertyFields.bindCollapse(this)
         RealisticPropertyFields.bindDontKnowSize(this)
@@ -77,6 +87,7 @@ class PredictionFormActivity : AppCompatActivity() {
                 hasGarden = realistic.hasGarden
             )
 
+            setBusy(true)
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
                     val resp = ApiClient.api.predict(req)
@@ -85,6 +96,7 @@ class PredictionFormActivity : AppCompatActivity() {
                         val err = resp.errorBody()?.string()
                         Log.e("PREDICT_FORM", "HTTP ${resp.code()} err=$err")
                         withContext(Dispatchers.Main) {
+                            setBusy(false)
                             Toast.makeText(
                                 this@PredictionFormActivity,
                                 "API error ${resp.code()}",
@@ -98,6 +110,7 @@ class PredictionFormActivity : AppCompatActivity() {
                     val pred = body?.predictedRentKes ?: 0.0
 
                     withContext(Dispatchers.Main) {
+                        setBusy(false)
                         if (pred > 0) {
                             if (body?.locationRecognised == false) {
                                 Toast.makeText(
@@ -130,6 +143,7 @@ class PredictionFormActivity : AppCompatActivity() {
                 } catch (e: Exception) {
                     Log.e("PREDICT_FORM", "Network exception", e)
                     withContext(Dispatchers.Main) {
+                        setBusy(false)
                         Toast.makeText(
                             this@PredictionFormActivity,
                             "Network error: ${e.message}",

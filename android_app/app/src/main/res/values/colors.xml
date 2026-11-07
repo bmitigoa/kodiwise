@@ -43,6 +43,7 @@
     <!-- Fixed brand colours (same in light and dark): launcher icon, splash, AR overlays. -->
     <color name="kw_brand_green">#0B5D3B</color>
     <color name="kw_brand_gold">#C9A227</color>
+    <color name="kw_range_track_start">#80FFFFFF</color>
     <color name="kw_ar_scrim">#B3101A14</color>
     <color name="kw_ar_on_scrim">#FFFFFF</color>
     <color name="kw_ar_on_scrim_variant">#D7E0D9</color>
