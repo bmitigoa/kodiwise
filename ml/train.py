@@ -24,9 +24,11 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 
 from ml.evaluate import (
+    compare_on_same_rows,
     cross_validate_baselines,
     cross_validate_lgbm,
     cross_validate_log_residuals,
+    eval_rows_record,
     make_lgbm_log_pipeline,
     metrics,
     prediction_interval_widths,
@@ -52,11 +54,37 @@ RANDOM_STATE = 42
 RAW_PATH = Path("data/raw/nairobi_rentals_enriched_v4.csv")
 CLEAN_PATH = Path("data/processed/nairobi_rentals_clean.csv")
 MODELS_DIR = Path("ml/models")
+# Exact data each saved version was trained/evaluated on (gitignored, never
+# uploaded), so a later candidate can be compared on the same rows.
+SNAPSHOT_DIR = Path("data/processed/snapshots")
+
+
+def load_version_eval(version: str, fs: FeatureSet) -> tuple[pd.DataFrame, dict] | None:
+    rows_path = MODELS_DIR / version / "eval_rows.json"
+    snap_path = SNAPSHOT_DIR / f"{version}.csv"
+    if not (rows_path.exists() and snap_path.exists()):
+        return None
+    df = coerce_dtypes(pd.read_csv(snap_path), fs.binary, fs.categorical)
+    return df, json.loads(rows_path.read_text())
+
+
+def deploy_comparison(candidate_df: pd.DataFrame, fs: FeatureSet, current_version: str) -> dict:
+    """project rules #4 gate on the same evaluation rows. If the current
+    version has no recorded rows/snapshot, the gate cannot be evaluated and
+    fails closed (deploying then needs Baraka's explicit decision)."""
+    loaded = load_version_eval(current_version, fs)
+    if loaded is None:
+        return {"current_version": current_version, "passes": False,
+                "error": "current version has no eval_rows.json / data snapshot; comparison not possible"}
+    current_df, current_rows = loaded
+    return compare_on_same_rows(current_df, current_rows, candidate_df, fs, current_version)
 
 
 def run_experiment(
-    df: pd.DataFrame, fs: FeatureSet, save_model: bool = False, return_artifacts: bool = False, version: str | None = None
+    df: pd.DataFrame, fs: FeatureSet, save_model: bool = False, return_artifacts: bool = False,
+    version: str | None = None, compare_to: str | None = None,
 ) -> dict:
+    input_df = df
     df = coerce_dtypes(df, fs.binary, fs.categorical)
 
     idx_tr, idx_te = train_test_split(
@@ -138,7 +166,13 @@ def run_experiment(
             "cv_baselines": cv_baselines,
             "prediction_interval": prediction_interval,
         }
+        if compare_to:
+            metrics_payload["deploy_comparison"] = deploy_comparison(df, fs, compare_to)
+            result["deploy_comparison"] = metrics_payload["deploy_comparison"]
         (out_dir / "metrics.json").write_text(json.dumps(metrics_payload, indent=2))
+        (out_dir / "eval_rows.json").write_text(json.dumps(eval_rows_record(train, test), indent=2))
+        SNAPSHOT_DIR.mkdir(parents=True, exist_ok=True)
+        input_df.to_csv(SNAPSHOT_DIR / f"{version}.csv", index=False)
         (out_dir / "feature_importance.json").write_text(json.dumps(importances[:50], indent=2))
         result["model_version"] = version
         result["model_dir"] = str(out_dir)
@@ -183,6 +217,9 @@ RUN_C_VERSION = "v20261106-appC"  # historical; no longer re-saved
 # "Pipeline"). v20261106-appD is kept as-is for rollback.
 RUN_D_VERSION = "v20261107-appD"
 PRODUCTION_VERSION = RUN_D_VERSION
+# The version currently deployed. A new Run D candidate (bump RUN_D_VERSION)
+# is compared with it on the same rows; see ml.evaluate.compare_on_same_rows.
+DEPLOYED_VERSION = "v20261107-appD"
 
 
 def main() -> None:
@@ -215,8 +252,13 @@ def main() -> None:
     print(json.dumps({k: v for k, v in run_c.items() if k != "top_feature_importances"}, indent=2))
 
     print(f"\n=== Run D: app-realistic + expanded-form features -- SAVED as production ({RUN_D_VERSION}) ===")
-    run_d = run_experiment(serving_safe_df, RUN_D_FEATURE_SET, save_model=True, version=RUN_D_VERSION)
+    run_d = run_experiment(serving_safe_df, RUN_D_FEATURE_SET, save_model=True, version=RUN_D_VERSION,
+                           compare_to=DEPLOYED_VERSION if DEPLOYED_VERSION != RUN_D_VERSION else None)
     print(json.dumps({k: v for k, v in run_d.items() if k != "top_feature_importances"}, indent=2))
+    gate = run_d.get("deploy_comparison")
+    if gate is not None:
+        verdict = "PASSES" if gate["passes"] else "FAILS -- do not deploy without Baraka's decision"
+        print(f"\n=== Deploy gate vs {DEPLOYED_VERSION} (same rows): {verdict} ===")
 
     print("\n=== title_len as a source-platform proxy ===")
     proxy = title_len_source_proxy(clean_df)

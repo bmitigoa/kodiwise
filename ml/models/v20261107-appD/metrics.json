@@ -138,5 +138,42 @@
     "median_test_range_width_kes": 49603.130128428966,
     "test_range_width_p25_kes": 29079.147334257188,
     "test_range_width_p75_kes": 72825.32333944763
+  },
+  "deploy_comparison": {
+    "rule": "project rules #4: on the same evaluation rows, test MAPE not worse by > 0.5 pp and CV R2 not lower by > 0.01",
+    "current_version": "v20261106-appD",
+    "rows": {
+      "test_rows_shared": 111,
+      "test_rows_dropped_by_candidate": 0,
+      "train_rows_current": 442,
+      "train_rows_candidate": 441,
+      "train_rows_new_in_candidate": 0,
+      "train_rows_dropped_by_candidate": 1
+    },
+    "current": {
+      "test": {
+        "MAE": 15700.257248904512,
+        "RMSE": 25978.373548543666,
+        "R2": 0.7321285050559604,
+        "MAPE": 24.030276793217553
+      },
+      "cv_mape_mean": 29.301638529978874,
+      "cv_r2_mean": 0.6802939035215945,
+      "cv_r2_std": 0.04750709881061743
+    },
+    "candidate": {
+      "test": {
+        "MAE": 15519.983799068232,
+        "RMSE": 25565.759324413033,
+        "R2": 0.7405701293633167,
+        "MAPE": 23.711826311213077
+      },
+      "cv_mape_mean": 29.093837839016697,
+      "cv_r2_mean": 0.6898154652253357,
+      "cv_r2_std": 0.04798169374047
+    },
+    "test_mape_delta_pp": -0.3184504820044758,
+    "cv_r2_delta": 0.009521561703741188,
+    "passes": true
   }
 }
