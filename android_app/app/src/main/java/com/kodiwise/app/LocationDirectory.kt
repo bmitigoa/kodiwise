@@ -8,7 +8,7 @@ import android.util.Log
  * AutoCompleteTextView on PredictionFormActivity and PropertyUploadActivity.
  * Persists the last successful GET /locations response in SharedPreferences
  * so the app has a fresh list on next launch without a network round trip,
- * and falls back to a bundled list (the 33 real neighbourhoods behind the
+ * and falls back to a bundled list (the 32 real neighbourhoods behind the
  * model, excluding the internal "Unknown" bucket) if nothing is cached yet
  * and the network call fails.
  */
@@ -21,7 +21,7 @@ object LocationDirectory {
         "Dagoretti", "Donholm", "Embakasi", "Garden Estate", "Gigiri", "Githurai",
         "Hurlingham", "Kahawa", "Kahawa Wendani", "Kahawa West", "Karen", "Kasarani",
         "Kileleshwa", "Kilimani", "Kitisuru", "Langata", "Lavington", "Loresho",
-        "Mwiki", "Ngara", "Parklands", "Pipeline", "Riverside", "Roysambu", "Runda",
+        "Mwiki", "Ngara", "Parklands", "Riverside", "Roysambu", "Runda",
         "South B", "South C", "Spring Valley", "Umoja", "Upperhill", "Utawala",
         "Westlands", "Zimmerman"
     )

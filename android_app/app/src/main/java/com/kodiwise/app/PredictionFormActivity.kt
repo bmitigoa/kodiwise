@@ -111,6 +111,7 @@ class PredictionFormActivity : AppCompatActivity() {
                                 putExtra("bedrooms", bedrooms)
                                 putExtra("bathrooms", bathrooms)
                                 putExtra("predicted", pred)
+                                body?.locationConfidence?.let { putExtra("locationConfidence", it) }
                                 if (body?.hasRange() == true) {
                                     putExtra("predictedLow", body.predictedRentLowKes!!)
                                     putExtra("predictedHigh", body.predictedRentHighKes!!)

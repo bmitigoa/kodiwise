@@ -41,6 +41,12 @@ class PredictionResultActivity : AppCompatActivity() {
             tvEstimateNote.visibility = android.view.View.VISIBLE
         }
 
+        // Appended to the existing note line -- no layout change. A missing
+        // extra (older API) means no hint.
+        PredictionResponse.locationConfidenceHint(intent.getStringExtra("locationConfidence"))?.let { hint ->
+            tvEstimateNote.text = "${tvEstimateNote.text}\n\n$hint"
+        }
+
         btnViewInAR.isEnabled = false
         btnViewInAR.text = "AR available for saved properties"
     }

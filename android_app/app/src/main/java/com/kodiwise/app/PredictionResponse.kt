@@ -25,6 +25,12 @@ data class PredictionResponse(
     @SerializedName("location_recognised")
     val locationRecognised: Boolean? = null,
 
+    // "high" | "low" | "none" -- how much training data backs the matched
+    // neighbourhood. Null against API versions that predate the field;
+    // treated the same as "high" (no hint shown).
+    @SerializedName("location_confidence")
+    val locationConfidence: String? = null,
+
     val note: String? = null
 ) {
 
@@ -34,5 +40,15 @@ data class PredictionResponse(
 
     fun hasRange(): Boolean {
         return predictedRentLowKes != null && predictedRentHighKes != null
+    }
+
+    companion object {
+        /** Hint for the result screen, or null when no note is needed
+         *  ("high", missing, or an unexpected value from a newer API). */
+        fun locationConfidenceHint(confidence: String?): String? = when (confidence) {
+            "low" -> "Few listings in this area. Treat this estimate as rough."
+            "none" -> "Not enough local data. This estimate is based mostly on the Nairobi average."
+            else -> null
+        }
     }
 }
