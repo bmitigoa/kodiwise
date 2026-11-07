@@ -13,7 +13,7 @@ import numpy as np
 import pandas as pd
 
 from ml.features import (
-    RUN_D_FEATURE_SET,
+    FEATURE_SETS,
     location_confidence,
     lookup_location_stats,
     property_type_flags,
@@ -36,6 +36,8 @@ class Predictor:
         self.pipe = joblib.load(self.model_dir / "model.joblib")
         self.location_lookup = json.loads((self.model_dir / "location_lookup.json").read_text())
         self.metrics = json.loads((self.model_dir / "metrics.json").read_text())
+        # Columns the saved pipeline was trained on (Run D, Run E, ...).
+        self.feature_set = FEATURE_SETS[self.metrics["feature_set"]]
 
     @property
     def loaded(self) -> bool:
@@ -87,7 +89,7 @@ class Predictor:
         row["has_play_area"] = has_play_area if has_play_area is not None else 0
         row["has_garden"] = has_garden if has_garden is not None else 0
 
-        row = row[RUN_D_FEATURE_SET.numeric + RUN_D_FEATURE_SET.binary]
+        row = row[self.feature_set.numeric + self.feature_set.binary]
 
         point = max(float(self.pipe.predict(row)[0]), 0.0)
 

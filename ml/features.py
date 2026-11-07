@@ -10,6 +10,8 @@ computed from the training split only.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from functools import lru_cache
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -103,6 +105,28 @@ RUN_D_BINARY = [
 ]
 RUN_D_FEATURE_SET = FeatureSet("app_expanded_form", RUN_D_NUMERIC, RUN_D_BINARY, [], text=None)
 
+# Run E: Run D + location geography. Coordinates and distances come from
+# the neighbourhood name only (data/reference/, OpenStreetMap), so the app
+# request does not change. loc_mean_spatial_tr is the train-only location
+# mean shrunk toward nearby neighbourhoods (see spatial_location_means).
+GEO_FEATURES = [
+    "lat", "lon",
+    "dist_cbd_km", "dist_westlands_km", "dist_upperhill_km", "dist_jkia_km",
+    "dist_thika_rd_km", "dist_mombasa_rd_km",
+]
+SPATIAL_PRIOR_COL = "loc_mean_spatial_tr"
+RUN_E_NUMERIC = RUN_D_NUMERIC + GEO_FEATURES + [SPATIAL_PRIOR_COL]
+RUN_E_FEATURE_SET = FeatureSet("app_expanded_form_gps", RUN_E_NUMERIC, RUN_D_BINARY, [], text=None)
+# Run E2: Run D + GPS only, without the spatial prior (the prior added
+# nothing measurable in the Run E sensitivity checks).
+RUN_E2_NUMERIC = RUN_D_NUMERIC + GEO_FEATURES
+RUN_E2_FEATURE_SET = FeatureSet("app_expanded_form_gps_no_prior", RUN_E2_NUMERIC, RUN_D_BINARY, [], text=None)
+
+FEATURE_SETS = {fs.name: fs for fs in [
+    PAPER_FEATURE_SET, KODIWISE_FEATURE_SET, APP_FEATURE_SET, RUN_D_FEATURE_SET, RUN_E_FEATURE_SET,
+    RUN_E2_FEATURE_SET,
+]}
+
 PROPERTY_TYPES = ["apartment", "house", "bedsitter"]
 
 
@@ -177,6 +201,137 @@ def coerce_dtypes(df: pd.DataFrame, binary_cols: list[str], categorical_cols: li
     return df
 
 
+# ---------------------------------------------------------------------------
+# Geography (Run E). Reference data: data/reference/, built from
+# OpenStreetMap by data_pipeline/geocode.py ((c) OpenStreetMap contributors).
+# ---------------------------------------------------------------------------
+
+REFERENCE_DIR = Path(__file__).resolve().parent.parent / "data" / "reference"
+EARTH_RADIUS_KM = 6371.0088
+SPATIAL_BANDWIDTH_KM = 3.0   # kernel scale for neighbouring neighbourhoods
+SPATIAL_MIN_N = 10           # locations with >= this many train rows keep loc_mean_tr
+
+
+def haversine_km(lat1, lon1, lat2, lon2):
+    """Great-circle distance in km (scalars or numpy arrays)."""
+    lat1, lon1, lat2, lon2 = (np.radians(np.asarray(x, dtype=float)) for x in (lat1, lon1, lat2, lon2))
+    h = np.sin((lat2 - lat1) / 2) ** 2 + np.cos(lat1) * np.cos(lat2) * np.sin((lon2 - lon1) / 2) ** 2
+    return 2 * EARTH_RADIUS_KM * np.arcsin(np.sqrt(h))
+
+
+def distance_to_polyline_km(lat: float, lon: float, ways: list[np.ndarray]) -> float:
+    """Shortest distance (km) from a point to a road made of OSM ways (each an
+    (n, 2) array of lat/lon vertices), measured to the nearest segment in a
+    local equirectangular projection -- accurate to metres at city scale."""
+    k_lat = np.radians(1.0) * EARTH_RADIUS_KM
+    k_lon = k_lat * np.cos(np.radians(lat))
+    best = np.inf
+    for way in ways:
+        xy = np.column_stack(((way[:, 1] - lon) * k_lon, (way[:, 0] - lat) * k_lat))
+        if len(xy) == 1:
+            best = min(best, float(np.hypot(*xy[0])))
+            continue
+        a, b = xy[:-1], xy[1:]
+        ab = b - a
+        denom = np.maximum((ab ** 2).sum(axis=1), 1e-12)
+        t = np.clip(-(a * ab).sum(axis=1) / denom, 0.0, 1.0)
+        closest = a + ab * t[:, None]
+        best = min(best, float(np.hypot(closest[:, 0], closest[:, 1]).min()))
+    return best
+
+
+@dataclass(frozen=True)
+class GeoReference:
+    centroids: dict          # neighbourhood -> (lat, lon)
+    pois: dict               # poi key -> (lat, lon)
+    roads: dict              # road key -> list of (n, 2) lat/lon arrays
+
+    def features_at(self, lat: float, lon: float) -> dict:
+        f = {"lat": lat, "lon": lon}
+        for poi in ("cbd", "westlands", "upperhill", "jkia"):
+            plat, plon = self.pois[poi]
+            f[f"dist_{poi}_km"] = float(haversine_km(lat, lon, plat, plon))
+        for road in ("thika_rd", "mombasa_rd"):
+            f[f"dist_{road}_km"] = distance_to_polyline_km(lat, lon, self.roads[road])
+        return f
+
+    def fallback_point(self) -> tuple[float, float]:
+        """Unknown / unrecognised location: the CBD, in training and serving alike."""
+        return self.pois["cbd"]
+
+
+@lru_cache(maxsize=4)
+def load_geo_reference(ref_dir: str = str(REFERENCE_DIR)) -> GeoReference:
+    d = Path(ref_dir)
+    cents = pd.read_csv(d / "neighbourhood_centroids.csv")
+    pois = pd.read_csv(d / "pois.csv")
+    roads = pd.read_csv(d / "roads.csv").sort_values(["road", "way_id", "seq"])
+    return GeoReference(
+        centroids={r.name: (float(r.lat), float(r.lon)) for r in cents.itertuples()},
+        pois={r.poi: (float(r.lat), float(r.lon)) for r in pois.itertuples()},
+        roads={road: [g[["lat", "lon"]].to_numpy(float) for _, g in grp.groupby("way_id")]
+               for road, grp in roads.groupby("road")},
+    )
+
+
+@lru_cache(maxsize=64)
+def _geo_features_cached(location: str, ref_dir: str) -> tuple:
+    geo = load_geo_reference(ref_dir)
+    lat, lon = geo.centroids.get(location, geo.fallback_point())
+    f = geo.features_at(lat, lon)
+    return tuple(f[c] for c in GEO_FEATURES)
+
+
+def location_geo_features(location: str, ref_dir: str = str(REFERENCE_DIR)) -> dict:
+    """GEO_FEATURES for a neighbourhood name (CBD point if it has no centroid)."""
+    return dict(zip(GEO_FEATURES, _geo_features_cached(location, ref_dir)))
+
+
+def spatial_location_means(stats: pd.DataFrame, smoothed_mean: pd.Series, global_mean: float,
+                           m: int, geo: GeoReference,
+                           bandwidth_km: float | None = None, min_n: int | None = None) -> pd.Series:
+    """Spatially smoothed location prior, from training stats only.
+
+    Locations with >= min_n training rows keep the usual smoothed mean.
+    Sparser locations with coordinates are shrunk (weight m) toward a
+    distance-weighted mean of the *other* training neighbourhoods,
+    w_j = n_j * exp(-d_ij / bandwidth), instead of toward the city mean.
+    Returns one value per location in the training stats plus every
+    neighbourhood with coordinates (a location absent from this split gets
+    its pure neighbourhood prior).
+    """
+    h = SPATIAL_BANDWIDTH_KM if bandwidth_km is None else bandwidth_km
+    min_n = SPATIAL_MIN_N if min_n is None else min_n
+    with_coords = [loc for loc in stats.index if loc in geo.centroids]
+    out = {}
+    for loc in sorted(set(stats.index) | set(geo.centroids)):
+        n = float(stats["n"].get(loc, 0.0))
+        if n >= min_n or loc not in geo.centroids:
+            out[loc] = float(smoothed_mean.get(loc, global_mean))
+            continue
+        lat, lon = geo.centroids[loc]
+        others = [j for j in with_coords if j != loc]
+        if others:
+            d = haversine_km(lat, lon, [geo.centroids[j][0] for j in others], [geo.centroids[j][1] for j in others])
+            w = stats.loc[others, "n"].to_numpy(float) * np.exp(-d / h)
+            prior = float((w * stats.loc[others, "mean"].to_numpy(float)).sum() / w.sum()) if w.sum() > 1e-9 else global_mean
+        else:
+            prior = global_mean
+        mean = float(stats["mean"].get(loc, 0.0))
+        out[loc] = (n * mean + m * prior) / (n + m)
+    return pd.Series(out)
+
+
+def _location_stats(train: pd.DataFrame, m: int):
+    g = train.groupby("location_std")[TARGET]
+    global_mean = train[TARGET].mean()
+    global_median = train[TARGET].median()
+    stats = pd.DataFrame({"mean": g.mean(), "median": g.median(), "n": g.count()})
+    smoothed_mean = (stats["n"] * stats["mean"] + m * global_mean) / (stats["n"] + m)
+    spatial = spatial_location_means(stats, smoothed_mean, global_mean, m, load_geo_reference())
+    return stats, smoothed_mean, spatial, global_mean, global_median
+
+
 def add_location_stats(
     train: pd.DataFrame, other: pd.DataFrame, m: int = 5
 ) -> tuple[pd.DataFrame, pd.DataFrame, int]:
@@ -184,18 +339,22 @@ def add_location_stats(
     the global training mean (weight m), and map them onto both `train` and
     `other`. Unseen locations in `other` fall back to the global train
     mean/median/0 count. Never touches `other`'s price_kes.
+
+    Also adds the Run E columns: GEO_FEATURES (a pure function of the
+    neighbourhood name) and loc_mean_spatial_tr (train-only spatial prior).
+    Feature sets that do not list them simply ignore them.
     """
-    g = train.groupby("location_std")[TARGET]
-    global_mean = train[TARGET].mean()
-    global_median = train[TARGET].median()
-    stats = pd.DataFrame({"mean": g.mean(), "median": g.median(), "n": g.count()})
-    smoothed_mean = (stats["n"] * stats["mean"] + m * global_mean) / (stats["n"] + m)
+    stats, smoothed_mean, spatial, global_mean, global_median = _location_stats(train, m)
 
     def _apply(d: pd.DataFrame) -> pd.DataFrame:
         d = d.copy()
         d["loc_mean_tr"] = d["location_std"].map(smoothed_mean).fillna(global_mean)
         d["loc_median_tr"] = d["location_std"].map(stats["median"]).fillna(global_median)
         d["loc_count_tr"] = d["location_std"].map(stats["n"]).fillna(0)
+        d[SPATIAL_PRIOR_COL] = d["location_std"].map(spatial).fillna(global_mean)
+        geo = pd.DataFrame([location_geo_features(str(loc)) for loc in d["location_std"]], index=d.index)
+        for c in GEO_FEATURES:
+            d[c] = geo[c]
         return d
 
     unseen = int((~other["location_std"].isin(stats.index)).sum())
@@ -207,19 +366,18 @@ def build_location_lookup(train: pd.DataFrame, m: int = 5) -> dict:
     add_location_stats(), as a plain dict the API can load once at startup
     and look up in O(1) per request -- no raw per-row rents are exposed,
     only the aggregated/smoothed stats actually needed to serve. The
-    "__global__" key is the fallback for a location unseen in training.
+    "__global__" key is the fallback for a location unseen in training
+    (city-mean stats, CBD coordinates).
     """
-    g = train.groupby("location_std")[TARGET]
-    global_mean = train[TARGET].mean()
-    global_median = train[TARGET].median()
-    stats = pd.DataFrame({"mean": g.mean(), "median": g.median(), "n": g.count()})
-    smoothed_mean = (stats["n"] * stats["mean"] + m * global_mean) / (stats["n"] + m)
+    stats, smoothed_mean, spatial, global_mean, global_median = _location_stats(train, m)
 
     locations = {
         loc: {
             "loc_mean_tr": float(smoothed_mean[loc]),
             "loc_median_tr": float(stats["median"][loc]),
             "loc_count_tr": float(stats["n"][loc]),
+            SPATIAL_PRIOR_COL: float(spatial.get(loc, smoothed_mean[loc])),
+            **location_geo_features(str(loc)),
         }
         for loc in stats.index
     }
@@ -227,6 +385,8 @@ def build_location_lookup(train: pd.DataFrame, m: int = 5) -> dict:
         "loc_mean_tr": float(global_mean),
         "loc_median_tr": float(global_median),
         "loc_count_tr": 0.0,
+        SPATIAL_PRIOR_COL: float(global_mean),
+        **location_geo_features("__global__"),
     }
     return locations
 

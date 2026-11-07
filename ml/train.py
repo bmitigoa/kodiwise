@@ -39,7 +39,9 @@ from ml.features import (
     FeatureSet,
     KODIWISE_FEATURE_SET,
     PAPER_FEATURE_SET,
+    FEATURE_SETS,
     RUN_D_FEATURE_SET,
+    RUN_E2_FEATURE_SET,
     STRATIFY_COL,
     TARGET,
     add_location_stats,
@@ -69,15 +71,20 @@ def load_version_eval(version: str, fs: FeatureSet) -> tuple[pd.DataFrame, dict]
 
 
 def deploy_comparison(candidate_df: pd.DataFrame, fs: FeatureSet, current_version: str) -> dict:
-    """Deploy-rule gate on the same evaluation rows. If the current
-    version has no recorded rows/snapshot, the gate cannot be evaluated and
-    fails closed (deploying then needs Baraka's explicit decision)."""
-    loaded = load_version_eval(current_version, fs)
+    """Deploy-rule gate on the same evaluation rows. The current version is
+    retrained with its own feature set (read from its metrics.json) and the
+    candidate with `fs`. If the current version has no recorded
+    rows/snapshot, the gate cannot be evaluated and fails closed (deploying
+    then needs Baraka's explicit decision)."""
+    metrics_path = MODELS_DIR / current_version / "metrics.json"
+    current_fs = (FEATURE_SETS.get(json.loads(metrics_path.read_text())["feature_set"])
+                  if metrics_path.exists() else None)
+    loaded = load_version_eval(current_version, current_fs) if current_fs is not None else None
     if loaded is None:
         return {"current_version": current_version, "passes": False,
                 "error": "current version has no eval_rows.json / data snapshot; comparison not possible"}
     current_df, current_rows = loaded
-    return compare_on_same_rows(current_df, current_rows, candidate_df, fs, current_version)
+    return compare_on_same_rows(current_df, current_rows, candidate_df, fs, current_version, current_fs=current_fs)
 
 
 def run_experiment(
@@ -215,10 +222,14 @@ RUN_C_VERSION = "v20261106-appC"  # historical; no longer re-saved
 # v20261107-appD: Run D retrained after the cleaning step started dropping
 # listings outside Nairobi County (1 row: a Nakuru listing mapped to
 # "Pipeline"). v20261106-appD is kept as-is for rollback.
-RUN_D_VERSION = "v20261107-appD"
-PRODUCTION_VERSION = RUN_D_VERSION
-# The version currently deployed. A new Run D candidate (bump RUN_D_VERSION)
-# is compared with it on the same rows; see ml.evaluate.compare_on_same_rows.
+RUN_D_VERSION = "v20261107-appD"   # deployed; reported only, kept as saved
+# Run E: Run D + GPS features + spatial location prior. Saved, not served.
+RUN_E_VERSION = "v20261107-appE"
+# Run E2: Run D + GPS features, no spatial prior (chosen after Run E's checks).
+RUN_E2_VERSION = "v20261107-appE2"
+CANDIDATE_VERSION = RUN_E2_VERSION
+# The version currently deployed. The candidate is compared with it on the
+# same rows; see ml.evaluate.compare_on_same_rows.
 DEPLOYED_VERSION = "v20261107-appD"
 
 
@@ -251,11 +262,16 @@ def main() -> None:
     run_c = run_experiment(serving_safe_df, APP_FEATURE_SET, save_model=False)
     print(json.dumps({k: v for k, v in run_c.items() if k != "top_feature_importances"}, indent=2))
 
-    print(f"\n=== Run D: app-realistic + expanded-form features -- SAVED as production ({RUN_D_VERSION}) ===")
-    run_d = run_experiment(serving_safe_df, RUN_D_FEATURE_SET, save_model=True, version=RUN_D_VERSION,
-                           compare_to=DEPLOYED_VERSION if DEPLOYED_VERSION != RUN_D_VERSION else None)
+    print(f"\n=== Run D: app-realistic + expanded-form features -- reported only; {RUN_D_VERSION} kept as saved ===")
+    run_d = run_experiment(serving_safe_df, RUN_D_FEATURE_SET, save_model=False)
     print(json.dumps({k: v for k, v in run_d.items() if k != "top_feature_importances"}, indent=2))
-    gate = run_d.get("deploy_comparison")
+
+    print(f"\n=== Run E2: Run D + GPS features, no spatial prior -- SAVED as candidate ({RUN_E2_VERSION}); "
+          f"{RUN_E_VERSION} (with prior) kept as saved ===")
+    run_e = run_experiment(serving_safe_df, RUN_E2_FEATURE_SET, save_model=True, version=RUN_E2_VERSION,
+                           compare_to=DEPLOYED_VERSION)
+    print(json.dumps({k: v for k, v in run_e.items() if k not in ("top_feature_importances", "deploy_comparison")}, indent=2))
+    gate = run_e.get("deploy_comparison")
     if gate is not None:
         verdict = "PASSES" if gate["passes"] else "FAILS -- do not deploy without Baraka's decision"
         print(f"\n=== Deploy gate vs {DEPLOYED_VERSION} (same rows): {verdict} ===")
@@ -267,15 +283,17 @@ def main() -> None:
     run_b_clean = {k: v for k, v in run_b.items() if k not in ("_pipe", "_test")}
     report = {
         "generated": date.today().isoformat(),
-        "production_model_version": PRODUCTION_VERSION,
+        "deployed_model_version": DEPLOYED_VERSION,
+        "candidate_model_version": CANDIDATE_VERSION,
         "run_a_paper_reproduction": run_a,
         "run_b_kodiwise_baseline": run_b_clean,
         "run_b_scored_with_app_realistic_inputs": run_b_app_degraded_metrics,
         "run_c_app_realistic": run_c,
         "run_d_app_expanded_form_deployed": run_d,
+        "run_e2_app_expanded_form_gps_no_prior": {k: v for k, v in run_e.items() if k != "deploy_comparison"},
         "title_len_source_platform_proxy": proxy,
     }
-    report_path = MODELS_DIR / PRODUCTION_VERSION / "run_comparison.json"
+    report_path = MODELS_DIR / CANDIDATE_VERSION / "run_comparison.json"
     report_path.write_text(json.dumps(report, indent=2))
     print(f"\nComparison report saved to {report_path}")
 
