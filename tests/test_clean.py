@@ -1,6 +1,8 @@
 import pandas as pd
 
-from data_pipeline.clean import clean
+import pytest
+
+from data_pipeline.clean import clean, is_outside_nairobi
 
 
 def _row(**overrides):
@@ -66,3 +68,28 @@ def test_row_counts_are_logged_per_step():
     final = next(s for s in steps if s["rule"] == "final")
     assert final["rows_before"] == 2
     assert final["rows_dropped"] == 1
+
+
+def test_outside_nairobi_listing_dropped_with_reason():
+    df = pd.DataFrame([
+        _row(location="Kilimani, Hurlingham"),
+        _row(location="Nakuru, Nakuru Town East", location_std="Pipeline"),
+    ])
+    cleaned, dropped, _ = clean(df)
+    assert len(cleaned) == 1
+    assert dropped[0]["reason"] == "outside_nairobi_county"
+    assert dropped[0]["neighbourhood"] == "Pipeline"
+
+
+@pytest.mark.parametrize("location,expected", [
+    ("Nakuru, Nakuru Town East", True),
+    ("Kiambu, Ruaka", True),
+    ("Mombasa Road", False),            # Nairobi road, not the county
+    ("Isiolo Road, Kahawa Sukari", False),
+    ("Kilimani, Nairobi", False),
+    ("Embakasi, Pipeline", False),      # Nairobi's Pipeline
+    (None, False),
+    ("", False),
+])
+def test_is_outside_nairobi(location, expected):
+    assert is_outside_nairobi(location) is expected

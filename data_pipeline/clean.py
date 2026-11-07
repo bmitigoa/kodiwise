@@ -20,6 +20,33 @@ CLEAN_PATH = Path("data/processed/nairobi_rentals_clean.csv")
 DROPPED_PATH = Path("data/processed/dropped_rows.csv")
 LOG_PATH = Path("data/processed/clean_log.json")
 
+# Scope rule: Nairobi County only (paper scope; project rules Phase 3 cleaning
+# rules). The platform's own `location` field is "<area>, <sub-area>" --
+# e.g. "Nakuru, Nakuru Town East" -- so a first segment naming one of
+# Kenya's other 46 counties means the listing is outside Nairobi, whatever
+# location_std it was mapped to (found: a Nakuru "Pipeline" listing filed
+# under Nairobi's Pipeline). Matching only the whole first segment, not a
+# substring, keeps Nairobi roads named after towns ("Mombasa Road",
+# "Thika Road", "Isiolo Road").
+NON_NAIROBI_COUNTIES = {
+    "mombasa", "kwale", "kilifi", "tana river", "lamu", "taita taveta",
+    "garissa", "wajir", "mandera", "marsabit", "isiolo", "meru",
+    "tharaka nithi", "embu", "kitui", "machakos", "makueni", "nyandarua",
+    "nyeri", "kirinyaga", "murang'a", "muranga", "kiambu", "turkana",
+    "west pokot", "samburu", "trans nzoia", "uasin gishu", "elgeyo marakwet",
+    "nandi", "baringo", "laikipia", "nakuru", "narok", "kajiado", "kericho",
+    "bomet", "kakamega", "vihiga", "bungoma", "busia", "siaya", "kisumu",
+    "homa bay", "migori", "kisii", "nyamira",
+}
+
+
+def is_outside_nairobi(location: object) -> bool:
+    if not isinstance(location, str) or not location.strip():
+        return False
+    first = location.split(",")[0].strip().lower()
+    return first in NON_NAIROBI_COUNTIES
+
+
 # Rule 10.1: short-stay / non-monthly listings.
 SHORT_STAY_KEYWORDS = [
     "bnb", "airbnb", "per night", "nightly", "check-out", "check in",
@@ -59,6 +86,19 @@ def clean(df: pd.DataFrame) -> tuple[pd.DataFrame, list[dict], list[dict]]:
 
     n0 = len(df)
     steps.append({"rule": "start", "rows_before": n0, "rows_after": n0, "rows_dropped": 0})
+
+    # --- Scope: drop listings outside Nairobi County ---
+    n_before = len(df)
+    if "location" in df.columns:
+        outside = df["location"].map(is_outside_nairobi).astype(bool)
+    else:
+        outside = pd.Series(False, index=df.index)
+    _log_dropped(df[outside], "outside_nairobi_county", dropped_rows)
+    df = df[~outside].copy()
+    steps.append({
+        "rule": "outside_nairobi_county (location field)",
+        "rows_before": n_before, "rows_after": len(df), "rows_dropped": n_before - len(df),
+    })
 
     # --- Rule 10.1a: keyword match on title / title_clean ---
     n_before = len(df)
