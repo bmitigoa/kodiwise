@@ -1,0 +1,4168 @@
+{
+ "Dagoretti, Nairobi, Kenya": [
+  {
+   "place_id": 38341294,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "relation",
+   "osm_id": 16362605,
+   "lat": "-1.2835913",
+   "lon": "36.7246656",
+   "category": "boundary",
+   "type": "administrative",
+   "place_rank": 12,
+   "importance": 0.2400725040054932,
+   "addresstype": "city_district",
+   "name": "Dagoretti",
+   "display_name": "Dagoretti, Nairobi, Kenya",
+   "address": {
+    "city_district": "Dagoretti",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.3084441",
+    "-1.2586936",
+    "36.6816885",
+    "36.7620091"
+   ]
+  }
+ ],
+ "Donholm, Nairobi, Kenya": [
+  {
+   "place_id": 38214746,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 482840488,
+   "lat": "-1.2992254",
+   "lon": "36.8886888",
+   "category": "place",
+   "type": "suburb",
+   "place_rank": 19,
+   "importance": 0.14673917067215986,
+   "addresstype": "suburb",
+   "name": "Doonholm",
+   "display_name": "Doonholm, Lower Savannah ward, Embakasi, Nairobi, 00515, Kenya",
+   "address": {
+    "suburb": "Doonholm",
+    "city_district": "Embakasi",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00515",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.3192254",
+    "-1.2792254",
+    "36.8686888",
+    "36.9086888"
+   ]
+  },
+  {
+   "place_id": 417223228,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 12886264391,
+   "lat": "-1.3038867",
+   "lon": "36.8878800",
+   "category": "place",
+   "type": "locality",
+   "place_rank": 25,
+   "importance": 0.06673917067215991,
+   "addresstype": "locality",
+   "name": "Donholm",
+   "display_name": "Donholm, Viwandani ward, Makadara subcounty, Nairobi, 00501, Kenya",
+   "address": {
+    "locality": "Donholm",
+    "suburb": "Viwandani ward",
+    "city_district": "Makadara subcounty",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00501",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.3138867",
+    "-1.2938867",
+    "36.8778800",
+    "36.8978800"
+   ]
+  }
+ ],
+ "Embakasi, Nairobi, Kenya": [
+  {
+   "place_id": 38299332,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "relation",
+   "osm_id": 16248854,
+   "lat": "-1.3076101",
+   "lon": "36.9341590",
+   "category": "boundary",
+   "type": "administrative",
+   "place_rank": 12,
+   "importance": 0.32363080181052895,
+   "addresstype": "city_district",
+   "name": "Embakasi",
+   "display_name": "Embakasi, Nairobi, Kenya",
+   "address": {
+    "city_district": "Embakasi",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.3579896",
+    "-1.2573858",
+    "36.8617302",
+    "36.9843192"
+   ]
+  }
+ ],
+ "Garden Estate, Nairobi, Kenya": [
+  {
+   "place_id": 38414526,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 289908114,
+   "lat": "-1.2219361",
+   "lon": "36.8633024",
+   "category": "place",
+   "type": "suburb",
+   "place_rank": 19,
+   "importance": 0.14673917067215986,
+   "addresstype": "suburb",
+   "name": "Garden Estate",
+   "display_name": "Garden Estate, Roysambu division, Kasarani, Nairobi, 31224, Kenya",
+   "address": {
+    "suburb": "Garden Estate",
+    "city_district": "Kasarani",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "31224",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2419361",
+    "-1.2019361",
+    "36.8433024",
+    "36.8833024"
+   ]
+  }
+ ],
+ "Gigiri, Nairobi, Kenya": [
+  {
+   "place_id": 38240173,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 272706882,
+   "lat": "-1.2325029",
+   "lon": "36.8072952",
+   "category": "place",
+   "type": "suburb",
+   "place_rank": 19,
+   "importance": 0.31977730603466514,
+   "addresstype": "suburb",
+   "name": "Gigiri",
+   "display_name": "Gigiri, Highridge division, Westlands, Nairobi, 00601, Kenya",
+   "address": {
+    "suburb": "Gigiri",
+    "city_district": "Westlands",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00601",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2525029",
+    "-1.2125029",
+    "36.7872952",
+    "36.8272952"
+   ]
+  }
+ ],
+ "Githurai, Nairobi, Kenya": [
+  {
+   "place_id": 37972615,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "way",
+   "osm_id": 677844262,
+   "lat": "-1.2028370",
+   "lon": "36.9168588",
+   "category": "place",
+   "type": "town",
+   "place_rank": 18,
+   "importance": 0.16004821622034027,
+   "addresstype": "suburb",
+   "name": "Githurai",
+   "display_name": "Githurai, Nairobi, Kenya",
+   "address": {
+    "suburb": "Githurai",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2057131",
+    "-1.2007752",
+    "36.9139614",
+    "36.9193694"
+   ]
+  },
+  {
+   "place_id": 37977887,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "relation",
+   "osm_id": 18098743,
+   "lat": "-1.1903162",
+   "lon": "36.9133863",
+   "category": "boundary",
+   "type": "administrative",
+   "place_rank": 14,
+   "importance": 0.21340583733882654,
+   "addresstype": "suburb",
+   "name": "Githurai division",
+   "display_name": "Githurai division, Kasarani, Nairobi, Kenya",
+   "address": {
+    "suburb": "Githurai division",
+    "city_district": "Kasarani",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2195974",
+    "-1.1606749",
+    "36.8876737",
+    "36.9432813"
+   ]
+  }
+ ],
+ "Hurlingham, Nairobi, Kenya": [
+  {
+   "place_id": 38323711,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 1333657670,
+   "lat": "-1.2914062",
+   "lon": "36.7953128",
+   "category": "place",
+   "type": "suburb",
+   "place_rank": 19,
+   "importance": 0.14673917067215986,
+   "addresstype": "suburb",
+   "name": "Hurlingham",
+   "display_name": "Hurlingham, Kilimani division, Westlands, Nairobi, 29526, Kenya",
+   "address": {
+    "suburb": "Hurlingham",
+    "city_district": "Westlands",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "29526",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.3114062",
+    "-1.2714062",
+    "36.7753128",
+    "36.8153128"
+   ]
+  }
+ ],
+ "Kahawa, Nairobi, Kenya": [
+  {
+   "place_id": 38164798,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 13246210307,
+   "lat": "-1.2244500",
+   "lon": "36.7245487",
+   "category": "shop",
+   "type": "tyres",
+   "place_rank": 30,
+   "importance": 4.5001144426596745e-05,
+   "addresstype": "shop",
+   "name": "Quality Tyre Sales and Repair Shop",
+   "display_name": "Quality Tyre Sales and Repair Shop, Kahawa, Getathuru Road, Kitisuru location, Kitisuru ward, Wangige, Westlands, Kabete ward, Kabete, Kiambu, 23083, Kenya",
+   "address": {
+    "shop": "Quality Tyre Sales and Repair Shop",
+    "house_number": "Kahawa",
+    "road": "Getathuru Road",
+    "city_block": "Kitisuru location",
+    "neighbourhood": "Kitisuru ward",
+    "suburb": "Wangige",
+    "city_district": "Westlands",
+    "city": "Kabete ward",
+    "county": "Kabete",
+    "state": "Kiambu",
+    "ISO3166-2-lvl4": "KE-13",
+    "postcode": "23083",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2245000",
+    "-1.2244000",
+    "36.7244987",
+    "36.7245987"
+   ]
+  },
+  {
+   "place_id": 38119394,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "relation",
+   "osm_id": 18101586,
+   "lat": "-1.1802219",
+   "lon": "36.9161944",
+   "category": "boundary",
+   "type": "administrative",
+   "place_rank": 18,
+   "importance": 0.16007250400549322,
+   "addresstype": "neighbourhood",
+   "name": "Kahawa West location",
+   "display_name": "Kahawa West location, Githurai division, Kasarani, Nairobi, Kenya",
+   "address": {
+    "neighbourhood": "Kahawa West location",
+    "suburb": "Githurai division",
+    "city_district": "Kasarani",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.1994217",
+    "-1.1606749",
+    "36.8876737",
+    "36.9432813"
+   ]
+  },
+  {
+   "place_id": 38127075,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 2393090122,
+   "lat": "-1.1863052",
+   "lon": "36.9068145",
+   "category": "place",
+   "type": "suburb",
+   "place_rank": 19,
+   "importance": 0.14673917067215986,
+   "addresstype": "suburb",
+   "name": "Kahawa West",
+   "display_name": "Kahawa West, Githurai division, Kasarani, Nairobi, 00607, Kenya",
+   "address": {
+    "suburb": "Kahawa West",
+    "city_district": "Kasarani",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00607",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2063052",
+    "-1.1663052",
+    "36.8868145",
+    "36.9268145"
+   ]
+  },
+  {
+   "place_id": 38219960,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "relation",
+   "osm_id": 18101587,
+   "lat": "-1.1737527",
+   "lon": "36.9046168",
+   "category": "boundary",
+   "type": "administrative",
+   "place_rank": 20,
+   "importance": 0.13340583733882655,
+   "addresstype": "city_block",
+   "name": "Kahawa West sublocation",
+   "display_name": "Kahawa West sublocation, Kahawa West location, Githurai division, Kasarani, Nairobi, 00607, Kenya",
+   "address": {
+    "city_block": "Kahawa West sublocation",
+    "neighbourhood": "Kahawa West location",
+    "suburb": "Githurai division",
+    "city_district": "Kasarani",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00607",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.1868416",
+    "-1.1606749",
+    "36.8876737",
+    "36.9237954"
+   ]
+  }
+ ],
+ "Kahawa Wendani, Nairobi, Kenya": [
+  {
+   "place_id": 38138494,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 1045131944,
+   "lat": "-1.1948310",
+   "lon": "36.9257112",
+   "category": "amenity",
+   "type": "school",
+   "place_rank": 30,
+   "importance": 7.250400549320238e-05,
+   "addresstype": "amenity",
+   "name": "AA of Kenya Driving School",
+   "display_name": "AA of Kenya Driving School, Thika Road, Kahawa Wendani, Nairobi, Ruiru, Kiambu, 00609, Kenya",
+   "address": {
+    "amenity": "AA of Kenya Driving School",
+    "road": "Thika Road",
+    "suburb": "Kahawa Wendani",
+    "city": "Nairobi",
+    "county": "Ruiru",
+    "state": "Kiambu",
+    "ISO3166-2-lvl4": "KE-13",
+    "postcode": "00609",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.1948810",
+    "-1.1947810",
+    "36.9256612",
+    "36.9257612"
+   ]
+  },
+  {
+   "place_id": 38238142,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 7877480786,
+   "lat": "-1.1952168",
+   "lon": "36.9462739",
+   "category": "shop",
+   "type": "butcher",
+   "place_rank": 30,
+   "importance": 4.821622034023068e-05,
+   "addresstype": "shop",
+   "name": "Mt. Kenya butchery",
+   "display_name": "Mt. Kenya butchery, Kahawa Sukari Avenue, Kahawa Wendani, Kahawa Sukari ward, Ruiru, Kiambu, 00609, Kenya",
+   "address": {
+    "shop": "Mt. Kenya butchery",
+    "road": "Kahawa Sukari Avenue",
+    "suburb": "Kahawa Wendani",
+    "city": "Kahawa Sukari ward",
+    "county": "Ruiru",
+    "state": "Kiambu",
+    "ISO3166-2-lvl4": "KE-13",
+    "postcode": "00609",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.1952668",
+    "-1.1951668",
+    "36.9462239",
+    "36.9463239"
+   ]
+  },
+  {
+   "place_id": 38218084,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "way",
+   "osm_id": 792480899,
+   "lat": "-1.1948598",
+   "lon": "36.9258278",
+   "category": "amenity",
+   "type": "hospital",
+   "place_rank": 30,
+   "importance": 7.250400549320238e-05,
+   "addresstype": "amenity",
+   "name": "Kahawa Wendani Hospital",
+   "display_name": "Kahawa Wendani Hospital, Thika Road, Kahawa Wendani, Nairobi, Ruiru, Kiambu, 00609, Kenya",
+   "address": {
+    "amenity": "Kahawa Wendani Hospital",
+    "road": "Thika Road",
+    "suburb": "Kahawa Wendani",
+    "city": "Nairobi",
+    "county": "Ruiru",
+    "state": "Kiambu",
+    "ISO3166-2-lvl4": "KE-13",
+    "postcode": "00609",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.1950173",
+    "-1.1947083",
+    "36.9256337",
+    "36.9260146"
+   ]
+  },
+  {
+   "place_id": 38133253,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 3010249231,
+   "lat": "-1.1964107",
+   "lon": "36.9243430",
+   "category": "shop",
+   "type": "supermarket",
+   "place_rank": 30,
+   "importance": 7.250400549320238e-05,
+   "addresstype": "shop",
+   "name": "Magunas Supermarket Kahawa Wendani",
+   "display_name": "Magunas Supermarket Kahawa Wendani, Thika Road, Kahawa Wendani, Nairobi, Ruiru, Kiambu, 00609, Kenya",
+   "address": {
+    "shop": "Magunas Supermarket Kahawa Wendani",
+    "road": "Thika Road",
+    "suburb": "Kahawa Wendani",
+    "city": "Nairobi",
+    "county": "Ruiru",
+    "state": "Kiambu",
+    "ISO3166-2-lvl4": "KE-13",
+    "postcode": "00609",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.1964607",
+    "-1.1963607",
+    "36.9242930",
+    "36.9243930"
+   ]
+  }
+ ],
+ "Kahawa West, Nairobi, Kenya": [
+  {
+   "place_id": 37898282,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 2393090122,
+   "lat": "-1.1863052",
+   "lon": "36.9068145",
+   "category": "place",
+   "type": "suburb",
+   "place_rank": 19,
+   "importance": 0.14673917067215986,
+   "addresstype": "suburb",
+   "name": "Kahawa West",
+   "display_name": "Kahawa West, Githurai division, Kasarani, Nairobi, 00607, Kenya",
+   "address": {
+    "suburb": "Kahawa West",
+    "city_district": "Kasarani",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00607",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2063052",
+    "-1.1663052",
+    "36.8868145",
+    "36.9268145"
+   ]
+  },
+  {
+   "place_id": 38012002,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 7645366388,
+   "lat": "-1.1862020",
+   "lon": "36.9068488",
+   "category": "highway",
+   "type": "bus_stop",
+   "place_rank": 30,
+   "importance": 7.250400549320238e-05,
+   "addresstype": "highway",
+   "name": "Kahawa West",
+   "display_name": "Kahawa West, Northern Bypass, Kongo Soweto sublocation, Kahawa West location, Githurai division, Kasarani, Nairobi, 00607, Kenya",
+   "address": {
+    "highway": "Kahawa West",
+    "road": "Northern Bypass",
+    "city_block": "Kongo Soweto sublocation",
+    "neighbourhood": "Kahawa West location",
+    "suburb": "Githurai division",
+    "city_district": "Kasarani",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00607",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.1862520",
+    "-1.1861520",
+    "36.9067988",
+    "36.9068988"
+   ]
+  },
+  {
+   "place_id": 417822826,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 1645631154,
+   "lat": "-1.1868291",
+   "lon": "36.9118369",
+   "category": "railway",
+   "type": "stop",
+   "place_rank": 30,
+   "importance": 7.250400549320238e-05,
+   "addresstype": "railway",
+   "name": "Kahawa West",
+   "display_name": "Kahawa West, Soweto Main Road, Kongo Soweto sublocation, Kahawa West location, Githurai division, Kasarani, Nairobi, 00609, Kenya",
+   "address": {
+    "railway": "Kahawa West",
+    "road": "Soweto Main Road",
+    "city_block": "Kongo Soweto sublocation",
+    "neighbourhood": "Kahawa West location",
+    "suburb": "Githurai division",
+    "city_district": "Kasarani",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00609",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.1868791",
+    "-1.1867791",
+    "36.9117869",
+    "36.9118869"
+   ]
+  },
+  {
+   "place_id": 37985657,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 7645366387,
+   "lat": "-1.1854865",
+   "lon": "36.9067861",
+   "category": "highway",
+   "type": "bus_stop",
+   "place_rank": 30,
+   "importance": 7.250400549320238e-05,
+   "addresstype": "highway",
+   "name": "Kahawa West",
+   "display_name": "Kahawa West, Roundabout, Kahawa West sublocation, Kahawa West location, Githurai division, Kasarani, Nairobi, 00607, Kenya",
+   "address": {
+    "highway": "Kahawa West",
+    "road": "Roundabout",
+    "city_block": "Kahawa West sublocation",
+    "neighbourhood": "Kahawa West location",
+    "suburb": "Githurai division",
+    "city_district": "Kasarani",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00607",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.1855365",
+    "-1.1854365",
+    "36.9067361",
+    "36.9068361"
+   ]
+  }
+ ],
+ "Karen, Nairobi, Kenya": [
+  {
+   "place_id": 38435268,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 30031183,
+   "lat": "-1.3283746",
+   "lon": "36.7049676",
+   "category": "place",
+   "type": "suburb",
+   "place_rank": 19,
+   "importance": 0.14673917067215986,
+   "addresstype": "suburb",
+   "name": "Karen",
+   "display_name": "Karen, Karen ward, Langata, Nairobi, 00505, Kenya",
+   "address": {
+    "suburb": "Karen",
+    "city_district": "Langata",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00505",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.3483746",
+    "-1.3083746",
+    "36.6849676",
+    "36.7249676"
+   ]
+  },
+  {
+   "place_id": 38070000,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "relation",
+   "osm_id": 16135698,
+   "lat": "-1.3429735",
+   "lon": "36.7267242",
+   "category": "boundary",
+   "type": "administrative",
+   "place_rank": 16,
+   "importance": 0.18673917067215987,
+   "addresstype": "suburb",
+   "name": "Karen ward",
+   "display_name": "Karen ward, Langata, Nairobi, Kenya",
+   "address": {
+    "suburb": "Karen ward",
+    "city_district": "Langata",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.3890987",
+    "-1.2967562",
+    "36.6647016",
+    "36.7737986"
+   ]
+  }
+ ],
+ "Kasarani, Nairobi, Kenya": [
+  {
+   "place_id": 38422339,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "relation",
+   "osm_id": 16247557,
+   "lat": "-1.2124598",
+   "lon": "36.8829731",
+   "category": "boundary",
+   "type": "administrative",
+   "place_rank": 12,
+   "importance": 0.2400725040054932,
+   "addresstype": "city_district",
+   "name": "Kasarani",
+   "display_name": "Kasarani, Nairobi, Kenya",
+   "address": {
+    "city_district": "Kasarani",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2643743",
+    "-1.1606749",
+    "36.8318432",
+    "37.0070587"
+   ]
+  },
+  {
+   "place_id": 38766377,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "relation",
+   "osm_id": 18106766,
+   "lat": "-1.2204096",
+   "lon": "36.8926610",
+   "category": "boundary",
+   "type": "administrative",
+   "place_rank": 14,
+   "importance": 0.21340583733882654,
+   "addresstype": "suburb",
+   "name": "Kasarani division",
+   "display_name": "Kasarani division, Kasarani, Nairobi, 00608, Kenya",
+   "address": {
+    "suburb": "Kasarani division",
+    "city_district": "Kasarani",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00608",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2510139",
+    "-1.2079546",
+    "36.8703674",
+    "37.0070587"
+   ]
+  }
+ ],
+ "Kileleshwa, Nairobi, Kenya": [
+  {
+   "place_id": 38345634,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 30405983,
+   "lat": "-1.2767338",
+   "lon": "36.7879011",
+   "category": "place",
+   "type": "suburb",
+   "place_rank": 19,
+   "importance": 0.14673917067215986,
+   "addresstype": "suburb",
+   "name": "Kileleshwa",
+   "display_name": "Kileleshwa, Kilimani division, Westlands, Nairobi, 29526, Kenya",
+   "address": {
+    "suburb": "Kileleshwa",
+    "city_district": "Westlands",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "29526",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2967338",
+    "-1.2567338",
+    "36.7679011",
+    "36.8079011"
+   ]
+  },
+  {
+   "place_id": 38227581,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "relation",
+   "osm_id": 16375649,
+   "lat": "-1.2772081",
+   "lon": "36.7873528",
+   "category": "boundary",
+   "type": "administrative",
+   "place_rank": 18,
+   "importance": 0.16007250400549322,
+   "addresstype": "neighbourhood",
+   "name": "Kileleshwa location",
+   "display_name": "Kileleshwa location, Kilimani division, Westlands, Nairobi, Kenya",
+   "address": {
+    "neighbourhood": "Kileleshwa location",
+    "suburb": "Kilimani division",
+    "city_district": "Westlands",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2957119",
+    "-1.2588425",
+    "36.7526620",
+    "36.8119844"
+   ]
+  }
+ ],
+ "Kilimani, Nairobi, Kenya": [
+  {
+   "place_id": 38225292,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 13566448227,
+   "lat": "-1.2960146",
+   "lon": "36.7817791",
+   "category": "place",
+   "type": "suburb",
+   "place_rank": 19,
+   "importance": 0.14673917067215986,
+   "addresstype": "suburb",
+   "name": "Kilimani",
+   "display_name": "Kilimani, Kilimani division, Westlands, Nairobi, 44847, Kenya",
+   "address": {
+    "suburb": "Kilimani",
+    "city_district": "Westlands",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "44847",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.3160146",
+    "-1.2760146",
+    "36.7617791",
+    "36.8017791"
+   ]
+  },
+  {
+   "place_id": 38214295,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 5587461643,
+   "lat": "-1.2874422",
+   "lon": "36.7845225",
+   "category": "amenity",
+   "type": "restaurant",
+   "place_rank": 30,
+   "importance": 7.250400549320238e-05,
+   "addresstype": "amenity",
+   "name": "Kilimani",
+   "display_name": "Kilimani, Dennis Pritt Road, Kilimani location, Kilimani ward, Kilimani division, Westlands, Nairobi, 29526, Kenya",
+   "address": {
+    "amenity": "Kilimani",
+    "road": "Dennis Pritt Road",
+    "city_block": "Kilimani location",
+    "neighbourhood": "Kilimani ward",
+    "suburb": "Kilimani division",
+    "city_district": "Westlands",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "29526",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2874922",
+    "-1.2873922",
+    "36.7844725",
+    "36.7845725"
+   ]
+  },
+  {
+   "place_id": 38184712,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 4075655670,
+   "lat": "-1.2947617",
+   "lon": "36.7871002",
+   "category": "amenity",
+   "type": "bank",
+   "place_rank": 30,
+   "importance": 7.250400549320238e-05,
+   "addresstype": "amenity",
+   "name": "Chase",
+   "display_name": "Chase, Kilimani,, Ring Road, Parklands location, Parklands/Highridge ward, Highridge division, Westlands, Nairobi, 97104, Kenya",
+   "address": {
+    "amenity": "Chase",
+    "house_number": "Kilimani,",
+    "road": "Ring Road",
+    "city_block": "Parklands location",
+    "neighbourhood": "Parklands/Highridge ward",
+    "suburb": "Highridge division",
+    "city_district": "Westlands",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "97104",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2948117",
+    "-1.2947117",
+    "36.7870502",
+    "36.7871502"
+   ]
+  },
+  {
+   "place_id": 38700320,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 5414007504,
+   "lat": "-1.2942560",
+   "lon": "36.7908907",
+   "category": "tourism",
+   "type": "guest_house",
+   "place_rank": 30,
+   "importance": 7.250400549320238e-05,
+   "addresstype": "tourism",
+   "name": "Geo Mara 3 Bedroom Executive Apartment",
+   "display_name": "Geo Mara 3 Bedroom Executive Apartment, Kilimani,, Marcus Garvey Road, Kilimani location, Kilimani ward, Kilimani division, Westlands, Nairobi, 29526, Kenya",
+   "address": {
+    "tourism": "Geo Mara 3 Bedroom Executive Apartment",
+    "house_number": "Kilimani,",
+    "road": "Marcus Garvey Road",
+    "city_block": "Kilimani location",
+    "neighbourhood": "Kilimani ward",
+    "suburb": "Kilimani division",
+    "city_district": "Westlands",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "29526",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2943060",
+    "-1.2942060",
+    "36.7908407",
+    "36.7909407"
+   ]
+  },
+  {
+   "place_id": 38399624,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "relation",
+   "osm_id": 16375651,
+   "lat": "-1.2796921",
+   "lon": "36.7872928",
+   "category": "boundary",
+   "type": "administrative",
+   "place_rank": 14,
+   "importance": 0.21340583733882654,
+   "addresstype": "suburb",
+   "name": "Kilimani division",
+   "display_name": "Kilimani division, Westlands, Nairobi, Kenya",
+   "address": {
+    "suburb": "Kilimani division",
+    "city_district": "Westlands",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.3005028",
+    "-1.2588425",
+    "36.7526620",
+    "36.8203594"
+   ]
+  }
+ ],
+ "Kitisuru, Nairobi, Kenya": [
+  {
+   "place_id": 38591508,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 10815798768,
+   "lat": "-1.2403787",
+   "lon": "36.7710300",
+   "category": "place",
+   "type": "suburb",
+   "place_rank": 19,
+   "importance": 0.14673917067215986,
+   "addresstype": "suburb",
+   "name": "Kitisuru",
+   "display_name": "Kitisuru, Kangemi division, Westlands, Nairobi, 11403, Kenya",
+   "address": {
+    "suburb": "Kitisuru",
+    "city_district": "Westlands",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "11403",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2603787",
+    "-1.2203787",
+    "36.7510300",
+    "36.7910300"
+   ]
+  },
+  {
+   "place_id": 38383782,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "relation",
+   "osm_id": 16135717,
+   "lat": "-1.2453464",
+   "lon": "36.7612472",
+   "category": "boundary",
+   "type": "administrative",
+   "place_rank": 16,
+   "importance": 0.18673917067215987,
+   "addresstype": "neighbourhood",
+   "name": "Kitisuru ward",
+   "display_name": "Kitisuru ward, Kangemi division, Westlands, Nairobi, 00604, Kenya",
+   "address": {
+    "neighbourhood": "Kitisuru ward",
+    "suburb": "Kangemi division",
+    "city_district": "Westlands",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00604",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2647792",
+    "-1.2260075",
+    "36.7212250",
+    "36.7970290"
+   ]
+  }
+ ],
+ "Langata, Nairobi, Kenya": [
+  {
+   "place_id": 38296959,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "relation",
+   "osm_id": 16246698,
+   "lat": "-1.3708746",
+   "lon": "36.8184145",
+   "category": "boundary",
+   "type": "administrative",
+   "place_rank": 12,
+   "importance": 0.2400725040054932,
+   "addresstype": "city_district",
+   "name": "Langata",
+   "display_name": "Langata, Nairobi, Kenya",
+   "address": {
+    "city_district": "Langata",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.4448822",
+    "-1.2967562",
+    "36.6647016",
+    "36.9623466"
+   ]
+  },
+  {
+   "place_id": 38357200,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 6065491374,
+   "lat": "-1.3328938",
+   "lon": "36.7816659",
+   "category": "place",
+   "type": "suburb",
+   "place_rank": 19,
+   "importance": 0.14673917067215986,
+   "addresstype": "suburb",
+   "name": "Langata",
+   "display_name": "Langata, Mugumo-ini ward, Langata, Nairobi, 00509, Kenya",
+   "address": {
+    "suburb": "Langata",
+    "city_district": "Langata",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00509",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.3528938",
+    "-1.3128938",
+    "36.7616659",
+    "36.8016659"
+   ]
+  }
+ ],
+ "Lavington, Nairobi, Kenya": [
+  {
+   "place_id": 38412903,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 5422065886,
+   "lat": "-1.2740678",
+   "lon": "36.7762269",
+   "category": "place",
+   "type": "suburb",
+   "place_rank": 19,
+   "importance": 0.319279276758968,
+   "addresstype": "suburb",
+   "name": "Lavington",
+   "display_name": "Lavington, Kilimani division, Westlands, Nairobi, 54102, Kenya",
+   "address": {
+    "suburb": "Lavington",
+    "city_district": "Westlands",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "54102",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2940678",
+    "-1.2540678",
+    "36.7562269",
+    "36.7962269"
+   ]
+  }
+ ],
+ "Loresho, Nairobi, Kenya": [
+  {
+   "place_id": 38277542,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 5580877220,
+   "lat": "-1.2568211",
+   "lon": "36.7521131",
+   "category": "place",
+   "type": "suburb",
+   "place_rank": 19,
+   "importance": 0.30723887866744215,
+   "addresstype": "suburb",
+   "name": "Loresho",
+   "display_name": "Loresho, Kangemi division, Westlands, Nairobi, 00625, Kenya",
+   "address": {
+    "suburb": "Loresho",
+    "city_district": "Westlands",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00625",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2768211",
+    "-1.2368211",
+    "36.7321131",
+    "36.7721131"
+   ]
+  }
+ ],
+ "Mwiki, Nairobi, Kenya": [
+  {
+   "place_id": 38430473,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 544377113,
+   "lat": "-1.2327573",
+   "lon": "36.9332678",
+   "category": "place",
+   "type": "suburb",
+   "place_rank": 19,
+   "importance": 0.14673917067215986,
+   "addresstype": "suburb",
+   "name": "Mwiki",
+   "display_name": "Mwiki, Kasarani division, Kasarani, Nairobi, 00608, Kenya",
+   "address": {
+    "suburb": "Mwiki",
+    "city_district": "Kasarani",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00608",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2527573",
+    "-1.2127573",
+    "36.9132678",
+    "36.9532678"
+   ]
+  },
+  {
+   "place_id": 38334974,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 6249434335,
+   "lat": "-1.2350815",
+   "lon": "36.9370912",
+   "category": "railway",
+   "type": "station",
+   "place_rank": 30,
+   "importance": 7.250400549320238e-05,
+   "addresstype": "railway",
+   "name": "Mwiki",
+   "display_name": "Mwiki, Mwiki Phase 3, Mwiki location, Mwiki ward, Kasarani division, Kasarani, Nairobi, 00608, Kenya",
+   "address": {
+    "railway": "Mwiki",
+    "road": "Mwiki Phase 3",
+    "city_block": "Mwiki location",
+    "neighbourhood": "Mwiki ward",
+    "suburb": "Kasarani division",
+    "city_district": "Kasarani",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00608",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2400815",
+    "-1.2300815",
+    "36.9320912",
+    "36.9420912"
+   ]
+  },
+  {
+   "place_id": 38192936,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "relation",
+   "osm_id": 16135916,
+   "lat": "-1.2363492",
+   "lon": "36.9647453",
+   "category": "boundary",
+   "type": "administrative",
+   "place_rank": 16,
+   "importance": 0.18673917067215987,
+   "addresstype": "neighbourhood",
+   "name": "Mwiki ward",
+   "display_name": "Mwiki ward, Kasarani division, Kasarani, Nairobi, Kenya",
+   "address": {
+    "neighbourhood": "Mwiki ward",
+    "suburb": "Kasarani division",
+    "city_district": "Kasarani",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2510139",
+    "-1.2217125",
+    "36.9255853",
+    "37.0070587"
+   ]
+  }
+ ],
+ "Ngara, Nairobi, Kenya": [
+  {
+   "place_id": 38094760,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 5475093930,
+   "lat": "-1.2735233",
+   "lon": "36.8286211",
+   "category": "place",
+   "type": "suburb",
+   "place_rank": 19,
+   "importance": 0.14673917067215986,
+   "addresstype": "suburb",
+   "name": "Ngara",
+   "display_name": "Ngara, CBD division, Starehe, Nairobi, 30108, Kenya",
+   "address": {
+    "suburb": "Ngara",
+    "city_district": "Starehe",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "30108",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2935233",
+    "-1.2535233",
+    "36.8086211",
+    "36.8486211"
+   ]
+  },
+  {
+   "place_id": 416390523,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 12886374886,
+   "lat": "-1.2794620",
+   "lon": "36.8309184",
+   "category": "place",
+   "type": "neighbourhood",
+   "place_rank": 24,
+   "importance": 0.08007250400549322,
+   "addresstype": "neighbourhood",
+   "name": "Ngara",
+   "display_name": "Ngara, Ngara location, CBD division, Starehe, Nairobi, 00100, Kenya",
+   "address": {
+    "neighbourhood": "Ngara",
+    "suburb": "CBD division",
+    "city_district": "Starehe",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00100",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2894620",
+    "-1.2694620",
+    "36.8209184",
+    "36.8409184"
+   ]
+  },
+  {
+   "place_id": 38069443,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "way",
+   "osm_id": 128060790,
+   "lat": "-1.2764827",
+   "lon": "36.8307415",
+   "category": "building",
+   "type": "hotel",
+   "place_rank": 30,
+   "importance": 7.250400549320238e-05,
+   "addresstype": "building",
+   "name": "Blue Hut Hotel",
+   "display_name": "Blue Hut Hotel, Ngara,, Park Road, Ngara East sublocation, Ngara location, CBD division, Starehe, Nairobi, 30108, Kenya",
+   "address": {
+    "building": "Blue Hut Hotel",
+    "house_number": "Ngara,",
+    "road": "Park Road",
+    "city_block": "Ngara East sublocation",
+    "neighbourhood": "Ngara location",
+    "suburb": "CBD division",
+    "city_district": "Starehe",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "30108",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2765705",
+    "-1.2763949",
+    "36.8306188",
+    "36.8308641"
+   ]
+  },
+  {
+   "place_id": 38040076,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 2473361317,
+   "lat": "-1.2742456",
+   "lon": "36.8237289",
+   "category": "highway",
+   "type": "bus_stop",
+   "place_rank": 30,
+   "importance": 7.250400549320238e-05,
+   "addresstype": "highway",
+   "name": "Ngara",
+   "display_name": "Ngara, Limuru Road, Ngara West sublocation, Ngara location, CBD division, Starehe, Nairobi, 00600, Kenya",
+   "address": {
+    "highway": "Ngara",
+    "road": "Limuru Road",
+    "city_block": "Ngara West sublocation",
+    "neighbourhood": "Ngara location",
+    "suburb": "CBD division",
+    "city_district": "Starehe",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00600",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2742956",
+    "-1.2741956",
+    "36.8236789",
+    "36.8237789"
+   ]
+  },
+  {
+   "place_id": 37971679,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "relation",
+   "osm_id": 16376874,
+   "lat": "-1.2740562",
+   "lon": "36.8240504",
+   "category": "boundary",
+   "type": "administrative",
+   "place_rank": 18,
+   "importance": 0.16007250400549322,
+   "addresstype": "neighbourhood",
+   "name": "Ngara location",
+   "display_name": "Ngara location, CBD division, Starehe, Nairobi, Kenya",
+   "address": {
+    "neighbourhood": "Ngara location",
+    "suburb": "CBD division",
+    "city_district": "Starehe",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2812446",
+    "-1.2668262",
+    "36.8126149",
+    "36.8366536"
+   ]
+  }
+ ],
+ "Parklands, Nairobi, Kenya": [
+  {
+   "place_id": 38207268,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 30402770,
+   "lat": "-1.2630616",
+   "lon": "36.8106288",
+   "category": "place",
+   "type": "suburb",
+   "place_rank": 19,
+   "importance": 0.14673917067215986,
+   "addresstype": "suburb",
+   "name": "Parklands",
+   "display_name": "Parklands, Highridge division, Westlands, Nairobi, 00606, Kenya",
+   "address": {
+    "suburb": "Parklands",
+    "city_district": "Westlands",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00606",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2830616",
+    "-1.2430616",
+    "36.7906288",
+    "36.8306288"
+   ]
+  },
+  {
+   "place_id": 38201014,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "relation",
+   "osm_id": 16135718,
+   "lat": "-1.2603722",
+   "lon": "36.8086488",
+   "category": "boundary",
+   "type": "administrative",
+   "place_rank": 16,
+   "importance": 0.18673917067215987,
+   "addresstype": "neighbourhood",
+   "name": "Parklands/Highridge ward",
+   "display_name": "Parklands/Highridge ward, Highridge division, Westlands, Nairobi, Kenya",
+   "address": {
+    "neighbourhood": "Parklands/Highridge ward",
+    "suburb": "Highridge division",
+    "city_district": "Westlands",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2751178",
+    "-1.2457689",
+    "36.7752738",
+    "36.8271057"
+   ]
+  }
+ ],
+ "Pipeline, Nairobi, Kenya": [
+  {
+   "place_id": 38310712,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 10271095496,
+   "lat": "-1.3200602",
+   "lon": "36.8935826",
+   "category": "place",
+   "type": "suburb",
+   "place_rank": 19,
+   "importance": 0.30723887866744215,
+   "addresstype": "suburb",
+   "name": "Pipeline",
+   "display_name": "Pipeline, Pipeline ward, Embakasi, Nairobi, 00501, Kenya",
+   "address": {
+    "suburb": "Pipeline",
+    "city_district": "Embakasi",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00501",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.3400602",
+    "-1.3000602",
+    "36.8735826",
+    "36.9135826"
+   ]
+  }
+ ],
+ "Riverside, Nairobi, Kenya": [
+  {
+   "place_id": 38323117,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "way",
+   "osm_id": 131473316,
+   "lat": "-1.3119636",
+   "lon": "36.8676823",
+   "category": "landuse",
+   "type": "residential",
+   "place_rank": 24,
+   "importance": 0.08007250400549322,
+   "addresstype": "residential",
+   "name": "Riverside",
+   "display_name": "Riverside, Viwandani, Viwandani ward, Makadara subcounty, Nairobi, Kenya",
+   "address": {
+    "residential": "Riverside",
+    "quarter": "Viwandani",
+    "suburb": "Viwandani ward",
+    "city_district": "Makadara subcounty",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.3129435",
+    "-1.3109785",
+    "36.8660298",
+    "36.8689539"
+   ]
+  },
+  {
+   "place_id": 38424114,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 8531427174,
+   "lat": "-1.3096867",
+   "lon": "36.7894950",
+   "category": "amenity",
+   "type": "toilets",
+   "place_rank": 30,
+   "importance": 7.250400549320238e-05,
+   "addresstype": "amenity",
+   "name": "Riverside",
+   "display_name": "Riverside, Ali Jaden Road, Laini Saba, Laini Saba ward, Kibra, Nairobi, 21104, Kenya",
+   "address": {
+    "amenity": "Riverside",
+    "road": "Ali Jaden Road",
+    "quarter": "Laini Saba",
+    "suburb": "Laini Saba ward",
+    "city_district": "Kibra",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "21104",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.3097367",
+    "-1.3096367",
+    "36.7894450",
+    "36.7895450"
+   ]
+  }
+ ],
+ "Roysambu, Nairobi, Kenya": [
+  {
+   "place_id": 38365831,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 4194272131,
+   "lat": "-1.2188396",
+   "lon": "36.8867392",
+   "category": "place",
+   "type": "suburb",
+   "place_rank": 19,
+   "importance": 0.14673917067215986,
+   "addresstype": "suburb",
+   "name": "Roysambu",
+   "display_name": "Roysambu, Roysambu division, Kasarani, Nairobi, 00608, Kenya",
+   "address": {
+    "suburb": "Roysambu",
+    "city_district": "Kasarani",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00608",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2388396",
+    "-1.1988396",
+    "36.8667392",
+    "36.9067392"
+   ]
+  },
+  {
+   "place_id": 38405427,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "relation",
+   "osm_id": 16132842,
+   "lat": "-1.2105760",
+   "lon": "36.8794657",
+   "category": "boundary",
+   "type": "political",
+   "place_rank": 25,
+   "importance": 0.06673917067215991,
+   "addresstype": "political",
+   "name": "Roysambu",
+   "display_name": "Roysambu, Nairobi, Kenya",
+   "address": {
+    "political": "Roysambu",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2604802",
+    "-1.1606749",
+    "36.8318432",
+    "36.9432813"
+   ]
+  },
+  {
+   "place_id": 38396830,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 1719330053,
+   "lat": "-1.2185699",
+   "lon": "36.8927420",
+   "category": "highway",
+   "type": "bus_stop",
+   "place_rank": 30,
+   "importance": 7.250400549320238e-05,
+   "addresstype": "highway",
+   "name": "Roysambu",
+   "display_name": "Roysambu, Thika Road, Clay City sublocation, Kasarani location, Kasarani, Nairobi, 00608, Kenya",
+   "address": {
+    "highway": "Roysambu",
+    "road": "Thika Road",
+    "neighbourhood": "Clay City sublocation",
+    "suburb": "Kasarani location",
+    "city_district": "Kasarani",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00608",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2186199",
+    "-1.2185199",
+    "36.8926920",
+    "36.8927920"
+   ]
+  },
+  {
+   "place_id": 38192905,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 1719330033,
+   "lat": "-1.2182267",
+   "lon": "36.8925596",
+   "category": "highway",
+   "type": "bus_stop",
+   "place_rank": 30,
+   "importance": 7.250400549320238e-05,
+   "addresstype": "highway",
+   "name": "Roysambu",
+   "display_name": "Roysambu, Thika Road, Zimmerman sublocation, Zimmerman location, Githurai division, Kasarani, Nairobi, 00608, Kenya",
+   "address": {
+    "highway": "Roysambu",
+    "road": "Thika Road",
+    "city_block": "Zimmerman sublocation",
+    "neighbourhood": "Zimmerman location",
+    "suburb": "Githurai division",
+    "city_district": "Kasarani",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00608",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2182767",
+    "-1.2181767",
+    "36.8925096",
+    "36.8926096"
+   ]
+  },
+  {
+   "place_id": 38321014,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 3289328866,
+   "lat": "-1.2179853",
+   "lon": "36.8909309",
+   "category": "highway",
+   "type": "bus_stop",
+   "place_rank": 30,
+   "importance": 7.250400549320238e-05,
+   "addresstype": "highway",
+   "name": "Roysambu",
+   "display_name": "Roysambu, Kamiti Road, Roysambu sublocation, Roysambu location, Roysambu division, Kasarani, Nairobi, 00608, Kenya",
+   "address": {
+    "highway": "Roysambu",
+    "road": "Kamiti Road",
+    "city_block": "Roysambu sublocation",
+    "neighbourhood": "Roysambu location",
+    "suburb": "Roysambu division",
+    "city_district": "Kasarani",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00608",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2180353",
+    "-1.2179353",
+    "36.8908809",
+    "36.8909809"
+   ]
+  },
+  {
+   "place_id": 38244738,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 6249063018,
+   "lat": "-1.2204266",
+   "lon": "36.8910567",
+   "category": "highway",
+   "type": "bus_stop",
+   "place_rank": 30,
+   "importance": 7.250400549320238e-05,
+   "addresstype": "highway",
+   "name": "Roysambu",
+   "display_name": "Roysambu, Kasarani Mwiki Road, Kasarani sublocation, Kasarani location, Kasarani, Nairobi, 00608, Kenya",
+   "address": {
+    "highway": "Roysambu",
+    "road": "Kasarani Mwiki Road",
+    "neighbourhood": "Kasarani sublocation",
+    "suburb": "Kasarani location",
+    "city_district": "Kasarani",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00608",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2204766",
+    "-1.2203766",
+    "36.8910067",
+    "36.8911067"
+   ]
+  },
+  {
+   "place_id": 38361353,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "relation",
+   "osm_id": 18101593,
+   "lat": "-1.2264532",
+   "lon": "36.8616896",
+   "category": "boundary",
+   "type": "administrative",
+   "place_rank": 14,
+   "importance": 0.21340583733882654,
+   "addresstype": "suburb",
+   "name": "Roysambu division",
+   "display_name": "Roysambu division, Kasarani, Nairobi, Kenya",
+   "address": {
+    "suburb": "Roysambu division",
+    "city_district": "Kasarani",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2627272",
+    "-1.1902683",
+    "36.8318432",
+    "36.9020520"
+   ]
+  }
+ ],
+ "Runda, Nairobi, Kenya": [
+  {
+   "place_id": 38327647,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 272712144,
+   "lat": "-1.2182119",
+   "lon": "36.8089887",
+   "category": "place",
+   "type": "suburb",
+   "place_rank": 19,
+   "importance": 0.3140788844789178,
+   "addresstype": "suburb",
+   "name": "Runda",
+   "display_name": "Runda, Highridge division, Westlands, Nairobi, 00621, Kenya",
+   "address": {
+    "suburb": "Runda",
+    "city_district": "Westlands",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00621",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2382119",
+    "-1.1982119",
+    "36.7889887",
+    "36.8289887"
+   ]
+  }
+ ],
+ "South B, Nairobi, Kenya": [
+  {
+   "place_id": 38216966,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 10271121690,
+   "lat": "-1.3141724",
+   "lon": "36.8376708",
+   "category": "place",
+   "type": "suburb",
+   "place_rank": 19,
+   "importance": 0.14673917067215986,
+   "addresstype": "suburb",
+   "name": "South B",
+   "display_name": "South B, Nairobi South ward, Starehe, Nairobi, 00603, Kenya",
+   "address": {
+    "suburb": "South B",
+    "city_district": "Starehe",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00603",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.3341724",
+    "-1.2941724",
+    "36.8176708",
+    "36.8576708"
+   ]
+  }
+ ],
+ "South C, Nairobi, Kenya": [
+  {
+   "place_id": 37991768,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 30031480,
+   "lat": "-1.3188367",
+   "lon": "36.8278221",
+   "category": "place",
+   "type": "suburb",
+   "place_rank": 19,
+   "importance": 0.14673917067215986,
+   "addresstype": "suburb",
+   "name": "South C",
+   "display_name": "South C, South C ward, Langata, Nairobi, 30326, Kenya",
+   "address": {
+    "suburb": "South C",
+    "city_district": "Langata",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "30326",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.3388367",
+    "-1.2988367",
+    "36.8078221",
+    "36.8478221"
+   ]
+  }
+ ],
+ "Spring Valley, Nairobi, Kenya": [
+  {
+   "place_id": 38224417,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 6422785128,
+   "lat": "-1.2533393",
+   "lon": "36.7929369",
+   "category": "place",
+   "type": "suburb",
+   "place_rank": 19,
+   "importance": 0.14673917067215986,
+   "addresstype": "suburb",
+   "name": "Spring Valley",
+   "display_name": "Spring Valley, Highridge division, Westlands, Nairobi, 97104, Kenya",
+   "address": {
+    "suburb": "Spring Valley",
+    "city_district": "Westlands",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "97104",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2733393",
+    "-1.2333393",
+    "36.7729369",
+    "36.8129369"
+   ]
+  },
+  {
+   "place_id": 38198907,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "way",
+   "osm_id": 553222882,
+   "lat": "-1.2473980",
+   "lon": "36.7892280",
+   "category": "highway",
+   "type": "residential",
+   "place_rank": 26,
+   "importance": 0.05340583733882655,
+   "addresstype": "residential",
+   "name": "Spring Valley",
+   "display_name": "Spring Valley, Kitisuru location, Kitisuru ward, Kangemi division, Westlands, Nairobi, 97104, Kenya",
+   "address": {
+    "road": "Spring Valley",
+    "city_block": "Kitisuru location",
+    "neighbourhood": "Kitisuru ward",
+    "suburb": "Kangemi division",
+    "city_district": "Westlands",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "97104",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2479094",
+    "-1.2468848",
+    "36.7891846",
+    "36.7892382"
+   ]
+  },
+  {
+   "place_id": 38287045,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 521104991,
+   "lat": "-1.2540754",
+   "lon": "36.7921557",
+   "category": "amenity",
+   "type": "fuel",
+   "place_rank": 30,
+   "importance": 7.250400549320238e-05,
+   "addresstype": "amenity",
+   "name": "Total Spring Valley",
+   "display_name": "Total Spring Valley, Spring Valley,, Lower Kabete Road, Parklands location, Parklands/Highridge ward, Highridge division, Westlands, Nairobi, 97104, Kenya",
+   "address": {
+    "amenity": "Total Spring Valley",
+    "house_number": "Spring Valley,",
+    "road": "Lower Kabete Road",
+    "city_block": "Parklands location",
+    "neighbourhood": "Parklands/Highridge ward",
+    "suburb": "Highridge division",
+    "city_district": "Westlands",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "97104",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2541254",
+    "-1.2540254",
+    "36.7921057",
+    "36.7922057"
+   ]
+  }
+ ],
+ "Umoja, Nairobi, Kenya": [
+  {
+   "place_id": 38419104,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 11407583720,
+   "lat": "-1.2834369",
+   "lon": "36.8928409",
+   "category": "place",
+   "type": "suburb",
+   "place_rank": 19,
+   "importance": 0.14673917067215986,
+   "addresstype": "suburb",
+   "name": "Umoja",
+   "display_name": "Umoja, Umoja II ward, Embakasi, Nairobi, 56744, Kenya",
+   "address": {
+    "suburb": "Umoja",
+    "city_district": "Embakasi",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "56744",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.3034369",
+    "-1.2634369",
+    "36.8728409",
+    "36.9128409"
+   ]
+  },
+  {
+   "place_id": 38454889,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 12901474090,
+   "lat": "-1.2846449",
+   "lon": "36.8235259",
+   "category": "shop",
+   "type": "shoes",
+   "place_rank": 30,
+   "importance": 7.250400549320238e-05,
+   "addresstype": "shop",
+   "name": "umoja",
+   "display_name": "umoja, Kimathi Street, City Square sublocation, Starehe location, CBD division, Starehe, Nairobi, 00200, Kenya",
+   "address": {
+    "shop": "umoja",
+    "road": "Kimathi Street",
+    "city_block": "City Square sublocation",
+    "neighbourhood": "Starehe location",
+    "suburb": "CBD division",
+    "city_district": "Starehe",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00200",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2846949",
+    "-1.2845949",
+    "36.8234759",
+    "36.8235759"
+   ]
+  },
+  {
+   "place_id": 38436319,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 12901474089,
+   "lat": "-1.2822638",
+   "lon": "36.8232255",
+   "category": "shop",
+   "type": "shoes",
+   "place_rank": 30,
+   "importance": 7.250400549320238e-05,
+   "addresstype": "shop",
+   "name": "umoja",
+   "display_name": "umoja, Tom Mboya Street, City Centre, Starehe location, CBD division, Starehe, Nairobi, 00600, Kenya",
+   "address": {
+    "shop": "umoja",
+    "road": "Tom Mboya Street",
+    "commercial": "City Centre",
+    "neighbourhood": "Starehe location",
+    "suburb": "CBD division",
+    "city_district": "Starehe",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00600",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2823138",
+    "-1.2822138",
+    "36.8231755",
+    "36.8232755"
+   ]
+  },
+  {
+   "place_id": 38414068,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 5459650792,
+   "lat": "-1.2894866",
+   "lon": "36.8850874",
+   "category": "highway",
+   "type": "motorway_junction",
+   "place_rank": 30,
+   "importance": 7.250400549320238e-05,
+   "addresstype": "highway",
+   "name": "Umoja",
+   "display_name": "Umoja, Outer Ring Road, Harambee sublocation, Harambee ward, Makadara subcounty, Nairobi, 00504, Kenya",
+   "address": {
+    "highway": "Umoja",
+    "road": "Outer Ring Road",
+    "neighbourhood": "Harambee sublocation",
+    "suburb": "Harambee ward",
+    "city_district": "Makadara subcounty",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00504",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2895366",
+    "-1.2894366",
+    "36.8850374",
+    "36.8851374"
+   ]
+  },
+  {
+   "place_id": 38397316,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "relation",
+   "osm_id": 16139605,
+   "lat": "-1.2864468",
+   "lon": "36.8943474",
+   "category": "boundary",
+   "type": "administrative",
+   "place_rank": 16,
+   "importance": 0.18673917067215987,
+   "addresstype": "suburb",
+   "name": "Umoja II ward",
+   "display_name": "Umoja II ward, Embakasi, Nairobi, Kenya",
+   "address": {
+    "suburb": "Umoja II ward",
+    "city_district": "Embakasi",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2950653",
+    "-1.2777648",
+    "36.8839707",
+    "36.9026129"
+   ]
+  },
+  {
+   "place_id": 38604630,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "relation",
+   "osm_id": 16139606,
+   "lat": "-1.2800691",
+   "lon": "36.8881592",
+   "category": "boundary",
+   "type": "administrative",
+   "place_rank": 16,
+   "importance": 0.18673917067215987,
+   "addresstype": "suburb",
+   "name": "Umoja I ward",
+   "display_name": "Umoja I ward, Embakasi, Nairobi, Kenya",
+   "address": {
+    "suburb": "Umoja I ward",
+    "city_district": "Embakasi",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2872880",
+    "-1.2728208",
+    "36.8826947",
+    "36.9001591"
+   ]
+  }
+ ],
+ "Upperhill, Nairobi, Kenya": [
+  {
+   "place_id": 38359278,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "way",
+   "osm_id": 658264979,
+   "lat": "-1.3066441",
+   "lon": "36.8089753",
+   "category": "highway",
+   "type": "tertiary",
+   "place_rank": 26,
+   "importance": 0.05340583733882655,
+   "addresstype": "tertiary",
+   "name": "Upperhill Links Road",
+   "display_name": "Upperhill Links Road, Woodley/Kenyatta/Golf Course ward, Kibra, Nairobi, 00202, Kenya",
+   "address": {
+    "road": "Upperhill Links Road",
+    "suburb": "Woodley/Kenyatta/Golf Course ward",
+    "city_district": "Kibra",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00202",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.3086843",
+    "-1.3037329",
+    "36.8064023",
+    "36.8099874"
+   ]
+  },
+  {
+   "place_id": 38412197,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "way",
+   "osm_id": 4726914,
+   "lat": "-1.2927166",
+   "lon": "36.8136674",
+   "category": "highway",
+   "type": "residential",
+   "place_rank": 26,
+   "importance": 0.05340583733882655,
+   "addresstype": "residential",
+   "name": "Upperhill Close",
+   "display_name": "Upperhill Close, Kilimani location, Kilimani ward, Kilimani division, Westlands, Nairobi, 40476, Kenya",
+   "address": {
+    "road": "Upperhill Close",
+    "city_block": "Kilimani location",
+    "neighbourhood": "Kilimani ward",
+    "suburb": "Kilimani division",
+    "city_district": "Westlands",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "40476",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2936911",
+    "-1.2917443",
+    "36.8132316",
+    "36.8140982"
+   ]
+  },
+  {
+   "place_id": 38408801,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "way",
+   "osm_id": 825799575,
+   "lat": "-1.3095469",
+   "lon": "36.8058590",
+   "category": "highway",
+   "type": "tertiary",
+   "place_rank": 26,
+   "importance": 0.05340583733882655,
+   "addresstype": "tertiary",
+   "name": "Upperhill Links Road",
+   "display_name": "Upperhill Links Road, Sunview Estate, Woodley/Kenyatta/Golf Course ward, Kibra, Nairobi, 00202, Kenya",
+   "address": {
+    "road": "Upperhill Links Road",
+    "neighbourhood": "Sunview Estate",
+    "suburb": "Woodley/Kenyatta/Golf Course ward",
+    "city_district": "Kibra",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00202",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.3102669",
+    "-1.3088678",
+    "36.8055276",
+    "36.8062777"
+   ]
+  },
+  {
+   "place_id": 38454075,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "way",
+   "osm_id": 557709560,
+   "lat": "-1.3032951",
+   "lon": "36.8216220",
+   "category": "building",
+   "type": "apartments",
+   "place_rank": 30,
+   "importance": 7.250400549320238e-05,
+   "addresstype": "building",
+   "name": "Cassia Court",
+   "display_name": "Cassia Court, Upperhill, Kiambere Rd, Nairobi, Kiambere Road, Woodley/Kenyatta/Golf Course ward, Kibra, Nairobi, 40476, Kenya",
+   "address": {
+    "building": "Cassia Court",
+    "house_number": "Upperhill, Kiambere Rd, Nairobi",
+    "road": "Kiambere Road",
+    "suburb": "Woodley/Kenyatta/Golf Course ward",
+    "city_district": "Kibra",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "40476",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.3035216",
+    "-1.3030687",
+    "36.8213715",
+    "36.8218725"
+   ]
+  },
+  {
+   "place_id": 38465987,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "way",
+   "osm_id": 125332534,
+   "lat": "-1.2940077",
+   "lon": "36.8102646",
+   "category": "building",
+   "type": "yes",
+   "place_rank": 30,
+   "importance": 7.250400549320238e-05,
+   "addresstype": "building",
+   "name": "Upperhill Gardens apartments",
+   "display_name": "Upperhill Gardens apartments, 2nd Avenue Ngong, Kilimani location, Kilimani ward, Kilimani division, Westlands, Nairobi, 00202, Kenya",
+   "address": {
+    "building": "Upperhill Gardens apartments",
+    "road": "2nd Avenue Ngong",
+    "city_block": "Kilimani location",
+    "neighbourhood": "Kilimani ward",
+    "suburb": "Kilimani division",
+    "city_district": "Westlands",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00202",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2941794",
+    "-1.2938360",
+    "36.8100011",
+    "36.8105281"
+   ]
+  },
+  {
+   "place_id": 38264320,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "way",
+   "osm_id": 1079002461,
+   "lat": "-1.3038912",
+   "lon": "36.8213487",
+   "category": "amenity",
+   "type": "place_of_worship",
+   "place_rank": 30,
+   "importance": 7.250400549320238e-05,
+   "addresstype": "amenity",
+   "name": "Upperhill Springs S.D.A",
+   "display_name": "Upperhill Springs S.D.A, Kiambere Road, Woodley/Kenyatta/Golf Course ward, Kibra, Nairobi, 40476, Kenya",
+   "address": {
+    "amenity": "Upperhill Springs S.D.A",
+    "road": "Kiambere Road",
+    "suburb": "Woodley/Kenyatta/Golf Course ward",
+    "city_district": "Kibra",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "40476",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.3040069",
+    "-1.3037753",
+    "36.8212232",
+    "36.8214742"
+   ]
+  },
+  {
+   "place_id": 38402095,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "way",
+   "osm_id": 125332555,
+   "lat": "-1.2943169",
+   "lon": "36.8100719",
+   "category": "building",
+   "type": "commercial",
+   "place_rank": 30,
+   "importance": 7.250400549320238e-05,
+   "addresstype": "building",
+   "name": "Upperhill Gardens apartments",
+   "display_name": "Upperhill Gardens apartments, 3rd Avenue Ngong, Kilimani location, Kilimani ward, Kilimani division, Westlands, Nairobi, 00202, Kenya",
+   "address": {
+    "building": "Upperhill Gardens apartments",
+    "road": "3rd Avenue Ngong",
+    "city_block": "Kilimani location",
+    "neighbourhood": "Kilimani ward",
+    "suburb": "Kilimani division",
+    "city_district": "Westlands",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00202",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2944258",
+    "-1.2942080",
+    "36.8099783",
+    "36.8101655"
+   ]
+  },
+  {
+   "place_id": 38459916,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "way",
+   "osm_id": 797830116,
+   "lat": "-1.3063811",
+   "lon": "36.8115572",
+   "category": "amenity",
+   "type": "hospital",
+   "place_rank": 30,
+   "importance": 7.250400549320238e-05,
+   "addresstype": "amenity",
+   "name": "Precise Imaging upperhill",
+   "display_name": "Precise Imaging upperhill, Mawensi Rd, Nairobi, Mawensi Garden, Woodley/Kenyatta/Golf Course ward, Kibra, Nairobi, 00202, Kenya",
+   "address": {
+    "amenity": "Precise Imaging upperhill",
+    "house_number": "Mawensi Rd, Nairobi",
+    "road": "Mawensi Garden",
+    "suburb": "Woodley/Kenyatta/Golf Course ward",
+    "city_district": "Kibra",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00202",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.3064890",
+    "-1.3062733",
+    "36.8114681",
+    "36.8116464"
+   ]
+  },
+  {
+   "place_id": 38490180,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 5378414078,
+   "lat": "-1.3032388",
+   "lon": "36.8215722",
+   "category": "office",
+   "type": "company",
+   "place_rank": 30,
+   "importance": 7.250400549320238e-05,
+   "addresstype": "office",
+   "name": "Waridi Events Limited",
+   "display_name": "Waridi Events Limited, Cassia Court- Upperhill, Kiambere Rd, Nairobi, Kiambere Road, Woodley/Kenyatta/Golf Course ward, Kibra, Nairobi, 40476, Kenya",
+   "address": {
+    "office": "Waridi Events Limited",
+    "house_number": "Cassia Court- Upperhill, Kiambere Rd, Nairobi",
+    "road": "Kiambere Road",
+    "suburb": "Woodley/Kenyatta/Golf Course ward",
+    "city_district": "Kibra",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "40476",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.3032888",
+    "-1.3031888",
+    "36.8215222",
+    "36.8216222"
+   ]
+  },
+  {
+   "place_id": 38263023,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 5380534533,
+   "lat": "-1.3044138",
+   "lon": "36.8162540",
+   "category": "shop",
+   "type": "car_repair",
+   "place_rank": 30,
+   "importance": 7.250400549320238e-05,
+   "addresstype": "shop",
+   "name": "Automated LTD",
+   "display_name": "Automated LTD, Hse 26, Oldeani Crescent, Upperhill,Nairobi, Oldeani Crescent, Woodley/Kenyatta/Golf Course ward, Kibra, Nairobi, 00202, Kenya",
+   "address": {
+    "shop": "Automated LTD",
+    "house_number": "Hse 26, Oldeani Crescent, Upperhill,Nairobi",
+    "road": "Oldeani Crescent",
+    "suburb": "Woodley/Kenyatta/Golf Course ward",
+    "city_district": "Kibra",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00202",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.3044638",
+    "-1.3043638",
+    "36.8162040",
+    "36.8163040"
+   ]
+  }
+ ],
+ "Utawala, Nairobi, Kenya": [
+  {
+   "place_id": 37996756,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 11786729828,
+   "lat": "-1.2843808",
+   "lon": "36.9680714",
+   "category": "place",
+   "type": "suburb",
+   "place_rank": 19,
+   "importance": 0.308429648456196,
+   "addresstype": "suburb",
+   "name": "Utawala",
+   "display_name": "Utawala, Embakasi, Nairobi, 00520, Kenya",
+   "address": {
+    "suburb": "Utawala",
+    "city_district": "Embakasi",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00520",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.3043808",
+    "-1.2643808",
+    "36.9480714",
+    "36.9880714"
+   ]
+  }
+ ],
+ "Westlands, Nairobi, Kenya": [
+  {
+   "place_id": 38439054,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "relation",
+   "osm_id": 16246696,
+   "lat": "-1.2465281",
+   "lon": "36.7860759",
+   "category": "boundary",
+   "type": "administrative",
+   "place_rank": 12,
+   "importance": 0.2400725040054932,
+   "addresstype": "city_district",
+   "name": "Westlands",
+   "display_name": "Westlands, Nairobi, Kenya",
+   "address": {
+    "city_district": "Westlands",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.3005028",
+    "-1.1923847",
+    "36.7212250",
+    "36.8471976"
+   ]
+  },
+  {
+   "place_id": 38470904,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 30121815,
+   "lat": "-1.2647561",
+   "lon": "36.8018415",
+   "category": "place",
+   "type": "suburb",
+   "place_rank": 19,
+   "importance": 0.14673917067215986,
+   "addresstype": "suburb",
+   "name": "Westlands",
+   "display_name": "Westlands, Kilimani division, Westlands, Nairobi, 97104, Kenya",
+   "address": {
+    "suburb": "Westlands",
+    "city_district": "Westlands",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "97104",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2847561",
+    "-1.2447561",
+    "36.7818415",
+    "36.8218415"
+   ]
+  }
+ ],
+ "Zimmerman, Nairobi, Kenya": [
+  {
+   "place_id": 38333146,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 4194272132,
+   "lat": "-1.2106686",
+   "lon": "36.8963084",
+   "category": "place",
+   "type": "suburb",
+   "place_rank": 19,
+   "importance": 0.14673917067215986,
+   "addresstype": "suburb",
+   "name": "Zimmerman",
+   "display_name": "Zimmerman, Githurai division, Kasarani, Nairobi, 00608, Kenya",
+   "address": {
+    "suburb": "Zimmerman",
+    "city_district": "Kasarani",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00608",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2306686",
+    "-1.1906686",
+    "36.8763084",
+    "36.9163084"
+   ]
+  },
+  {
+   "place_id": 38398223,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 12886264368,
+   "lat": "-1.2021517",
+   "lon": "36.8970433",
+   "category": "craft",
+   "type": "carpenter",
+   "place_rank": 30,
+   "importance": 7.250400549320238e-05,
+   "addresstype": "craft",
+   "name": "Zimmerman",
+   "display_name": "Zimmerman, Kamiti Road, Njathaini sublocation, Roysambu location, Roysambu division, Kasarani, Nairobi, 00608, Kenya",
+   "address": {
+    "craft": "Zimmerman",
+    "road": "Kamiti Road",
+    "city_block": "Njathaini sublocation",
+    "neighbourhood": "Roysambu location",
+    "suburb": "Roysambu division",
+    "city_district": "Kasarani",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00608",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2022017",
+    "-1.2021017",
+    "36.8969933",
+    "36.8970933"
+   ]
+  },
+  {
+   "place_id": 38465965,
+   "licence": "Data ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "relation",
+   "osm_id": 18101589,
+   "lat": "-1.2112524",
+   "lon": "36.8998760",
+   "category": "boundary",
+   "type": "administrative",
+   "place_rank": 18,
+   "importance": 0.16007250400549322,
+   "addresstype": "neighbourhood",
+   "name": "Zimmerman location",
+   "display_name": "Zimmerman location, Githurai division, Kasarani, Nairobi, Kenya",
+   "address": {
+    "neighbourhood": "Zimmerman location",
+    "suburb": "Githurai division",
+    "city_district": "Kasarani",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2195974",
+    "-1.2027945",
+    "36.8910968",
+    "36.9132041"
+   ]
+  }
+ ],
+ "Kahawa Wendani, Kenya": [
+  {
+   "place_id": 38438473,
+   "licence": "Data ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 6249532189,
+   "lat": "-1.1963578",
+   "lon": "36.9257723",
+   "category": "place",
+   "type": "suburb",
+   "place_rank": 19,
+   "importance": 0.14673917067215986,
+   "addresstype": "suburb",
+   "name": "Kahawa Wendani",
+   "display_name": "Kahawa Wendani, Kahawa Wendani ward, Ruiru, Kiambu, 00609, Kenya",
+   "address": {
+    "suburb": "Kahawa Wendani",
+    "city": "Kahawa Wendani ward",
+    "county": "Ruiru",
+    "state": "Kiambu",
+    "ISO3166-2-lvl4": "KE-13",
+    "postcode": "00609",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2163578",
+    "-1.1763578",
+    "36.9057723",
+    "36.9457723"
+   ]
+  }
+ ],
+ "Upper Hill, Nairobi, Kenya": [
+  {
+   "place_id": 38422799,
+   "licence": "Data ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 5380579643,
+   "lat": "-1.2941162",
+   "lon": "36.8129064",
+   "category": "place",
+   "type": "suburb",
+   "place_rank": 19,
+   "importance": 0.14673917067215986,
+   "addresstype": "suburb",
+   "name": "Upper Hill",
+   "display_name": "Upper Hill, Kilimani division, Westlands, Nairobi, 40476, Kenya",
+   "address": {
+    "suburb": "Upper Hill",
+    "city_district": "Westlands",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "40476",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.3141162",
+    "-1.2741162",
+    "36.7929064",
+    "36.8329064"
+   ]
+  }
+ ],
+ "Kahawa Sukari, Kenya": [
+  {
+   "place_id": 38170589,
+   "licence": "Data Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 1948520302,
+   "lat": "-1.1909946",
+   "lon": "36.9287774",
+   "category": "highway",
+   "type": "motorway_junction",
+   "place_rank": 30,
+   "importance": 7.250400549320238e-05,
+   "addresstype": "highway",
+   "name": "Kahawa Sukari",
+   "display_name": "Kahawa Sukari, Thika Road, Kiwanja sublocation, Kahawa West location, Githurai division, Kasarani, Nairobi, 00609, Kenya",
+   "address": {
+    "highway": "Kahawa Sukari",
+    "road": "Thika Road",
+    "city_block": "Kiwanja sublocation",
+    "neighbourhood": "Kahawa West location",
+    "suburb": "Githurai division",
+    "city_district": "Kasarani",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00609",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.1910446",
+    "-1.1909446",
+    "36.9287274",
+    "36.9288274"
+   ]
+  },
+  {
+   "place_id": 38271025,
+   "licence": "Data Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 6959365885,
+   "lat": "-1.1888753",
+   "lon": "36.9314768",
+   "category": "highway",
+   "type": "bus_stop",
+   "place_rank": 30,
+   "importance": 7.250400549320238e-05,
+   "addresstype": "highway",
+   "name": "Kahawa sukari",
+   "display_name": "Kahawa sukari, Kahawa Sukari Avenue, Kahawa Wendani, Kahawa Sukari ward, Ruiru, Kiambu, 00609, Kenya",
+   "address": {
+    "highway": "Kahawa sukari",
+    "road": "Kahawa Sukari Avenue",
+    "suburb": "Kahawa Wendani",
+    "city": "Kahawa Sukari ward",
+    "county": "Ruiru",
+    "state": "Kiambu",
+    "ISO3166-2-lvl4": "KE-13",
+    "postcode": "00609",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.1889253",
+    "-1.1888253",
+    "36.9314268",
+    "36.9315268"
+   ]
+  }
+ ],
+ "Kahawa Maziwa, Kenya": [
+  {
+   "place_id": 37971192,
+   "licence": "Data Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "way",
+   "osm_id": 243188079,
+   "lat": "-1.1896690",
+   "lon": "36.8973339",
+   "category": "amenity",
+   "type": "place_of_worship",
+   "place_rank": 30,
+   "importance": 7.250400549320238e-05,
+   "addresstype": "amenity",
+   "name": "PCEA Kahawa Farmers Church",
+   "display_name": "PCEA Kahawa Farmers Church, Maziwa Road, Kamuthi sublocation, Githurai location, Githurai division, Kasarani, Nairobi, 00607, Kenya",
+   "address": {
+    "amenity": "PCEA Kahawa Farmers Church",
+    "road": "Maziwa Road",
+    "city_block": "Kamuthi sublocation",
+    "neighbourhood": "Githurai location",
+    "suburb": "Githurai division",
+    "city_district": "Kasarani",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00607",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.1901892",
+    "-1.1892613",
+    "36.8967878",
+    "36.8978446"
+   ]
+  }
+ ],
+ "Riverside Drive, Nairobi, Kenya": [
+  {
+   "place_id": 38186854,
+   "licence": "Data Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "way",
+   "osm_id": 552376627,
+   "lat": "-1.2692648",
+   "lon": "36.7907571",
+   "category": "highway",
+   "type": "tertiary",
+   "place_rank": 26,
+   "importance": 0.05340583733882655,
+   "addresstype": "tertiary",
+   "name": "Riverside Drive",
+   "display_name": "Riverside Drive, Kileleshwa sublocation, Kileleshwa location, Kilimani division, Westlands, Nairobi, 97104, Kenya",
+   "address": {
+    "road": "Riverside Drive",
+    "city_block": "Kileleshwa sublocation",
+    "neighbourhood": "Kileleshwa location",
+    "suburb": "Kilimani division",
+    "city_district": "Westlands",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "97104",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2713365",
+    "-1.2675126",
+    "36.7806008",
+    "36.8009806"
+   ]
+  },
+  {
+   "place_id": 38509563,
+   "licence": "Data Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "way",
+   "osm_id": 680549029,
+   "lat": "-1.2687247",
+   "lon": "36.7799705",
+   "category": "highway",
+   "type": "residential",
+   "place_rank": 26,
+   "importance": 0.05340583733882655,
+   "addresstype": "residential",
+   "name": "Riverside Drive",
+   "display_name": "Riverside Drive, Kilimani location, Kilimani ward, Kilimani division, Westlands, Nairobi, 54102, Kenya",
+   "address": {
+    "road": "Riverside Drive",
+    "city_block": "Kilimani location",
+    "neighbourhood": "Kilimani ward",
+    "suburb": "Kilimani division",
+    "city_district": "Westlands",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "54102",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2689342",
+    "-1.2685025",
+    "36.7793357",
+    "36.7806008"
+   ]
+  },
+  {
+   "place_id": 38185987,
+   "licence": "Data Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "way",
+   "osm_id": 553071363,
+   "lat": "-1.2674291",
+   "lon": "36.7840074",
+   "category": "highway",
+   "type": "residential",
+   "place_rank": 26,
+   "importance": 0.05340583733882655,
+   "addresstype": "residential",
+   "name": "Riverside Drive",
+   "display_name": "Riverside Drive, Kileleshwa sublocation, Kileleshwa location, Kilimani division, Westlands, Nairobi, 97104, Kenya",
+   "address": {
+    "road": "Riverside Drive",
+    "city_block": "Kileleshwa sublocation",
+    "neighbourhood": "Kileleshwa location",
+    "suburb": "Kilimani division",
+    "city_district": "Westlands",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "97104",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2677650",
+    "-1.2670927",
+    "36.7837917",
+    "36.7842221"
+   ]
+  },
+  {
+   "place_id": 38269644,
+   "licence": "Data Ãƒâ€šÃ‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "way",
+   "osm_id": 680541964,
+   "lat": "-1.2708818",
+   "lon": "36.8071498",
+   "category": "highway",
+   "type": "tertiary",
+   "place_rank": 26,
+   "importance": 0.05340583733882655,
+   "addresstype": "tertiary",
+   "name": "Riverside Drive",
+   "display_name": "Riverside Drive, Muthangari sublocation, Kileleshwa location, Kilimani division, Westlands, Nairobi, 97104, Kenya",
+   "address": {
+    "road": "Riverside Drive",
+    "city_block": "Muthangari sublocation",
+    "neighbourhood": "Kileleshwa location",
+    "suburb": "Kilimani division",
+    "city_district": "Westlands",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "97104",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2709746",
+    "-1.2707891",
+    "36.8070953",
+    "36.8072042"
+   ]
+  }
+ ],
+ "Nairobi General Post Office, Kenyatta Avenue, Nairobi, Kenya": [
+  {
+   "place_id": 38191211,
+   "licence": "Data Ã‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 1537504486,
+   "lat": "-1.2858956",
+   "lon": "36.8194251",
+   "category": "amenity",
+   "type": "post_office",
+   "place_rank": 30,
+   "importance": 7.250400549320238e-05,
+   "addresstype": "amenity",
+   "name": "Nairobi General Post Office",
+   "display_name": "Nairobi General Post Office, Kenyatta Avenue, City Square sublocation, Starehe location, CBD division, Starehe, Nairobi, 00100, Kenya",
+   "address": {
+    "amenity": "Nairobi General Post Office",
+    "road": "Kenyatta Avenue",
+    "city_block": "City Square sublocation",
+    "neighbourhood": "Starehe location",
+    "suburb": "CBD division",
+    "city_district": "Starehe",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00100",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2859456",
+    "-1.2858456",
+    "36.8193751",
+    "36.8194751"
+   ]
+  }
+ ],
+ "Kenyatta Avenue, Nairobi, Kenya": [
+  {
+   "place_id": 37957145,
+   "licence": "Data Ã‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "way",
+   "osm_id": 4741911,
+   "lat": "-1.2851625",
+   "lon": "36.8201700",
+   "category": "highway",
+   "type": "secondary",
+   "place_rank": 26,
+   "importance": 0.05340583733882655,
+   "addresstype": "secondary",
+   "name": "Kenyatta Avenue",
+   "display_name": "Kenyatta Avenue, City Square sublocation, Starehe location, CBD division, Starehe, Nairobi, 00200, Kenya",
+   "address": {
+    "road": "Kenyatta Avenue",
+    "city_block": "City Square sublocation",
+    "neighbourhood": "Starehe location",
+    "suburb": "CBD division",
+    "city_district": "Starehe",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00200",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2865115",
+    "-1.2838696",
+    "36.8175869",
+    "36.8227811"
+   ]
+  },
+  {
+   "place_id": 38063877,
+   "licence": "Data Ã‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "way",
+   "osm_id": 1151073357,
+   "lat": "-1.2879003",
+   "lon": "36.8145209",
+   "category": "highway",
+   "type": "secondary",
+   "place_rank": 26,
+   "importance": 0.05340583733882655,
+   "addresstype": "secondary",
+   "name": "Kenyatta Avenue",
+   "display_name": "Kenyatta Avenue, Kilimani location, Kilimani ward, Kilimani division, Westlands, Nairobi, 00200, Kenya",
+   "address": {
+    "road": "Kenyatta Avenue",
+    "city_block": "Kilimani location",
+    "neighbourhood": "Kilimani ward",
+    "suburb": "Kilimani division",
+    "city_district": "Westlands",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00200",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2891600",
+    "-1.2865637",
+    "36.8118927",
+    "36.8171110"
+   ]
+  },
+  {
+   "place_id": 38005618,
+   "licence": "Data Ã‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "way",
+   "osm_id": 4716887,
+   "lat": "-1.2894548",
+   "lon": "36.8110782",
+   "category": "highway",
+   "type": "secondary",
+   "place_rank": 26,
+   "importance": 0.05340583733882655,
+   "addresstype": "secondary",
+   "name": "Kenyatta Avenue",
+   "display_name": "Kenyatta Avenue, Kilimani location, Kilimani ward, Kilimani division, Westlands, Nairobi, 00400, Kenya",
+   "address": {
+    "road": "Kenyatta Avenue",
+    "city_block": "Kilimani location",
+    "neighbourhood": "Kilimani ward",
+    "suburb": "Kilimani division",
+    "city_district": "Westlands",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00400",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2896524",
+    "-1.2893478",
+    "36.8103660",
+    "36.8118109"
+   ]
+  },
+  {
+   "place_id": 38036662,
+   "licence": "Data Ã‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "way",
+   "osm_id": 1120654528,
+   "lat": "-1.2863249",
+   "lon": "36.8172471",
+   "category": "highway",
+   "type": "trunk",
+   "place_rank": 26,
+   "importance": 0.05340583733882655,
+   "addresstype": "trunk",
+   "name": "Kenyatta Avenue",
+   "display_name": "Kenyatta Avenue, City Square sublocation, Starehe location, CBD division, Starehe, Nairobi, 00200, Kenya",
+   "address": {
+    "road": "Kenyatta Avenue",
+    "city_block": "City Square sublocation",
+    "neighbourhood": "Starehe location",
+    "suburb": "CBD division",
+    "city_district": "Starehe",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00200",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2865637",
+    "-1.2863033",
+    "36.8171110",
+    "36.8175188"
+   ]
+  },
+  {
+   "place_id": 37937012,
+   "licence": "Data Ã‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "way",
+   "osm_id": 51164168,
+   "lat": "-1.2895941",
+   "lon": "36.8097279",
+   "category": "highway",
+   "type": "tertiary",
+   "place_rank": 26,
+   "importance": 0.05340583733882655,
+   "addresstype": "tertiary",
+   "name": "Kenyatta Avenue",
+   "display_name": "Kenyatta Avenue, Kilimani location, Kilimani ward, Kilimani division, Westlands, Nairobi, 00400, Kenya",
+   "address": {
+    "road": "Kenyatta Avenue",
+    "city_block": "Kilimani location",
+    "neighbourhood": "Kilimani ward",
+    "suburb": "Kilimani division",
+    "city_district": "Westlands",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00400",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2896333",
+    "-1.2895298",
+    "36.8094698",
+    "36.8099866"
+   ]
+  },
+  {
+   "place_id": 38072994,
+   "licence": "Data Ã‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "way",
+   "osm_id": 1151069803,
+   "lat": "-1.2866573",
+   "lon": "36.8171430",
+   "category": "highway",
+   "type": "trunk",
+   "place_rank": 26,
+   "importance": 0.05340583733882655,
+   "addresstype": "trunk",
+   "name": "Kenyatta Avenue",
+   "display_name": "Kenyatta Avenue, Kilimani location, Kilimani ward, Kilimani division, Westlands, Nairobi, 00200, Kenya",
+   "address": {
+    "road": "Kenyatta Avenue",
+    "city_block": "Kilimani location",
+    "neighbourhood": "Kilimani ward",
+    "suburb": "Kilimani division",
+    "city_district": "Westlands",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00200",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2867387",
+    "-1.2865637",
+    "36.8171110",
+    "36.8172001"
+   ]
+  },
+  {
+   "place_id": 38029967,
+   "licence": "Data Ã‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "way",
+   "osm_id": 1305321294,
+   "lat": "-1.2891783",
+   "lon": "36.8118363",
+   "category": "highway",
+   "type": "secondary",
+   "place_rank": 26,
+   "importance": 0.05340583733882655,
+   "addresstype": "secondary",
+   "name": "Kenyatta Avenue",
+   "display_name": "Kenyatta Avenue, Kilimani location, Kilimani ward, Kilimani division, Westlands, Nairobi, 51133, Kenya",
+   "address": {
+    "road": "Kenyatta Avenue",
+    "city_block": "Kilimani location",
+    "neighbourhood": "Kilimani ward",
+    "suburb": "Kilimani division",
+    "city_district": "Westlands",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "51133",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2891967",
+    "-1.2891600",
+    "36.8117799",
+    "36.8118927"
+   ]
+  },
+  {
+   "place_id": 37937266,
+   "licence": "Data Ã‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "way",
+   "osm_id": 1169312577,
+   "lat": "-1.2833596",
+   "lon": "36.8235237",
+   "category": "highway",
+   "type": "secondary",
+   "place_rank": 26,
+   "importance": 0.05340583733882655,
+   "addresstype": "secondary",
+   "name": "Kenyatta Avenue",
+   "display_name": "Kenyatta Avenue, City Centre sublocation, Starehe location, CBD division, Starehe, Nairobi, 40204, Kenya",
+   "address": {
+    "road": "Kenyatta Avenue",
+    "city_block": "City Centre sublocation",
+    "neighbourhood": "Starehe location",
+    "suburb": "CBD division",
+    "city_district": "Starehe",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "40204",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2833809",
+    "-1.2833382",
+    "36.8234935",
+    "36.8235539"
+   ]
+  }
+ ],
+ "Nairobi Central Business District, Kenya": [
+  {
+   "place_id": 425319070,
+   "licence": "Data Ã‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "way",
+   "osm_id": 106302138,
+   "lat": "-1.2900328",
+   "lon": "36.8249721",
+   "category": "amenity",
+   "type": "bank",
+   "place_rank": 30,
+   "importance": 0.4974917895685216,
+   "addresstype": "amenity",
+   "name": "Central Bank of Kenya",
+   "display_name": "Central Bank of Kenya, 60000, Haile Selassie Avenue, Central Business District, Starehe location, CBD division, Starehe, Nairobi, 00200, Kenya",
+   "address": {
+    "amenity": "Central Bank of Kenya",
+    "house_number": "60000",
+    "road": "Haile Selassie Avenue",
+    "commercial": "Central Business District",
+    "neighbourhood": "Starehe location",
+    "suburb": "CBD division",
+    "city_district": "Starehe",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00200",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2903664",
+    "-1.2897100",
+    "36.8245769",
+    "36.8253667"
+   ]
+  },
+  {
+   "place_id": 424811254,
+   "licence": "Data Ã‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 5555074031,
+   "lat": "-1.2896904",
+   "lon": "36.8234722",
+   "category": "office",
+   "type": "government",
+   "place_rank": 30,
+   "importance": 0.3704139248106284,
+   "addresstype": "office",
+   "name": "Kenya Police Headquarters",
+   "display_name": "Kenya Police Headquarters, Harambee Avenue, Central Business District, Starehe location, CBD division, Starehe, Nairobi, 00200, Kenya",
+   "address": {
+    "office": "Kenya Police Headquarters",
+    "road": "Harambee Avenue",
+    "commercial": "Central Business District",
+    "neighbourhood": "Starehe location",
+    "suburb": "CBD division",
+    "city_district": "Starehe",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00200",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2897404",
+    "-1.2896404",
+    "36.8234222",
+    "36.8235222"
+   ]
+  },
+  {
+   "place_id": 425879305,
+   "licence": "Data Ã‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 14095405609,
+   "lat": "-1.2817290",
+   "lon": "36.8164375",
+   "category": "office",
+   "type": "government",
+   "place_rank": 30,
+   "importance": 0.38438338989703197,
+   "addresstype": "office",
+   "name": "Independent Elecoral & Boundaries Commision",
+   "display_name": "Independent Elecoral & Boundaries Commision, University Way, City Square sublocation, Starehe location, CBD division, Starehe, Nairobi, 00100, Kenya",
+   "address": {
+    "office": "Independent Elecoral & Boundaries Commision",
+    "road": "University Way",
+    "city_block": "City Square sublocation",
+    "neighbourhood": "Starehe location",
+    "suburb": "CBD division",
+    "city_district": "Starehe",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00100",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2817790",
+    "-1.2816790",
+    "36.8163875",
+    "36.8164875"
+   ]
+  },
+  {
+   "place_id": 431510135,
+   "licence": "Data Ã‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 14309811005,
+   "lat": "-1.2865851",
+   "lon": "36.8252861",
+   "category": "office",
+   "type": "government",
+   "place_rank": 30,
+   "importance": 0.3378692872294172,
+   "addresstype": "office",
+   "name": "Kenya Film Classification Board",
+   "display_name": "Kenya Film Classification Board, 44226, Aga Khan Walk, Central Business District, Starehe location, CBD division, Starehe, Nairobi, 00100, Kenya",
+   "address": {
+    "office": "Kenya Film Classification Board",
+    "house_number": "44226",
+    "road": "Aga Khan Walk",
+    "commercial": "Central Business District",
+    "neighbourhood": "Starehe location",
+    "suburb": "CBD division",
+    "city_district": "Starehe",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00100",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2866351",
+    "-1.2865351",
+    "36.8252361",
+    "36.8253361"
+   ]
+  },
+  {
+   "place_id": 38215427,
+   "licence": "Data Ã‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 13155323645,
+   "lat": "-1.2905036",
+   "lon": "36.8238902",
+   "category": "office",
+   "type": "government",
+   "place_rank": 30,
+   "importance": 0.3268260957230098,
+   "addresstype": "office",
+   "name": "Kenya Revenue Authority",
+   "display_name": "Kenya Revenue Authority, Haile Selassie Avenue, Central Business District, Starehe location, CBD division, Starehe, Nairobi, 48240, Kenya",
+   "address": {
+    "office": "Kenya Revenue Authority",
+    "road": "Haile Selassie Avenue",
+    "commercial": "Central Business District",
+    "neighbourhood": "Starehe location",
+    "suburb": "CBD division",
+    "city_district": "Starehe",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "48240",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2905536",
+    "-1.2904536",
+    "36.8238402",
+    "36.8239402"
+   ]
+  },
+  {
+   "place_id": 38179729,
+   "licence": "Data Ã‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 5555073992,
+   "lat": "-1.2888146",
+   "lon": "36.8257127",
+   "category": "amenity",
+   "type": "bank",
+   "place_rank": 30,
+   "importance": 0.32592895108882386,
+   "addresstype": "amenity",
+   "name": "National Bank of Kenya",
+   "display_name": "National Bank of Kenya, Harambee Avenue, Central Business District, Starehe location, CBD division, Starehe, Nairobi, 00200, Kenya",
+   "address": {
+    "amenity": "National Bank of Kenya",
+    "road": "Harambee Avenue",
+    "commercial": "Central Business District",
+    "neighbourhood": "Starehe location",
+    "suburb": "CBD division",
+    "city_district": "Starehe",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00200",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2888646",
+    "-1.2887646",
+    "36.8256627",
+    "36.8257627"
+   ]
+  },
+  {
+   "place_id": 38165948,
+   "licence": "Data Ã‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "way",
+   "osm_id": 580324784,
+   "lat": "-1.2917768",
+   "lon": "36.8246536",
+   "category": "amenity",
+   "type": "university",
+   "place_rank": 30,
+   "importance": 0.2844781372993679,
+   "addresstype": "amenity",
+   "name": "The Technical University of Kenya",
+   "display_name": "The Technical University of Kenya, Haile Selassie Avenue, City Square sublocation, Starehe location, CBD division, Starehe, Nairobi, 00200, Kenya",
+   "address": {
+    "amenity": "The Technical University of Kenya",
+    "road": "Haile Selassie Avenue",
+    "city_block": "City Square sublocation",
+    "neighbourhood": "Starehe location",
+    "suburb": "CBD division",
+    "city_district": "Starehe",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00200",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2927521",
+    "-1.2909011",
+    "36.8233043",
+    "36.8259472"
+   ]
+  },
+  {
+   "place_id": 431510137,
+   "licence": "Data Ã‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 14309811007,
+   "lat": "-1.2872324",
+   "lon": "36.8248899",
+   "category": "office",
+   "type": "insurance",
+   "place_rank": 30,
+   "importance": 0.14389741120638372,
+   "addresstype": "office",
+   "name": "Kenya Reinsurance Corporation",
+   "display_name": "Kenya Reinsurance Corporation, 30271, Taifa Road, Central Business District, Starehe location, CBD division, Starehe, Nairobi, 00100, Kenya",
+   "address": {
+    "office": "Kenya Reinsurance Corporation",
+    "house_number": "30271",
+    "road": "Taifa Road",
+    "commercial": "Central Business District",
+    "neighbourhood": "Starehe location",
+    "suburb": "CBD division",
+    "city_district": "Starehe",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00100",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2872824",
+    "-1.2871824",
+    "36.8248399",
+    "36.8249399"
+   ]
+  },
+  {
+   "place_id": 430327852,
+   "licence": "Data Ã‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 14263425571,
+   "lat": "-1.2905200",
+   "lon": "36.8230460",
+   "category": "office",
+   "type": "government",
+   "place_rank": 30,
+   "importance": 0.09078915819201436,
+   "addresstype": "office",
+   "name": "Competition Authority of Kenya",
+   "display_name": "Competition Authority of Kenya, Harambee Avenue, Central Business District, Starehe location, CBD division, Starehe, Nairobi, 00200, Kenya",
+   "address": {
+    "office": "Competition Authority of Kenya",
+    "road": "Harambee Avenue",
+    "commercial": "Central Business District",
+    "neighbourhood": "Starehe location",
+    "suburb": "CBD division",
+    "city_district": "Starehe",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00200",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2905700",
+    "-1.2904700",
+    "36.8229960",
+    "36.8230960"
+   ]
+  },
+  {
+   "place_id": 427349476,
+   "licence": "Data Ã‚Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 14141713998,
+   "lat": "-1.2865314",
+   "lon": "36.8210376",
+   "category": "amenity",
+   "type": "university",
+   "place_rank": 30,
+   "importance": 0.07194870560319186,
+   "addresstype": "amenity",
+   "name": "Kenya Institute of Security and Criminal Justice",
+   "display_name": "Kenya Institute of Security and Criminal Justice, Muindi Mbingu Street, City Square sublocation, Starehe location, CBD division, Starehe, Nairobi, 00200, Kenya",
+   "address": {
+    "amenity": "Kenya Institute of Security and Criminal Justice",
+    "road": "Muindi Mbingu Street",
+    "city_block": "City Square sublocation",
+    "neighbourhood": "Starehe location",
+    "suburb": "CBD division",
+    "city_district": "Starehe",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00200",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2865814",
+    "-1.2864814",
+    "36.8209876",
+    "36.8210876"
+   ]
+  }
+ ],
+ "Langata Estate, Nairobi, Kenya": [
+  {
+   "place_id": 38337276,
+   "licence": "Data Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "way",
+   "osm_id": 456332444,
+   "lat": "-1.3276311",
+   "lon": "36.8336643",
+   "category": "amenity",
+   "type": "college",
+   "place_rank": 30,
+   "importance": 7.250400549320238e-05,
+   "addresstype": "amenity",
+   "name": "Kenya College of Insurance",
+   "display_name": "Kenya College of Insurance, Southern Bypass, Uhuru gardens Estate, South C ward, Langata, Nairobi, 00603, Kenya",
+   "address": {
+    "amenity": "Kenya College of Insurance",
+    "road": "Southern Bypass",
+    "quarter": "Uhuru gardens Estate",
+    "suburb": "South C ward",
+    "city_district": "Langata",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00603",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.3293746",
+    "-1.3257978",
+    "36.8315566",
+    "36.8353609"
+   ]
+  },
+  {
+   "place_id": 38367651,
+   "licence": "Data Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 13590468195,
+   "lat": "-1.3201557",
+   "lon": "36.8037648",
+   "category": "leisure",
+   "type": "shooting_ground",
+   "place_rank": 30,
+   "importance": 7.250400549320238e-05,
+   "addresstype": "leisure",
+   "name": "Kenya regiment rifle club",
+   "display_name": "Kenya regiment rifle club, Langata Road, Dam 2, Uhuru gardens Estate, Mugumo-ini ward, Langata, Nairobi, 00202, Kenya",
+   "address": {
+    "leisure": "Kenya regiment rifle club",
+    "road": "Langata Road",
+    "neighbourhood": "Dam 2",
+    "quarter": "Uhuru gardens Estate",
+    "suburb": "Mugumo-ini ward",
+    "city_district": "Langata",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00202",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.3202057",
+    "-1.3201057",
+    "36.8037148",
+    "36.8038148"
+   ]
+  },
+  {
+   "place_id": 425195461,
+   "licence": "Data Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 14100900217,
+   "lat": "-1.3331870",
+   "lon": "36.8046692",
+   "category": "shop",
+   "type": "car_repair",
+   "place_rank": 30,
+   "importance": 7.250400549320238e-05,
+   "addresstype": "shop",
+   "name": "Team Mazda Kenya",
+   "display_name": "Team Mazda Kenya, Southern Bypass, Uhuru gardens Estate, Nairobi West ward, Langata, Nairobi, 00603, Kenya",
+   "address": {
+    "shop": "Team Mazda Kenya",
+    "road": "Southern Bypass",
+    "quarter": "Uhuru gardens Estate",
+    "suburb": "Nairobi West ward",
+    "city_district": "Langata",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "00603",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.3332370",
+    "-1.3331370",
+    "36.8046192",
+    "36.8047192"
+   ]
+  },
+  {
+   "place_id": 38411328,
+   "licence": "Data Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 6218727827,
+   "lat": "-1.3955637",
+   "lon": "36.7622239",
+   "category": "amenity",
+   "type": "bank",
+   "place_rank": 30,
+   "importance": 4.5001144426596745e-05,
+   "addresstype": "amenity",
+   "name": "Kenya Commercial Bank",
+   "display_name": "Kenya Commercial Bank, Magadi Road, Mbagathi Greens Estate, Karen ward, Langata, Ongata Rongai, Kajiado North, Kajiado, 00511, Kenya",
+   "address": {
+    "amenity": "Kenya Commercial Bank",
+    "road": "Magadi Road",
+    "neighbourhood": "Mbagathi Greens Estate",
+    "suburb": "Karen ward",
+    "city_district": "Langata",
+    "town": "Ongata Rongai",
+    "county": "Kajiado North",
+    "state": "Kajiado",
+    "ISO3166-2-lvl4": "KE-10",
+    "postcode": "00511",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.3956137",
+    "-1.3955137",
+    "36.7621739",
+    "36.7622739"
+   ]
+  }
+ ],
+ "Otiende, Nairobi, Kenya": [
+  {
+   "place_id": 38397645,
+   "licence": "Data Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 11407640428,
+   "lat": "-1.3233218",
+   "lon": "36.7791581",
+   "category": "place",
+   "type": "quarter",
+   "place_rank": 20,
+   "importance": 0.13340583733882655,
+   "addresstype": "quarter",
+   "name": "Otiende",
+   "display_name": "Otiende, Mugumo-ini ward, Langata, Nairobi, 21104, Kenya",
+   "address": {
+    "quarter": "Otiende",
+    "suburb": "Mugumo-ini ward",
+    "city_district": "Langata",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "21104",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.3333218",
+    "-1.3133218",
+    "36.7691581",
+    "36.7891581"
+   ]
+  }
+ ],
+ "Sarit Centre, Nairobi, Kenya": [
+  {
+   "place_id": 38221629,
+   "licence": "Data Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "node",
+   "osm_id": 30324343,
+   "lat": "-1.2609034",
+   "lon": "36.8018312",
+   "category": "shop",
+   "type": "supermarket",
+   "place_rank": 30,
+   "importance": 7.250400549320238e-05,
+   "addresstype": "shop",
+   "name": "Carrefour",
+   "display_name": "Carrefour, Sarit Centre,, Karuna Road, Parklands location, Parklands/Highridge ward, Highridge division, Westlands, Nairobi, 97104, Kenya",
+   "address": {
+    "shop": "Carrefour",
+    "house_number": "Sarit Centre,",
+    "road": "Karuna Road",
+    "city_block": "Parklands location",
+    "neighbourhood": "Parklands/Highridge ward",
+    "suburb": "Highridge division",
+    "city_district": "Westlands",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "97104",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2609534",
+    "-1.2608534",
+    "36.8017812",
+    "36.8018812"
+   ]
+  }
+ ],
+ "Westlands Roundabout, Nairobi, Kenya": [
+  {
+   "place_id": 38180928,
+   "licence": "Data Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "way",
+   "osm_id": 1153491343,
+   "lat": "-1.2643321",
+   "lon": "36.8019457",
+   "category": "highway",
+   "type": "trunk",
+   "place_rank": 26,
+   "importance": 0.05340583733882655,
+   "addresstype": "trunk",
+   "name": "Westlands Roundabout",
+   "display_name": "Westlands Roundabout, Parklands location, Parklands/Highridge ward, Highridge division, Westlands, Nairobi, 97104, Kenya",
+   "address": {
+    "road": "Westlands Roundabout",
+    "city_block": "Parklands location",
+    "neighbourhood": "Parklands/Highridge ward",
+    "suburb": "Highridge division",
+    "city_district": "Westlands",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "97104",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2644235",
+    "-1.2642298",
+    "36.8018313",
+    "36.8020689"
+   ]
+  },
+  {
+   "place_id": 38266667,
+   "licence": "Data Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "way",
+   "osm_id": 4751845,
+   "lat": "-1.2648370",
+   "lon": "36.8018296",
+   "category": "highway",
+   "type": "residential",
+   "place_rank": 26,
+   "importance": 0.05340583733882655,
+   "addresstype": "residential",
+   "name": "Westlands Roundabout",
+   "display_name": "Westlands Roundabout, Muthangari sublocation, Kileleshwa location, Kilimani division, Westlands, Nairobi, 97104, Kenya",
+   "address": {
+    "road": "Westlands Roundabout",
+    "city_block": "Muthangari sublocation",
+    "neighbourhood": "Kileleshwa location",
+    "suburb": "Kilimani division",
+    "city_district": "Westlands",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "97104",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2648981",
+    "-1.2647452",
+    "36.8017356",
+    "36.8019462"
+   ]
+  },
+  {
+   "place_id": 38184437,
+   "licence": "Data Â© OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "way",
+   "osm_id": 1305312115,
+   "lat": "-1.2646185",
+   "lon": "36.8017042",
+   "category": "highway",
+   "type": "trunk",
+   "place_rank": 26,
+   "importance": 0.05340583733882655,
+   "addresstype": "trunk",
+   "name": "Westlands Roundabout",
+   "display_name": "Westlands Roundabout, Muthangari sublocation, Kileleshwa location, Kilimani division, Westlands, Nairobi, 97104, Kenya",
+   "address": {
+    "road": "Westlands Roundabout",
+    "city_block": "Muthangari sublocation",
+    "neighbourhood": "Kileleshwa location",
+    "suburb": "Kilimani division",
+    "city_district": "Westlands",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "97104",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.2647452",
+    "-1.2644937",
+    "36.8016665",
+    "36.8017356"
+   ]
+  }
+ ],
+ "Jomo Kenyatta International Airport, Nairobi, Kenya": [
+  {
+   "place_id": 38420479,
+   "licence": "Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+   "osm_type": "relation",
+   "osm_id": 11951583,
+   "lat": "-1.3169486",
+   "lon": "36.9288569",
+   "category": "aeroway",
+   "type": "aerodrome",
+   "place_rank": 30,
+   "importance": 0.5074507857667686,
+   "addresstype": "aeroway",
+   "name": "Jomo Kenyatta International Airport",
+   "display_name": "Jomo Kenyatta International Airport, Eastern Bypass, Utawala, Embakasi, Nairobi, 55145, Kenya",
+   "address": {
+    "aeroway": "Jomo Kenyatta International Airport",
+    "road": "Eastern Bypass",
+    "suburb": "Utawala",
+    "city_district": "Embakasi",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "ISO3166-2-lvl4": "KE-30",
+    "postcode": "55145",
+    "country": "Kenya",
+    "country_code": "ke"
+   },
+   "boundingbox": [
+    "-1.3391401",
+    "-1.2947839",
+    "36.9054269",
+    "36.9605224"
+   ]
+  }
+ ]
+}

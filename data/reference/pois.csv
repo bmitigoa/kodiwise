@@ -1,0 +1,5 @@
+poi,lat,lon,source
+cbd,-1.285896,36.819425,"OSM Nominatim node/1537504486 (amenity/post_office) q='Nairobi General Post Office, Kenyatta Avenue, Nairobi, Kenya' 2026-11-07"
+jkia,-1.316949,36.928857,"OSM Nominatim relation/11951583 (aeroway/aerodrome) q='Jomo Kenyatta International Airport, Nairobi, Kenya' 2026-11-07"
+westlands,-1.264756,36.801842,"neighbourhood centroid 'Westlands' (OSM Nominatim node/30121815 (place/suburb) q='Westlands, Nairobi, Kenya' 2026-11-07)"
+upperhill,-1.294116,36.812906,"neighbourhood centroid 'Upperhill' (OSM Nominatim node/5380579643 (place/suburb) q='Upper Hill, Nairobi, Kenya' 2026-11-07)"
