@@ -406,4 +406,4 @@ GitHub: [@bmitigoa](https://github.com/bmitigoa) · ORCID: [0009-0004-0349-2917]
 
 ## Licence
 
-All rights reserved unless a licence file is added.
+MIT — see LICENSE.
