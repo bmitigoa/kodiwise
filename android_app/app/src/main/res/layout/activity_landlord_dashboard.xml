@@ -1,75 +1,157 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fitsSystemWindows="true"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F2F2F2">
+    android:background="?android:attr/colorBackground"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:padding="24dp"
-        android:layout_marginTop="90dp">
+        android:minHeight="?attr/actionBarSize"
+        android:background="?android:attr/colorBackground">
 
-        <!-- Card Container -->
+        <!-- Existing logout button (same id + listener), shown as an icon -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnLogout"
+            style="@style/Widget.Material3.Button.IconButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginEnd="8dp"
+            android:contentDescription="@string/log_out"
+            app:icon="@drawable/ic_logout"
+            app:iconTint="?attr/colorOnSurfaceVariant" />
+    </com.google.android.material.appbar.MaterialToolbar>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@android:color/white"
-            android:padding="24dp"
-            android:elevation="6dp">
+            android:paddingHorizontal="16dp"
+            android:paddingBottom="24dp">
 
-            <!-- Title -->
-            <TextView
-                android:id="@+id/tvLandlordWelcome"
+            <!-- Hero -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.KodiWise.Card.Hero"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Welcome Landlord!"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                android:textColor="#000000"
-                android:gravity="center"
-                android:layout_marginBottom="20dp" />
+                android:layout_marginTop="8dp">
 
-            <!-- Upload Property Button (BLACK) -->
-            <androidx.appcompat.widget.AppCompatButton
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="20dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvLandlordWelcome"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/hero_landlord_title"
+                            android:textAppearance="?attr/textAppearanceTitleLarge"
+                            android:textColor="@color/kw_on_hero" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:text="@string/hero_landlord_body"
+                            android:textAppearance="?attr/textAppearanceBodyMedium"
+                            android:textColor="@color/kw_on_hero" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:layout_marginStart="12dp"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_logo" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/quick_actions"
+                android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:textColor="?attr/colorOnBackground" />
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnUpload"
+                style="@style/Widget.KodiWise.Button.Action.Primary"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:text="Upload Property"
-                android:textAllCaps="false"
-                android:textColor="#FFFFFF"
-                android:background="@drawable/btn_black_rounded"
-                android:backgroundTint="@null"
-                android:layout_marginBottom="14dp" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="@string/action_add_listing"
+                app:icon="@drawable/ic_add" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="4dp"
+                android:text="@string/action_add_listing_sub"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="?attr/colorOnSurfaceVariant" />
 
-            <!-- Manage My Properties Button (BLACK) -->
-            <androidx.appcompat.widget.AppCompatButton
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnMyProperties"
+                style="@style/Widget.KodiWise.Button.Action"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:text="Manage My Properties"
-                android:textAllCaps="false"
-                android:textColor="#FFFFFF"
-                android:background="@drawable/btn_black_rounded"
-                android:backgroundTint="@null"
-                android:layout_marginBottom="14dp" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="@string/action_my_listings"
+                app:icon="@drawable/ic_list" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="4dp"
+                android:text="@string/action_my_listings_sub"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="?attr/colorOnSurfaceVariant" />
 
-            <!-- Logout Button (BLACK) -->
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnLogout"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnLandlordPredict"
+                style="@style/Widget.KodiWise.Button.Action"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:text="Logout"
-                android:textAllCaps="false"
-                android:textColor="#FFFFFF"
-                android:background="@drawable/btn_black_rounded"
-                android:backgroundTint="@null" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="@string/action_predict"
+                app:icon="@drawable/ic_trending_up" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="4dp"
+                android:text="@string/action_predict_sub"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="?attr/colorOnSurfaceVariant" />
 
         </LinearLayout>
+    </ScrollView>
 
-    </LinearLayout>
-
-</ScrollView>
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:labelVisibilityMode="labeled"
+        app:menu="@menu/nav_landlord" />
+</LinearLayout>

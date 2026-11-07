@@ -230,12 +230,48 @@
         <item name="titleTextAppearance">@style/TextAppearance.KodiWise.TitleLarge</item>
         <item name="subtitleTextAppearance">@style/TextAppearance.KodiWise.BodyMedium</item>
     </style>
+    <!-- Dashboard bottom bar: every tab opens another screen and the dashboard
+         is "home", so no tab is drawn as selected (no indicator, one colour). -->
     <style name="Widget.KodiWise.BottomNav" parent="Widget.Material3.BottomNavigationView">
         <item name="itemTextAppearanceActive">@style/TextAppearance.KodiWise.LabelMedium</item>
         <item name="itemTextAppearanceInactive">@style/TextAppearance.KodiWise.LabelMedium</item>
+        <item name="itemTextAppearanceActiveBoldEnabled">false</item>
+        <item name="itemIconTint">@color/kw_on_surface_variant</item>
+        <item name="itemTextColor">@color/kw_on_surface_variant</item>
+        <item name="itemActiveIndicatorStyle">@style/Widget.KodiWise.BottomNav.NoIndicator</item>
+        <item name="backgroundTint">@color/kw_surface_container</item>
+    </style>
+    <style name="Widget.KodiWise.BottomNav.NoIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">@android:color/transparent</item>
     </style>
     <style name="Widget.KodiWise.CheckBox" parent="Widget.Material3.CompoundButton.CheckBox">
         <item name="android:minHeight">48dp</item>
+    </style>
+    <!-- Dashboard quick-action rows: big, left-aligned, icon first -->
+    <style name="Widget.KodiWise.Button.Action" parent="Widget.Material3.Button.TonalButton">
+        <item name="shapeAppearance">@style/ShapeAppearance.KodiWise.Large</item>
+        <item name="android:minHeight">64dp</item>
+        <item name="android:gravity">start|center_vertical</item>
+        <item name="android:paddingStart">20dp</item>
+        <item name="android:paddingEnd">20dp</item>
+        <item name="iconPadding">16dp</item>
+        <item name="iconSize">24dp</item>
+        <item name="android:textAppearance">@style/TextAppearance.KodiWise.TitleSmall</item>
+    </style>
+    <style name="Widget.KodiWise.Button.Action.Primary" parent="Widget.Material3.Button">
+        <item name="shapeAppearance">@style/ShapeAppearance.KodiWise.Large</item>
+        <item name="android:minHeight">64dp</item>
+        <item name="android:gravity">start|center_vertical</item>
+        <item name="android:paddingStart">20dp</item>
+        <item name="android:paddingEnd">20dp</item>
+        <item name="iconPadding">16dp</item>
+        <item name="iconSize">24dp</item>
+        <item name="android:textAppearance">@style/TextAppearance.KodiWise.TitleSmall</item>
+    </style>
+    <!-- Dashboard hero: brand green in both themes, white text (7.95:1) -->
+    <style name="Widget.KodiWise.Card.Hero" parent="Widget.Material3.CardView.Filled">
+        <item name="cardCornerRadius">16dp</item>
+        <item name="cardBackgroundColor">@color/kw_hero</item>
     </style>
     <style name="Widget.KodiWise.TextView" parent="Widget.AppCompat.TextView">
         <item name="android:textAppearance">@style/TextAppearance.KodiWise.BodyMedium</item>

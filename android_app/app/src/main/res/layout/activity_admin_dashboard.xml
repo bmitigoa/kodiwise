@@ -1,82 +1,141 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fitsSystemWindows="true"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/adminRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#F2F2F2"
-    android:padding="20dp"
-    android:gravity="top|center_horizontal"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:background="?android:attr/colorBackground"
+    android:orientation="vertical">
 
-    <!-- Card Container -->
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginEnd="12dp"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="6dp">
+        android:minHeight="?attr/actionBarSize"
+        android:background="?android:attr/colorBackground">
+
+        <!-- Existing logout button (same id + listener), shown as an icon -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnLogoutAdmin"
+            style="@style/Widget.Material3.Button.IconButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginEnd="8dp"
+            android:contentDescription="@string/log_out"
+            app:icon="@drawable/ic_logout"
+            app:iconTint="?attr/colorOnSurfaceVariant" />
+    </com.google.android.material.appbar.MaterialToolbar>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="24dp"
-            android:gravity="center_horizontal">
+            android:paddingHorizontal="16dp"
+            android:paddingBottom="24dp">
 
-            <!-- Welcome Text -->
+            <!-- Hero -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.KodiWise.Card.Hero"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="20dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvWelcomeAdmin"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/hero_admin_title"
+                            android:textAppearance="?attr/textAppearanceTitleLarge"
+                            android:textColor="@color/kw_on_hero" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:text="@string/hero_admin_body"
+                            android:textAppearance="?attr/textAppearanceBodyMedium"
+                            android:textColor="@color/kw_on_hero" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:layout_marginStart="12dp"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_logo" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
             <TextView
-                android:id="@+id/tvWelcomeAdmin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Welcome Administrator!"
-                android:textStyle="bold"
-                android:textSize="18sp"
-                android:textColor="#111827"
-                android:layout_marginBottom="20dp"/>
+                android:layout_marginTop="24dp"
+                android:text="@string/quick_actions"
+                android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:textColor="?attr/colorOnBackground" />
 
-            <!-- Approve Button -->
-            <androidx.appcompat.widget.AppCompatButton
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnApprovals"
+                style="@style/Widget.KodiWise.Button.Action.Primary"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:text="Approve Properties"
-                android:textAllCaps="false"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp"
-                android:background="@drawable/btn_black_rounded"
-                android:backgroundTint="@null"
-                android:layout_marginBottom="14dp"/>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="@string/action_approvals"
+                app:icon="@drawable/ic_check_circle" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="4dp"
+                android:text="@string/action_approvals_sub"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="?attr/colorOnSurfaceVariant" />
 
-            <!-- NEW Performance Test Button -->
-            <androidx.appcompat.widget.AppCompatButton
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnPerformanceTest"
+                style="@style/Widget.KodiWise.Button.Action"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:text="Run System Performance Tests"
-                android:textAllCaps="false"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp"
-                android:background="@drawable/btn_black_rounded"
-                android:backgroundTint="@null"
-                android:layout_marginBottom="14dp"/>
-
-            <!-- Logout Button -->
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnLogoutAdmin"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="@string/action_performance"
+                app:icon="@drawable/ic_speed" />
+            <TextView
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:text="Logout"
-                android:textAllCaps="false"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp"
-                android:background="@drawable/btn_black_rounded"
-                android:backgroundTint="@null"/>
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="4dp"
+                android:text="@string/action_performance_sub"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="?attr/colorOnSurfaceVariant" />
 
         </LinearLayout>
+    </ScrollView>
 
-    </androidx.cardview.widget.CardView>
-
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:labelVisibilityMode="labeled"
+        app:menu="@menu/nav_admin" />
 </LinearLayout>

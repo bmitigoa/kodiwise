@@ -44,6 +44,17 @@ class LandlordDashboardActivity : AppCompatActivity() {
                 startActivity(Intent(this, LandlordPropertiesActivity::class.java))
             }
 
+            val openPredict = { startActivity(Intent(this, PredictionFormActivity::class.java)) }
+            findViewById<Button>(R.id.btnLandlordPredict)?.setOnClickListener { openPredict() }
+            DashboardChrome.bind(
+                this, R.string.role_label_landlord, btnLogout,
+                mapOf(
+                    R.id.nav_my_listings to { btnMyProps.performClick(); Unit },
+                    R.id.nav_add_listing to { btnUpload.performClick(); Unit },
+                    R.id.nav_predict to openPredict,
+                )
+            )
+
             btnLogout.setOnClickListener {
                 AuthManager.signOut()
                 Toast.makeText(this, "Logged out", Toast.LENGTH_SHORT).show()

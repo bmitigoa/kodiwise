@@ -35,4 +35,42 @@
     <string name="role_landlord_card">Landlord\nListing a property</string>
     <string name="register_button">Create account</string>
     <string name="register_go_login">Already have an account? Log in</string>
+
+    <!-- Dashboards -->
+    <string name="greeting_morning">Good morning</string>
+    <string name="greeting_afternoon">Good afternoon</string>
+    <string name="greeting_evening">Good evening</string>
+    <string name="log_out">Log out</string>
+    <string name="quick_actions">Quick actions</string>
+    <string name="role_label_tenant">Tenant</string>
+    <string name="role_label_landlord">Landlord</string>
+    <string name="role_label_admin">Admin</string>
+    <string name="tab_browse">Browse</string>
+    <string name="tab_predict">Predict</string>
+    <string name="tab_ar">AR</string>
+    <string name="tab_profile">Profile</string>
+    <string name="tab_my_listings">My listings</string>
+    <string name="tab_add_listing">Add listing</string>
+    <string name="tab_approvals">Approvals</string>
+    <string name="tab_performance">Performance</string>
+    <string name="hero_tenant_title">Find a fair home</string>
+    <string name="hero_tenant_body">Browse approved listings, check what rent is fair, and preview homes in AR.</string>
+    <string name="hero_landlord_title">Your listings</string>
+    <string name="hero_landlord_body">Add a property, track its approval, and see a fair rent estimate before you list.</string>
+    <string name="hero_admin_title">Admin console</string>
+    <string name="hero_admin_body">Review new listings and keep an eye on system performance.</string>
+    <string name="action_browse">Browse listings</string>
+    <string name="action_browse_sub">Approved homes across Nairobi</string>
+    <string name="action_predict">Estimate a fair rent</string>
+    <string name="action_predict_sub">A rent range for any neighbourhood, in seconds</string>
+    <string name="action_ar">View a home in AR</string>
+    <string name="action_ar_sub">Pick a listing, then open its AR view</string>
+    <string name="action_add_listing">Add a listing</string>
+    <string name="action_add_listing_sub">New listings are reviewed before tenants see them</string>
+    <string name="action_my_listings">My listings</string>
+    <string name="action_my_listings_sub">Approval status and removals</string>
+    <string name="action_approvals">Review pending listings</string>
+    <string name="action_approvals_sub">Approve or reject new listings</string>
+    <string name="action_performance">Performance tests</string>
+    <string name="action_performance_sub">API and app timing checks</string>
 </resources>

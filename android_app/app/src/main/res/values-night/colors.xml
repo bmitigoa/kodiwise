@@ -34,6 +34,8 @@
     <color name="kw_inverse_surface">#E1E3DF</color>
     <color name="kw_inverse_on_surface">#2E312E</color>
     <color name="kw_inverse_primary">#0B5D3B</color>
+    <color name="kw_hero">#005230</color>
+    <color name="kw_on_hero">#FFFFFF</color>
     <color name="kw_card">#1A2920</color>
     <color name="kw_card_stroke">#2C3D34</color>
     <color name="kw_neutral_chip">#2C3D34</color>

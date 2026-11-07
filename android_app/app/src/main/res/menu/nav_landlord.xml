@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_my_listings"
+        android:icon="@drawable/ic_list"
+        android:title="@string/tab_my_listings" />
+    <item
+        android:id="@+id/nav_add_listing"
+        android:icon="@drawable/ic_add"
+        android:title="@string/tab_add_listing" />
+    <item
+        android:id="@+id/nav_predict"
+        android:icon="@drawable/ic_trending_up"
+        android:title="@string/tab_predict" />
+    <item
+        android:id="@+id/nav_profile"
+        android:icon="@drawable/ic_person"
+        android:title="@string/tab_profile" />
+</menu>

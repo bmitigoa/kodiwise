@@ -30,6 +30,14 @@ class AdminDashboardActivity : AppCompatActivity() {
             startActivity(Intent(this, PerformanceTestActivity::class.java))
         }
 
+        DashboardChrome.bind(
+            this, R.string.role_label_admin, findViewById(R.id.btnLogoutAdmin),
+            mapOf(
+                R.id.nav_approvals to { findViewById<android.view.View>(R.id.btnApprovals).performClick(); Unit },
+                R.id.nav_performance to { findViewById<android.view.View>(R.id.btnPerformanceTest).performClick(); Unit },
+            )
+        )
+
         // Logout
         findViewById<android.view.View>(R.id.btnLogoutAdmin).setOnClickListener {
             AuthManager.signOut()
