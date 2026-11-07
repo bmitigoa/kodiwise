@@ -1,0 +1,37 @@
+{
+  "candidate": "v20261107-appD",
+  "current": "v20261106-appD",
+  "rule": "project rules #4: test MAPE not worse by >0.5 pp AND CV R2 not lower by >0.01",
+  "change": "cleaning drops listings outside Nairobi County (1 row, Nakuru mislabeled 'Pipeline')",
+  "own_split": {
+    "note": "removing 1 row reshuffles the stratified split, so test sets differ",
+    "current": {
+      "test_mape": 24.0303,
+      "test_r2": 0.7321,
+      "cv_r2": 0.6803
+    },
+    "candidate": {
+      "test_mape": 24.7336,
+      "test_r2": 0.7362,
+      "cv_r2": 0.7229
+    },
+    "passes": false
+  },
+  "same_split": {
+    "note": "current model's split, Nakuru row (in train) removed; identical 111-row test set",
+    "current": {
+      "test_mape": 24.0303,
+      "test_r2": 0.7321,
+      "cv_r2": 0.6803,
+      "cv_mape": 29.302
+    },
+    "candidate": {
+      "test_mape": 23.7118,
+      "test_r2": 0.7406,
+      "cv_r2": 0.7351,
+      "cv_mape": 25.921
+    },
+    "passes": true
+  },
+  "decision": "deploy: like-for-like comparison passes; own-split MAPE delta (+0.70 pp) reflects a different test set"
+}

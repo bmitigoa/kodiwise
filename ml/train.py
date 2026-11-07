@@ -96,6 +96,10 @@ def run_experiment(
     if save_model:
         version = version or date.today().strftime("v%Y%m%d")
         out_dir = MODELS_DIR / version
+        if (out_dir / "model.joblib").exists():
+            # Versions are immutable (project rules #4): a deployed model must
+            # stay reproducible from its own folder. Bump the version instead.
+            raise FileExistsError(f"{out_dir} already holds a model; refusing to overwrite")
         out_dir.mkdir(parents=True, exist_ok=True)
         joblib.dump(pipe, out_dir / "model.joblib")
 
@@ -173,9 +177,12 @@ def title_len_source_proxy(clean_df: pd.DataFrame) -> dict:
     }
 
 
-RUN_C_VERSION = "v20261106-appC"
-RUN_D_VERSION = "v20261106-appD"
-PRODUCTION_VERSION = RUN_D_VERSION  # the expanded-form model now that the forms collect it
+RUN_C_VERSION = "v20261106-appC"  # historical; no longer re-saved
+# v20261107-appD: Run D retrained after the cleaning step started dropping
+# listings outside Nairobi County (1 row: a Nakuru listing mapped to
+# "Pipeline"). v20261106-appD is kept as-is for rollback.
+RUN_D_VERSION = "v20261107-appD"
+PRODUCTION_VERSION = RUN_D_VERSION
 
 
 def main() -> None:
@@ -203,8 +210,8 @@ def main() -> None:
     # columns -- they're diagnostic-only and were never going to be served.
     serving_safe_df = recompute_rooms_bath_from_counts(clean_df)
 
-    print(f"\n=== Run C: app-realistic (bedrooms/bathrooms/location only) -- kept as {RUN_C_VERSION}, no longer production ===")
-    run_c = run_experiment(serving_safe_df, APP_FEATURE_SET, save_model=True, version=RUN_C_VERSION)
+    print(f"\n=== Run C: app-realistic (bedrooms/bathrooms/location only) -- reported only; {RUN_C_VERSION} kept as saved ===")
+    run_c = run_experiment(serving_safe_df, APP_FEATURE_SET, save_model=False)
     print(json.dumps({k: v for k, v in run_c.items() if k != "top_feature_importances"}, indent=2))
 
     print(f"\n=== Run D: app-realistic + expanded-form features -- SAVED as production ({RUN_D_VERSION}) ===")
