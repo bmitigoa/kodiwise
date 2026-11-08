@@ -306,7 +306,7 @@ An [MCP](https://modelcontextprotocol.io) server in `agent/` lets an AI assistan
 | `list_locations` | The 32 neighbourhoods KodiWise covers. |
 | `estimate_rent` | One home: estimate, likely range, location confidence, and the main reasons (approximate KES effects). |
 | `compare_areas` | The same home in 2–6 areas, ranked by estimate, each with range and confidence. |
-| `areas_within_budget` | Which areas fit a monthly budget: "comfortable" (estimate at or under budget) and "stretch" (only the low end of the range fits). At most 32 estimates, cached for the session. |
+| `areas_within_budget` | Which areas fit a monthly budget: "comfortable" (estimate at or under budget) and "stretch" (only the low end of the range fits). Optional `near` (neighbourhood) and `max_km` (default 5) limit it to areas within that straight-line distance, nearest first, and report which areas were within range. At most 32 estimates, cached for the session. |
 | `check_listing_price` | Whether an asking rent is within, above or below the estimated range, using the same rule as the app. With too little local data it says "no verdict" and still shows the range. |
 | `search_listings` | Approved listings only, read-only: title, area, rent, beds, baths, size and the range badge. |
 

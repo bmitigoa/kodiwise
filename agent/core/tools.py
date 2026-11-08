@@ -4,7 +4,10 @@ location confidence and the "estimate only" note, added in one place
 (`_with_note`), so a caller cannot get a number without them."""
 from __future__ import annotations
 
+import csv
+import math
 from concurrent.futures import ThreadPoolExecutor
+from pathlib import Path
 
 from agent.core import listings as listings_mod
 from agent.core import validate as v
@@ -18,6 +21,8 @@ CONFIDENCE_TEXT = {
     "low": "Few listings in this area, so treat this estimate as rough.",
     "none": "Not enough local data: this estimate is based mostly on the Nairobi average.",
 }
+CENTROIDS_CSV = Path(__file__).resolve().parents[2] / "data" / "reference" / "neighbourhood_centroids.csv"
+DEFAULT_MAX_KM = 5.0
 MAX_PREDICTIONS = 32      # hard cap per tool call
 PARALLEL = 5
 
@@ -26,15 +31,37 @@ def kes(x: float | int | None) -> str | None:
     return None if x is None else f"KES {round(x):,}"
 
 
+def load_centroids(path: Path = CENTROIDS_CSV) -> dict[str, tuple[float, float]]:
+    with open(path, newline="", encoding="utf-8") as f:
+        return {r["name"]: (float(r["lat"]), float(r["lon"])) for r in csv.DictReader(f)}
+
+
+def haversine_km(a: tuple[float, float], b: tuple[float, float]) -> float:
+    la1, lo1, la2, lo2 = map(math.radians, (*a, *b))
+    h = math.sin((la2 - la1) / 2) ** 2 + math.cos(la1) * math.cos(la2) * math.sin((lo2 - lo1) / 2) ** 2
+    return 2 * 6371.0088 * math.asin(math.sqrt(h))
+
+
 def _with_note(result: dict) -> dict:
     result["note"] = NOTE
     return result
 
 
 class Tools:
-    def __init__(self, api: ApiClient, listings: listings_mod.ListingSource | None = None) -> None:
+    def __init__(self, api: ApiClient, listings: listings_mod.ListingSource | None = None,
+                 centroids: dict[str, tuple[float, float]] | None = None) -> None:
         self.api = api
         self.listings = listings
+        self._centroids = centroids
+
+    @property
+    def centroids(self) -> dict[str, tuple[float, float]]:
+        if self._centroids is None:
+            try:
+                self._centroids = load_centroids()
+            except OSError as exc:
+                raise KodiWiseError("Distance filtering is not available on this server.") from exc
+        return self._centroids
 
     # -- helpers -------------------------------------------------------------
     def _canonical(self, name: str, known: list[str]) -> str:
@@ -103,29 +130,70 @@ class Tools:
                            "thin_data_areas": thin})
 
     def areas_within_budget(self, budget_kes, bedrooms, bathrooms, sq_m=None, furnished=None,
-                            property_type=None, amenities=None) -> dict:
+                            property_type=None, amenities=None, near=None, max_km=DEFAULT_MAX_KM) -> dict:
         budget = v.rent(budget_kes, "Budget")
         beds, baths = v.bedrooms(bedrooms), v.bathrooms(bathrooms)
         size, ptype, amen = v.sq_m(sq_m), v.property_type(property_type), v.amenities(amenities)
         names = self.api.locations()[:MAX_PREDICTIONS]
+        dist: dict[str, float] = {}
+        near_name = None
+        if near is not None:
+            near_name, dist, km = self._distances(near, max_km, names)
+            names = [n for n in names if n in dist and dist[n] <= km]
+            if not names:
+                raise KodiWiseError(f"No covered area is within {km:g} km of {near_name}.")
         rows = self._many(names, beds, baths, size, furnished, ptype, amen)
-        comfortable = sorted((r for r in rows if r["estimate_kes"] <= budget),
-                             key=lambda r: r["estimate_kes"], reverse=True)
-        stretch = sorted((r for r in rows if r["estimate_kes"] > budget >= r["range_low_kes"]),
-                         key=lambda r: r["estimate_kes"])
+        for r in rows:
+            if near_name:
+                r["distance_km"] = round(dist[r["area"]], 1)
+        if near_name:
+            order = lambda r: (r["distance_km"], -r["estimate_kes"])
+        else:
+            order = None
+        comfortable = [r for r in rows if r["estimate_kes"] <= budget]
+        stretch = [r for r in rows if r["estimate_kes"] > budget >= r["range_low_kes"]]
+        if order:
+            comfortable.sort(key=order)
+            stretch.sort(key=order)
+        else:
+            comfortable.sort(key=lambda r: r["estimate_kes"], reverse=True)
+            stretch.sort(key=lambda r: r["estimate_kes"])
         for r in comfortable + stretch:
             r.pop("why", None)
-        return _with_note({
+        how = ("comfortable_areas: the estimate is at or under your budget, listed with the "
+               "highest estimate first (most home for the money). stretch_areas: only the low "
+               "end of the range fits your budget. Areas whose whole range is above the budget "
+               "are left out.")
+        out = {
             "budget": kes(budget), "bedrooms": beds, "bathrooms": baths,
-            "areas_checked": len(rows),
-            "how_to_read": ("comfortable_areas: the estimate is at or under your budget, listed with the "
-                            "highest estimate first (most home for the money). stretch_areas: only the low "
-                            "end of the range fits your budget. Areas whose whole range is above the budget "
-                            "are left out."),
+            "areas_checked": len(rows), "how_to_read": how,
             "comfortable_areas": comfortable, "stretch_areas": stretch,
             "areas_out_of_reach": len(rows) - len(comfortable) - len(stretch),
             "thin_data_areas": [r["area"] for r in comfortable + stretch if r["location_confidence"] != "high"],
-        })
+        }
+        if near_name:
+            out["how_to_read"] = how.replace("listed with the highest estimate first (most home for the money)",
+                                             "listed nearest to " + near_name + " first, then highest estimate first")
+            out["near"] = near_name
+            out["max_km"] = km
+            out["areas_within_max_km"] = sorted(names)
+            out["distance_note"] = ("distance_km is the straight-line distance between neighbourhood centre "
+                                    "points, not travel distance or time.")
+        return _with_note(out)
+
+    def _distances(self, near, max_km, names: list[str]) -> tuple[str, dict[str, float], float]:
+        place = v.location_text(near)
+        cents = self.centroids
+        by_lower = {k.casefold(): k for k in cents}
+        key = by_lower.get(place.casefold())
+        if key is None:
+            tips = v.suggest(place, list(cents))
+            hint = f" Did you mean: {', '.join(tips)}?" if tips else " Use list_locations to see the known areas."
+            raise KodiWiseError(f"I don't have a map position for '{place}'.{hint}")
+        if isinstance(max_km, bool) or not isinstance(max_km, (int, float)) or not 0.5 <= max_km <= 50:
+            raise KodiWiseError("max_km must be a number between 0.5 and 50.")
+        origin = cents[key]
+        return key, {n: haversine_km(origin, cents[n]) for n in names if n in cents}, float(max_km)
 
     def check_listing_price(self, asking_rent_kes, location, bedrooms, bathrooms, sq_m=None,
                             furnished=None, property_type=None, amenities=None) -> dict:

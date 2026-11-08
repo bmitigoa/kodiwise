@@ -111,12 +111,17 @@ def build_server(api: ApiClient | None = None, listings: ListingSource | None = 
         budget_kes: Annotated[float, Field(ge=3000, le=2_000_000, description="Monthly budget in KES.")],
         bedrooms: Beds, bathrooms: Baths, sq_m: Size = None, furnished: Furnished = None,
         property_type: PType = None, amenities: Amen = None,
+        near: Annotated[str | None, Field(description="Optional neighbourhood to search around.")] = None,
+        max_km: Annotated[float, Field(ge=0.5, le=50, description="With near: straight-line radius in km (default 5).")] = 5.0,
     ) -> dict:
         """Find which neighbourhoods fit a monthly budget for a home of the given size. Checks every covered
         area (up to 32 estimates, so it can take several seconds). Returns comfortable areas (estimate at or
         under budget) and stretch areas (only the low end of the range fits), each with range and
-        location_confidence. Mention any areas listed under thin_data_areas as rough."""
-        return tools.areas_within_budget(budget_kes, bedrooms, bathrooms, sq_m, furnished, property_type, amenities)
+        location_confidence. Mention any areas listed under thin_data_areas as rough. If near is given, only
+        areas within max_km (straight-line, default 5) of it are checked, nearest first; say which were
+        within range (areas_within_max_km)."""
+        return tools.areas_within_budget(budget_kes, bedrooms, bathrooms, sq_m, furnished, property_type,
+                                         amenities, near, max_km)
 
     @mcp.tool(annotations=READ_ONLY)
     @_friendly

@@ -174,6 +174,42 @@ def test_budget_validation(tools):
             tools.areas_within_budget(bad, 2, 2)
 
 
+CENTS = {"Kilimani": (-1.296, 36.782), "Kileleshwa": (-1.277, 36.788), "Lavington": (-1.274, 36.776),
+         "Westlands": (-1.265, 36.802), "Karen": (-1.328, 36.705), "South B": (-1.314, 36.838)}
+
+
+def test_budget_near_filters_sorts_by_distance_then_estimate(fake):
+    api = ApiClient(base_url="http://kodiwise.test", transport=httpx.MockTransport(fake.handler), sleep=lambda s: None)
+    t = Tools(api, L.StaticListingSource([]), centroids=CENTS)
+    r = t.areas_within_budget(100000, 2, 2, near="kilimani", max_km=5)
+    got = [a["area"] for a in r["comfortable_areas"]]
+    assert got[0] == "Kilimani" and r["comfortable_areas"][0]["distance_km"] == 0.0
+    assert "Karen" not in got                                             # ~11 km away
+    assert "Karen" not in r["areas_within_max_km"] and "Kileleshwa" in r["areas_within_max_km"]
+    d = [a["distance_km"] for a in r["comfortable_areas"]]
+    assert d == sorted(d) and r["near"] == "Kilimani" and r["max_km"] == 5
+    assert r["areas_checked"] == len(r["areas_within_max_km"]) and r["note"] == NOTE
+    wide = t.areas_within_budget(100000, 2, 2, near="Kilimani", max_km=20)
+    assert "Karen" in wide["areas_within_max_km"]
+
+
+def test_budget_near_validation_and_default_unchanged(tools, fake):
+    t = Tools(tools.api, L.StaticListingSource([]), centroids=CENTS)
+    with pytest.raises(KodiWiseError):
+        t.areas_within_budget(60000, 2, 2, near="Narnia")
+    for bad in (0, 100, True, "far"):
+        with pytest.raises(KodiWiseError):
+            t.areas_within_budget(60000, 2, 2, near="Kilimani", max_km=bad)
+    assert t.areas_within_budget(60000, 2, 2, near="Karen", max_km=0.5)["areas_within_max_km"] == ["Karen"]
+    assert "near" not in t.areas_within_budget(60000, 2, 2)
+
+
+def test_real_centroids_file_loads():
+    from agent.core.tools import load_centroids, haversine_km
+    c = load_centroids()
+    assert "Kilimani" in c and 3 < haversine_km(c["Kilimani"], c["Westlands"]) < 6
+
+
 # ---- check_listing_price ------------------------------------------------------------
 
 @pytest.mark.parametrize("asking,verdict", [
