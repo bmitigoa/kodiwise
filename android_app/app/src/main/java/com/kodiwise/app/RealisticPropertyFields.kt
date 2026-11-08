@@ -18,13 +18,21 @@ object RealisticPropertyFields {
         val sqM: Double?,
         val isFurnished: Int,
         val propertyType: String?,
-        val hasGenerator: Int,
-        val hasBorehole: Int,
-        val hasCctv: Int,
-        val hasDsq: Int,
-        val hasPlayArea: Int,
-        val hasGarden: Int
+        // Amenities are null ("not given") when the section was never
+        // expanded; 0/1 once the user opened it and so answered every box.
+        val hasGenerator: Int?,
+        val hasBorehole: Int?,
+        val hasCctv: Int?,
+        val hasDsq: Int?,
+        val hasPlayArea: Int?,
+        val hasGarden: Int?
     )
+
+    /** null = section never opened (no answer); otherwise 1 if ticked, 0 if not. */
+    fun amenityAnswer(sectionExpanded: Boolean, ticked: Boolean): Int? =
+        if (!sectionExpanded) null else if (ticked) 1 else 0
+
+    private const val AMENITIES_OPENED = "opened"
 
     fun bindCollapse(activity: Activity) {
         val header = activity.findViewById<View>(R.id.headerAmenities)
@@ -33,6 +41,7 @@ object RealisticPropertyFields {
         header.setOnClickListener {
             val expand = body.visibility != View.VISIBLE
             body.visibility = if (expand) View.VISIBLE else View.GONE
+            if (expand) body.tag = AMENITIES_OPENED   // stays set even if collapsed again
             chevron.animate().rotation(if (expand) 180f else 0f).setDuration(150).start()
         }
     }
@@ -61,17 +70,20 @@ object RealisticPropertyFields {
         }
 
         fun checked(id: Int): Int = if (activity.findViewById<CheckBox>(id).isChecked) 1 else 0
+        val expanded = activity.findViewById<View>(R.id.layoutAmenities).tag == AMENITIES_OPENED
+        fun amenity(id: Int): Int? =
+            amenityAnswer(expanded, activity.findViewById<CheckBox>(id).isChecked)
 
         return Values(
             sqM = sqM,
             isFurnished = checked(R.id.cbFurnished),
             propertyType = propertyType,
-            hasGenerator = checked(R.id.cbGenerator),
-            hasBorehole = checked(R.id.cbBorehole),
-            hasCctv = checked(R.id.cbCctv),
-            hasDsq = checked(R.id.cbDsq),
-            hasPlayArea = checked(R.id.cbPlayArea),
-            hasGarden = checked(R.id.cbGarden)
+            hasGenerator = amenity(R.id.cbGenerator),
+            hasBorehole = amenity(R.id.cbBorehole),
+            hasCctv = amenity(R.id.cbCctv),
+            hasDsq = amenity(R.id.cbDsq),
+            hasPlayArea = amenity(R.id.cbPlayArea),
+            hasGarden = amenity(R.id.cbGarden)
         )
     }
 }

@@ -31,27 +31,28 @@ data class PredictionRequest(
     @SerializedName("property_type")
     val propertyType: String? = null,
 
-    // optional amenities (defaults = 0)
+    // Optional amenities. null = not given (omitted from the JSON, so the API
+    // says "Amenities (not given)"); 0/1 once the user answered.
     @SerializedName("has_backup_water")
-    val hasBackupWater: Int = 0,
+    val hasBackupWater: Int? = null,
 
     @SerializedName("has_borehole")
-    val hasBorehole: Int = 0,
+    val hasBorehole: Int? = null,
 
     @SerializedName("has_cctv")
-    val hasCctv: Int = 0,
+    val hasCctv: Int? = null,
 
     @SerializedName("has_dsq")
-    val hasDsq: Int = 0,
+    val hasDsq: Int? = null,
 
     @SerializedName("has_garden")
-    val hasGarden: Int = 0,
+    val hasGarden: Int? = null,
 
     @SerializedName("has_generator")
-    val hasGenerator: Int = 0,
+    val hasGenerator: Int? = null,
 
     @SerializedName("has_play_area")
-    val hasPlayArea: Int = 0,
+    val hasPlayArea: Int? = null,
 
     @SerializedName("is_furnished_page")
     val isFurnishedPage: Int = 0,
