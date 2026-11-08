@@ -168,6 +168,10 @@ def test_normalize_location_jiji_subarea_aliases():
     assert normalize_location("Market Dagoretti", known) == "Dagoretti"
     assert normalize_location("Dagoretti Market", known) == "Dagoretti"
     assert normalize_location("Kahawa Maziwa", known) == "Kahawa"
+    assert normalize_location("Parklands/Highridge", ["Parklands"]) == "Parklands"
+    assert normalize_location("Hardy", ["Karen"]) == "Karen"
+    assert normalize_location("Milimani", ["Kilimani"]) == "Kilimani"
+    assert normalize_location("Ngumo Estate", ["Kilimani", "Kileleshwa"]) is None
 
 
 def test_normalize_location_unknown_returns_none():

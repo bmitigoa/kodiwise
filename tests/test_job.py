@@ -120,7 +120,7 @@ def test_run_writes_new_dataset_without_touching_old_and_prunes(store, tmp_path)
     s = run(store, 20, tmp_path / "w", fetcher=f, now=NOW)
 
     assert s["new_rows"] == 3 and s["stopped"] is None
-    assert s["new_dataset"] == "datasets/nairobi_rentals_clean_20261109.csv"
+    assert s["new_dataset"] == "datasets/nairobi_rentals_clean_20261109_000005.csv"
     old = pd.read_csv(pd.io.common.BytesIO(store.read("datasets/nairobi_rentals_clean_20260108.csv")))
     assert len(old) == 12                                        # base file unchanged
     new = pd.read_csv(pd.io.common.BytesIO(store.read(s["new_dataset"])))
@@ -144,14 +144,19 @@ def test_max_listings_cap_is_respected(store, tmp_path):
     assert s["parse"]["fetched"] == 2 and len(f.fetched) == 2
 
 
-def test_never_overwrites_an_existing_dataset(store, tmp_path):
-    same_day = base_df().to_csv(index=False).encode()
-    store.write_new("datasets/nairobi_rentals_clean_20261109.csv", same_day)
-    s = run(store, 20, tmp_path / "w", fetcher=FakeFetcher(tmp_path / "w", listings()), now=NOW)
-    assert store.read("datasets/nairobi_rentals_clean_20261109.csv") == same_day
-    assert s["new_rows"] == 3
-    assert s["new_dataset"] != "datasets/nairobi_rentals_clean_20261109.csv"
-    assert s["new_dataset"].startswith("datasets/nairobi_rentals_clean_20261109_")
+def test_every_run_gets_a_timestamped_file_and_never_overwrites(store, tmp_path):
+    s1 = run(store, 20, tmp_path / "w1", fetcher=FakeFetcher(tmp_path / "w1", listings()), now=NOW)
+    assert s1["new_dataset"] == "datasets/nairobi_rentals_clean_20261109_000005.csv"
+    first = store.read(s1["new_dataset"])
+    later = datetime(2026, 11, 9, 0, 30, 0, tzinfo=timezone.utc)
+    L2 = listings()
+    L2[url_of("upperhill", gid("z"))] = nuxt_html(advert(gid("z"), 45000, "Upperhill", beds=1))
+    s2 = run(store, 20, tmp_path / "w2", fetcher=FakeFetcher(tmp_path / "w2", L2), now=later)
+    assert s2["new_dataset"] == "datasets/nairobi_rentals_clean_20261109_003000.csv"
+    assert store.read(s1["new_dataset"]) == first          # first file untouched
+    assert s2["new_rows"] == 1                              # only the genuinely new listing
+    assert not [n for n in store.list("datasets/") if len(n.rsplit("_", 1)) == 2 and n.endswith("20261109.csv")]
+    assert latest_dataset(store) == s2["new_dataset"]
 
 
 def test_stops_on_429_and_keeps_what_it_has(store, tmp_path):

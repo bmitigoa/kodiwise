@@ -6,7 +6,7 @@
 Reads the newest ``datasets/nairobi_rentals_clean_*.csv`` from the store,
 scrapes new Jiji listings (<= MAX_LISTINGS pages, ~80% for neighbourhoods with
 < 10 rows), parses, normalises, dedupes, applies the unchanged clean rules,
-and writes a NEW dated dataset. Existing objects are never overwritten.
+and writes a NEW timestamped dataset (datasets/..._YYYYMMDD_HHMMSS.csv). Existing objects are never overwritten.
 Raw HTML of the latest run is kept under ``snapshots/``; older runs are
 deleted. Only counts are logged. Stops on 403/429.
 """
@@ -123,14 +123,10 @@ def round_robin(queues: dict[str, list[str]], budget: int, per_cap: int) -> list
     return picked
 
 
-def write_dataset(store: Store, df: pd.DataFrame, day: str, now: datetime) -> str:
-    data = df.to_csv(index=False).encode("utf8")
-    name = f"datasets/nairobi_rentals_clean_{day.replace('-', '')}.csv"
-    try:
-        store.write_new(name, data)
-    except FileExistsError:
-        name = f"datasets/nairobi_rentals_clean_{now:%Y%m%d_%H%M%S}.csv"
-        store.write_new(name, data)
+def write_dataset(store: Store, df: pd.DataFrame, now: datetime) -> str:
+    """Every run gets its own timestamped file; there is no date-only name."""
+    name = f"datasets/nairobi_rentals_clean_{now:%Y%m%d_%H%M%S}.csv"
+    store.write_new(name, df.to_csv(index=False).encode("utf8"))  # fails if it exists
     return name
 
 
@@ -220,7 +216,7 @@ def run(store: Store, max_listings: int, work_dir: Path, fetcher: Fetcher | None
         if len(cleaned):
             out = merge(base, minimise(cleaned))
             new_rows = len(out) - len(base)
-            summary["new_dataset"] = write_dataset(store, out, day, now)
+            summary["new_dataset"] = write_dataset(store, out, now)
             summary["new_rows_by_neighbourhood"] = cleaned["location_std"].value_counts().to_dict()
     summary["new_rows"] = new_rows
 

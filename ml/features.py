@@ -445,6 +445,9 @@ LOCATION_ALIASES = {
     "market dagoretti": "Dagoretti",
     "dagoretti market": "Dagoretti",
     "kahawa maziwa": "Kahawa",
+    "parklands/highridge": "Parklands",
+    "hardy": "Karen",
+    "milimani": "Kilimani",
 }
 
 

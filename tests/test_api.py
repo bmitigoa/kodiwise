@@ -146,6 +146,9 @@ def test_predict_location_case_variants_match_canonical(client, variant):
     ("Market Dagoretti", "Dagoretti"),
     ("Dagoretti Market", "Dagoretti"),
     ("Kahawa Maziwa", "Kahawa"),
+    ("Parklands/Highridge", "Parklands"),
+    ("Hardy", "Karen"),
+    ("Milimani", "Kilimani"),
 ])
 def test_predict_known_aliases_match_canonical(client, alias, canonical_name):
     canonical = client.post("/predict", json={
