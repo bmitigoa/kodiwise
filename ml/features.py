@@ -441,6 +441,10 @@ LOCATION_ALIASES = {
     "dagoretti corner": "Dagoretti",
     "riruta": "Dagoretti",
     "complex utawala": "Utawala",
+    "karen c": "Karen",
+    "market dagoretti": "Dagoretti",
+    "dagoretti market": "Dagoretti",
+    "kahawa maziwa": "Kahawa",
 }
 
 

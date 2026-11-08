@@ -1,0 +1,10 @@
+FROM python:3.11-slim
+ENV PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1
+WORKDIR /app
+COPY infra/requirements-scrape.txt .
+RUN pip install --no-cache-dir -r requirements-scrape.txt
+COPY ml/__init__.py ml/features.py ml/
+COPY data_pipeline/ data_pipeline/
+RUN useradd -r -u 10001 app
+USER app
+CMD ["python", "-m", "data_pipeline.job"]

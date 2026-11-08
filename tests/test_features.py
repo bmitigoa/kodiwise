@@ -164,6 +164,10 @@ def test_normalize_location_jiji_subarea_aliases():
     assert normalize_location("Complex Utawala", known) == "Utawala"
     # an alias never resolves to a neighbourhood the model has not seen
     assert normalize_location("Riruta", ["Kasarani"]) is None
+    assert normalize_location("Karen C", ["Karen"]) == "Karen"
+    assert normalize_location("Market Dagoretti", known) == "Dagoretti"
+    assert normalize_location("Dagoretti Market", known) == "Dagoretti"
+    assert normalize_location("Kahawa Maziwa", known) == "Kahawa"
 
 
 def test_normalize_location_unknown_returns_none():

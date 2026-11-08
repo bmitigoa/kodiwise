@@ -117,8 +117,9 @@ def parse_snapshots(day: str) -> tuple[pd.DataFrame, dict]:
     return pd.DataFrame(recs), stats
 
 
-def build_frame(raw: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
-    known = sorted(set(pd.read_csv(CLEAN_EXISTING)["location_std"]) - {"Unknown"})
+def build_frame(raw: pd.DataFrame, known: list[str] | None = None) -> tuple[pd.DataFrame, pd.DataFrame]:
+    if known is None:
+        known = sorted(set(pd.read_csv(CLEAN_EXISTING)["location_std"]) - {"Unknown"})
     raw = raw.copy()
     raw["location_std"] = [map_location(r, known) for r in raw.to_dict("records")]
     review = raw[raw["location_std"].isna()][

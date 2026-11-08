@@ -21,9 +21,12 @@ VERSIONS = Path("data/processed/versions")
 
 def merge(base: pd.DataFrame, new: pd.DataFrame) -> pd.DataFrame:
     base = base.copy()
-    base["source"] = base["platform"]
-    base["scrape_date"] = pd.to_datetime(base["scraped_at"], errors="coerce").dt.date.astype("string")
-    base["fingerprint_hash"] = base["fingerprint"].map(fingerprint_hash)
+    if "source" not in base.columns:
+        base["source"] = base["platform"]
+    if "scrape_date" not in base.columns:
+        base["scrape_date"] = pd.to_datetime(base["scraped_at"], errors="coerce").dt.date.astype("string")
+    if "fingerprint_hash" not in base.columns:
+        base["fingerprint_hash"] = base["fingerprint"].map(fingerprint_hash)
     new = new.copy()
     new["scrape_date"] = pd.to_datetime(new["scraped_at"], utc=True, errors="coerce").dt.date.astype("string")
     new["platform"] = new["source"]
