@@ -34,6 +34,78 @@
             android:scaleType="centerCrop"
             app:shapeAppearanceOverlay="@style/ShapeAppearance.KodiWise.Medium" />
 
+        <!-- Shown instead of the photo when the listing has none -->
+        <LinearLayout
+            android:id="@+id/infoCard"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:padding="20dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tvCardTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textAppearance="?attr/textAppearanceTitleLarge"
+                android:textColor="@color/kw_on_surface" />
+
+            <TextView
+                android:id="@+id/tvCardArea"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:drawablePadding="4dp"
+                android:gravity="center_vertical"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                android:textColor="@color/kw_on_surface_variant"
+                app:drawableStartCompat="@drawable/ic_place_16"
+                app:drawableTint="@color/kw_on_surface_variant" />
+
+            <TextView
+                android:id="@+id/tvCardRent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                android:textColor="@color/kw_primary"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvCardBeds"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                android:textColor="@color/kw_on_surface" />
+
+            <TextView
+                android:id="@+id/tvCardRange"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="@color/kw_on_surface_variant" />
+
+            <TextView
+                android:id="@+id/tvCardBand"
+                style="@style/Widget.KodiWise.Badge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/ar_card_no_photos"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="@color/kw_on_surface_variant" />
+        </LinearLayout>
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnFullscreen"
             style="@style/Widget.KodiWise.Button.Icon"

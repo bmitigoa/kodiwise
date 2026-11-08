@@ -9,6 +9,7 @@ import android.opengl.Matrix
 import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
+import android.view.View
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -51,6 +52,7 @@ class ARViewActivity : AppCompatActivity(), GLSurfaceView.Renderer {
     private lateinit var btnResetAnchor: Button
     private lateinit var btnFullscreen: Button
     private lateinit var thumbnailStrip: LinearLayout
+    private lateinit var infoCard: View
 
     private val backgroundRenderer = ARBackgroundRenderer()
 
@@ -107,6 +109,7 @@ class ARViewActivity : AppCompatActivity(), GLSurfaceView.Renderer {
         btnResetAnchor = findViewById(R.id.btnResetAnchor)
         btnFullscreen = findViewById(R.id.btnFullscreen)
         thumbnailStrip = findViewById(R.id.thumbnailStrip)
+        infoCard = findViewById(R.id.infoCard)
 
         setupLargePanelSize()
         setupGlView()
@@ -398,6 +401,11 @@ class ARViewActivity : AppCompatActivity(), GLSurfaceView.Renderer {
                 if (imageUrls.isNotEmpty()) {
                     showImageAt(0)
                     renderThumbnails()
+                } else {
+                    showInfoCard(
+                        bedrooms, bathrooms, quoted, doc.getDouble("predictedLow"),
+                        doc.getDouble("predictedHigh"), doc.getString("locationConfidence")
+                    )
                 }
 
                 tvHint.text = "Move phone slowly, then tap a floor or flat surface to place the property gallery"
@@ -406,6 +414,34 @@ class ARViewActivity : AppCompatActivity(), GLSurfaceView.Renderer {
                 Toast.makeText(this, "AR load failed: ${e.message}", Toast.LENGTH_LONG).show()
                 finish()
             }
+    }
+
+    /** No photos: place an info card in the frame instead of an empty picture. */
+    private fun showInfoCard(
+        bedrooms: Int, bathrooms: Int, quoted: Int,
+        low: Double?, high: Double?, confidence: String?
+    ) {
+        ivArPhoto.visibility = View.GONE
+        btnFullscreen.visibility = View.GONE
+        infoCard.visibility = View.VISIBLE
+        btnPrev.isEnabled = false
+        btnNext.isEnabled = false
+
+        findViewById<TextView>(R.id.tvCardTitle).text = pTitle
+        findViewById<TextView>(R.id.tvCardArea).text = pLocation
+        findViewById<TextView>(R.id.tvCardRent).text = ListingCard.priceText(this, quoted)
+        findViewById<TextView>(R.id.tvCardBeds).text = getString(
+            R.string.card_beds_baths,
+            resources.getQuantityString(R.plurals.beds, bedrooms, bedrooms),
+            resources.getQuantityString(R.plurals.baths, bathrooms, bathrooms)
+        )
+        findViewById<TextView>(R.id.tvCardRange).text =
+            if (low != null && high != null && low > 0 && high >= low) {
+                getString(R.string.ar_card_range, ListingCard.formatKes(low), ListingCard.formatKes(high))
+            } else {
+                getString(R.string.ar_card_no_range)
+            }
+        ListingCard.bindRange(findViewById(R.id.tvCardBand), quoted, low, high, confidence)
     }
 
     private fun extractImageUrls(doc: DocumentSnapshot): List<String> {

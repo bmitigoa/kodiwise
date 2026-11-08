@@ -176,6 +176,10 @@
     <string name="title_photo">Photo</string>
     <string name="title_gallery">Photos</string>
     <string name="ar_hint_place">Move your phone slowly, then tap a floor or flat surface to place the gallery</string>
+    <string name="card_beds_baths">%1$s • %2$s</string>
+    <string name="ar_card_range">Estimated range: %1$s to %2$s</string>
+    <string name="ar_card_no_range">No estimated range saved for this listing</string>
+    <string name="ar_card_no_photos">No photos for this listing. Estimate only, not a valuation.</string>
     <string name="ar_replace_panel">Re-place</string>
     <string name="cd_ar_photo">Listing photo placed in AR</string>
     <string name="cd_fullscreen">Open full screen</string>
