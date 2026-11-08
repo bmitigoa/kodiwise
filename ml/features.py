@@ -435,6 +435,12 @@ LOCATION_ALIASES = {
     "lang'ata": "Langata",
     "southb": "South B",
     "southc": "South C",
+    # Jiji sub-area names that are part of a known neighbourhood
+    # (approved by Baraka 2026-11-08).
+    "kahawa sukari": "Kahawa",
+    "dagoretti corner": "Dagoretti",
+    "riruta": "Dagoretti",
+    "complex utawala": "Utawala",
 }
 
 
