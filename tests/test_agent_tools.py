@@ -354,6 +354,20 @@ def test_firestore_quota_project_is_set_on_the_client_only(monkeypatch, tmp_path
     assert "GOOGLE_CLOUD_QUOTA_PROJECT" not in os.environ
 
 
+def test_adc_file_is_found_even_when_appdata_is_remapped(monkeypatch, tmp_path):
+    """A packaged desktop app can point %APPDATA% somewhere that has no gcloud
+    folder; the profile's real Roaming folder must still be found."""
+    monkeypatch.delenv("GOOGLE_APPLICATION_CREDENTIALS", raising=False)
+    remapped = tmp_path / "remapped"
+    remapped.mkdir()
+    real = tmp_path / "AppData" / "Roaming" / "gcloud"
+    real.mkdir(parents=True)
+    (real / "application_default_credentials.json").write_text("{}")
+    monkeypatch.setenv("APPDATA", str(remapped))
+    monkeypatch.setattr(L.Path, "home", classmethod(lambda cls: tmp_path))
+    assert L.FirestoreListingSource.adc_file() == real / "application_default_credentials.json"
+
+
 def test_firestore_falls_back_to_default_credentials_when_there_is_no_adc_file(monkeypatch, tmp_path):
     import google.auth
     monkeypatch.delenv("GOOGLE_APPLICATION_CREDENTIALS", raising=False)
@@ -366,6 +380,14 @@ def test_firestore_falls_back_to_default_credentials_when_there_is_no_adc_file(m
 
 
 # ---- MCP wiring ------------------------------------------------------------------------------
+
+def test_no_photo_claims_in_tool_text_or_instructions(fake):
+    from agent.mcp_server.server import INSTRUCTIONS
+    api = ApiClient(base_url="http://kodiwise.test", transport=httpx.MockTransport(fake.handler))
+    out = Tools(api, L.StaticListingSource([doc()])).search_listings()
+    assert "photo" not in json.dumps(out).lower() and "photo" not in INSTRUCTIONS.lower()
+    assert "full details and AR views" in out["more"]
+
 
 def test_mcp_server_exposes_the_six_read_only_tools_with_instructions(fake):
     import anyio

@@ -2,7 +2,7 @@
 
 **Fair rent estimates for Nairobi homes, with augmented-reality previews.**
 
-KodiWise is an Android app backed by a machine-learning API. A tenant or landlord enters what they know about a home (neighbourhood, bedrooms, bathrooms and, optionally, size, type, furnishing and amenities) and gets an estimated monthly rent **as a range**, together with an honest note on how much local data supports that estimate. Landlords can list properties, an admin approves them, tenants browse approved listings and can place a listing's photo gallery in their room using augmented reality (AR).
+KodiWise is an Android app backed by a machine-learning API. A tenant or landlord enters what they know about a home (neighbourhood, bedrooms, bathrooms and, optionally, size, type, furnishing and amenities) and gets an estimated monthly rent **as a range**, together with an honest note on how much local data supports that estimate. Landlords can list properties, an admin approves them, tenants browse approved listings and can open an augmented-reality (AR) view of a listing. AR places a listing's photo gallery in the room, so it only has something to show when a listing has photos, which this free-plan version does not store (see Limitations).
 
 *Kodi* is Swahili for "rent".
 
@@ -38,7 +38,7 @@ KodiWise is the product successor to **RentAR**, my MSc research prototype at St
 - Estimate a fair monthly rent for any of 32 Nairobi neighbourhoods, shown as a likely range (low – estimate – high) rather than one misleading number.
 - Location confidence hint: *high*, *low* ("treat this estimate as rough") or *none* ("based mostly on the Nairobi average").
 - Browse admin-approved listings, search them, and see whether a listing's asking rent is **within, above or below** the estimated range.
-- Place a listing's photo gallery in the room with AR on ARCore phones; phones without ARCore get a details screen instead.
+- AR view on ARCore phones places a listing's photo gallery in the room (only listings that have photos; none of the listings saved by this version do). Phones without ARCore get a details screen instead.
 
 **For landlords**
 - Add a listing (neighbourhood picked from a validated list, size, type, furnishing, amenities). Each listing is priced against the model at upload time.
@@ -322,25 +322,24 @@ An [MCP](https://modelcontextprotocol.io) server in `agent/` lets an AI assistan
 **Setup (Windows)**
 
 ```powershell
-cd C:\Projects\KodiWise
+cd C:\path\to\KodiWise
 .venv\Scripts\activate
 pip install -r requirements.txt
-gcloud auth application-default login      # only needed for search_listings
+gcloud auth application-default login      # only needed for search_listings; the server finds this login automatically
 ```
 
-Add this to `claude_desktop_config.json` (Claude Desktop → Settings → Developer → Edit Config), then restart Claude Desktop:
+Add this to `claude_desktop_config.json` (Claude Desktop → Settings → Developer → Edit Config), replacing `C:\\path\\to\\KodiWise` with your checkout, then restart Claude Desktop:
 
 ```json
 {
   "mcpServers": {
     "kodiwise": {
-      "command": "C:\\Projects\\KodiWise\\.venv\\Scripts\\python.exe",
+      "command": "C:\\path\\to\\KodiWise\\.venv\\Scripts\\python.exe",
       "args": ["-m", "agent.mcp_server"],
       "env": {
-        "PYTHONPATH": "C:\\Projects\\KodiWise",
+        "PYTHONPATH": "C:\\path\\to\\KodiWise",
         "PYTHONUTF8": "1",
-        "KODIWISE_API_URL": "https://kodiwise-api-798766993143.africa-south1.run.app",
-        "GOOGLE_APPLICATION_CREDENTIALS": "C:\\Users\\user\\AppData\\Roaming\\gcloud\\application_default_credentials.json"
+        "KODIWISE_API_URL": "https://kodiwise-api-798766993143.africa-south1.run.app"
       }
     }
   }
@@ -353,7 +352,7 @@ Things to try: "2-bed under 40k near Westlands?", "Compare Kilimani, Kileleshwa 
 
 > **You:** Is 65k fair for a 2-bed, 1-bath in South B?
 >
-> **Assistant** *(calls `check_listing_price`)*: KodiWise's estimate for a 2-bed, 1-bath in South B is about KES 38,700, with a likely range of KES 26,300 to KES 57,900. There are enough local listings behind that number. KES 65,000 is above the range, so it is worth asking why: a newer building, furnishing, or parking could explain it. I assumed you didn't know the size, furnishing or amenities, and adding them would sharpen the estimate. This is an estimate, not a valuation, and the KodiWise app shows approved listings with photos.
+> **Assistant** *(calls `check_listing_price`)*: KodiWise's estimate for a 2-bed, 1-bath in South B is about KES 38,700, with a likely range of KES 26,300 to KES 57,900. There are enough local listings behind that number. KES 65,000 is above the range, so it is worth asking why: a newer building, furnishing, or parking could explain it. I assumed you didn't know the size, furnishing or amenities, and adding them would sharpen the estimate. This is an estimate, not a valuation, and the KodiWise app has full details and AR views for approved listings.
 
 **Tests.** `pytest tests/test_agent_tools.py` runs per-tool tests with the API mocked, listing fixtures (the real collection may be empty), the injection and personal-data checks, an in-memory MCP session, and a check that every estimate carries range, confidence and note. `KODIWISE_LIVE_TESTS=1 pytest tests/test_agent_tools.py -k live` also calls the live API.
 
@@ -488,7 +487,7 @@ cd android_app
 - **Asking rents, not agreed rents**: listings show what landlords ask, which may differ from what tenants pay.
 - **Two sources, one point in time**: scraped from two websites in early 2026; prices drift.
 - **Wide ranges**: a typical range is about KES 50,000 wide; the estimate is a guide, not a valuation.
-- **No photos** in this version (free Firebase plan).
+- **No photos** in this version (free Firebase plan). The AR view still opens for any listing, showing its title, area, beds, baths and rent in the header, but the card it places in the room is a gallery frame with no image in it. AR is only useful once photo storage is enabled.
 
 ---
 

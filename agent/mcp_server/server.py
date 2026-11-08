@@ -40,7 +40,7 @@ so the number is rough or based mostly on the Nairobi average). Say plainly when
 repeat contact details.
 - Do not give legal, tenancy or financial advice or certainty. Do not claim a listing is a scam; you may say \
 a rent is above or below the estimated range and suggest checking in person.
-- Suggest the KodiWise app for photos, full listing details and AR views.
+- Suggest the KodiWise app for full listing details and AR views.
 """
 
 READ_ONLY = ToolAnnotations(readOnlyHint=True, destructiveHint=False, idempotentHint=True, openWorldHint=True)

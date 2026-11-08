@@ -50,10 +50,17 @@ class FirestoreListingSource:
         env = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS")
         if env and Path(env).is_file():
             return Path(env)
-        base = os.environ.get("APPDATA")
-        folder = Path(base) / "gcloud" if base else Path.home() / ".config" / "gcloud"
-        p = folder / "application_default_credentials.json"
-        return p if p.is_file() else None
+        # gcloud's default location. A packaged desktop app (e.g. the Microsoft Store
+        # Claude Desktop) may remap %APPDATA%, so also try the profile's real folder.
+        folders = []
+        if os.environ.get("APPDATA"):
+            folders.append(Path(os.environ["APPDATA"]) / "gcloud")
+        folders += [Path.home() / "AppData" / "Roaming" / "gcloud", Path.home() / ".config" / "gcloud"]
+        for folder in folders:
+            p = folder / "application_default_credentials.json"
+            if p.is_file():
+                return p
+        return None
 
     def _default_client(self) -> Any:
         import google.auth
