@@ -128,6 +128,27 @@ Raw listing data and trained model binaries are deliberately **not** committed (
 
 The starting dataset has **580 Nairobi rental listings** (489 from Jiji, 91 from KenyaPropertyCentre) across 34 neighbourhoods, with 60 columns.
 
+### Data collection (weekly, local)
+
+New listings come from **Jiji only**, once a week, from the maintainer's own machine
+(`python -m data_pipeline.job`, scheduled with Windows Task Scheduler by
+`infra/run_scrape.ps1` and `infra/kodiwise_scrape_task.xml`). Each run writes a **new dated dataset** to a
+private Cloud Storage bucket and never overwrites an existing one.
+
+- **Why Jiji only:** its terms have no automated-access clause (§7.16 on copying other users' content is
+  respected by keeping text private). KenyaPropertyCentre's terms forbid automated access, Property24's
+  forbid robots, and BuyRentKenya blocks automated clients, so none of them are scraped.
+- **Politeness:** a User-Agent naming this repo, at least 3 s between requests, robots.txt checked before every
+  fetch, at most 300 listing pages per run. On any HTTP 403/429 the run **stops and that week is skipped**.
+  There are no proxies or IP rotation.
+- **Data minimisation:** only parsed numeric and flag fields and place names are kept. Titles, descriptions,
+  photos and advertiser data are not stored (the fingerprint is stored as a hash). The raw HTML of the latest
+  run is kept privately for re-parsing and older runs are deleted.
+- **Cleaning:** the same rules as `data_pipeline/clean.py`, unchanged (including the KES 300,000 cap).
+- **Credentials:** your own `gcloud auth application-default login`; no key files.
+- A Cloud Run Job was tried and removed: Jiji returns HTTP 403 to Google Cloud addresses.
+- Scraped data and snapshots are never committed.
+
 ### Cleaning (`data_pipeline/clean.py`)
 
 Each rule runs in order and logs row counts; every removed row is written to `dropped_rows.csv` with a reason.
@@ -387,7 +408,7 @@ cd android_app
 
 1. ~~**GPS features**~~: done (Run E2). Next step: per-listing coordinates where listing pages expose a map pin.
 2. **Explanations**: per-prediction SHAP values ("size added KES X").
-3. **Scheduled scraping**: more listings from more sources, prioritising low-data neighbourhoods.
+3. ~~**Scheduled scraping**~~: weekly local Jiji run, see *Data collection*. Next: use it to grow the low-data neighbourhoods.
 4. **Monthly retraining**, gated by the deployment rule above.
 5. **On-device model** (ONNX) for offline estimates.
 6. **Conversational assistant** that answers rent questions using the API as a tool.

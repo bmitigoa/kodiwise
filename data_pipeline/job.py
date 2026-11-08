@@ -74,7 +74,9 @@ class LocalStore:
 class GcsStore:
     def __init__(self, bucket: str) -> None:
         from google.cloud import storage
-        self.bucket = storage.Client().bucket(bucket)
+        # Application Default Credentials (gcloud auth application-default login);
+        # no key files.
+        self.bucket = storage.Client(project=os.environ.get("GOOGLE_CLOUD_PROJECT")).bucket(bucket)
 
     def list(self, prefix: str) -> list[str]:
         return sorted(b.name for b in self.bucket.list_blobs(prefix=prefix))
@@ -229,14 +231,18 @@ def run(store: Store, max_listings: int, work_dir: Path, fetcher: Fetcher | None
     return summary
 
 
-def main() -> None:
+EXIT_STOPPED = 3  # 403/429 or robots disallow: this week is skipped
+
+
+def main() -> int:
     max_listings = int(os.environ.get("MAX_LISTINGS", "300"))
     local = os.environ.get("LOCAL_STORE_DIR")
     store: Store = LocalStore(Path(local)) if local else GcsStore(os.environ["BUCKET"])
     with tempfile.TemporaryDirectory() as tmp:
         summary = run(store, max_listings, Path(tmp))
     print(json.dumps(summary))   # counts only; never listing text
+    return EXIT_STOPPED if summary["stopped"] else 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
