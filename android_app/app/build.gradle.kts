@@ -28,6 +28,12 @@ android {
         )
     }
 
+    testOptions {
+        // Firestore's mapper logs a warning for fields the model doesn't declare
+        // (the saved has_* / is_* fields); android.util.Log is a stub on the JVM.
+        unitTests.isReturnDefaultValues = true
+    }
+
     buildFeatures {
         buildConfig = true
     }

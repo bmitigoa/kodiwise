@@ -34,6 +34,24 @@ object RealisticPropertyFields {
 
     private const val AMENITIES_OPENED = "opened"
 
+    /**
+     * Fields saved on the property doc (same names as ml.features / the API schema).
+     * Unanswered amenities and unknown size are saved as null, never as 0.
+     */
+    fun toFirestoreFields(v: Values): Map<String, Any?> = mapOf(
+        "sq_m" to v.sqM,
+        "is_furnished" to v.isFurnished,
+        "is_apartment" to (if (v.propertyType == "apartment") 1 else 0),
+        "is_house" to (if (v.propertyType == "house") 1 else 0),
+        "is_bedsitter" to (if (v.propertyType == "bedsitter") 1 else 0),
+        "has_generator" to v.hasGenerator,
+        "has_borehole" to v.hasBorehole,
+        "has_cctv" to v.hasCctv,
+        "has_dsq" to v.hasDsq,
+        "has_play_area" to v.hasPlayArea,
+        "has_garden" to v.hasGarden
+    )
+
     fun bindCollapse(activity: Activity) {
         val header = activity.findViewById<View>(R.id.headerAmenities)
         val body = activity.findViewById<View>(R.id.layoutAmenities)

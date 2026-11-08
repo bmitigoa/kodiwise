@@ -149,7 +149,7 @@ class PropertyUploadActivity : AppCompatActivity() {
                     val propertyRef = firestore.collection("properties").document()
                     val propertyId = propertyRef.id
 
-                    val propertyData = hashMapOf(
+                    val propertyData = hashMapOf<String, Any?>(
                         "title" to title,
                         "locationName" to locationName,
                         "bedrooms" to bedrooms,
@@ -175,22 +175,14 @@ class PropertyUploadActivity : AppCompatActivity() {
                         // ml.features.RUN_D_FEATURE_SET / the API schema,
                         // so a future retrain can read straight off these
                         // Firestore docs without a field-name mapping step.
-                        "sq_m" to realistic.sqM,
-                        "is_furnished" to realistic.isFurnished,
-                        "is_apartment" to (if (realistic.propertyType == "apartment") 1 else 0),
-                        "is_house" to (if (realistic.propertyType == "house") 1 else 0),
-                        "is_bedsitter" to (if (realistic.propertyType == "bedsitter") 1 else 0),
-                        "has_generator" to realistic.hasGenerator,
-                        "has_borehole" to realistic.hasBorehole,
-                        "has_cctv" to realistic.hasCctv,
-                        "has_dsq" to realistic.hasDsq,
-                        "has_play_area" to realistic.hasPlayArea,
-                        "has_garden" to realistic.hasGarden,
 
                         // AR placeholders
                         "arScale" to 0.4,
                         "arRotationY" to 180
                     )
+
+                    // Realistic fields: amenities stay null when never answered.
+                    propertyData.putAll(RealisticPropertyFields.toFirestoreFields(realistic))
 
                     propertyRef.set(propertyData).await()
 
