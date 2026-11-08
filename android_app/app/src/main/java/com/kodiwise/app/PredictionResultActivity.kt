@@ -107,7 +107,7 @@ class PredictionResultActivity : AppCompatActivity() {
             list.addView(row)
         }
         ex.baselineRentKes?.takeIf { it > 0 }?.let {
-            findViewById<TextView>(R.id.tvWhyBaseline).text = getString(R.string.why_baseline, formatKes(it))
+            findViewById<TextView>(R.id.tvWhyBaseline).text = getString(R.string.why_baseline, WhyEstimate.formatBaseline(it))
         }
         findViewById<View>(R.id.cardWhy).visibility = View.VISIBLE
     }

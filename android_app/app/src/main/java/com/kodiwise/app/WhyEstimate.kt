@@ -16,6 +16,12 @@ object WhyEstimate {
         return sign + "KES " + String.format(Locale.US, "%,d", rounded)
     }
 
+    /** Baseline shown to the nearest KES 1,000 ("KES 59,000"). */
+    fun formatBaseline(kes: Double): String {
+        val rounded = (kes / 1000.0).roundToLong() * 1000
+        return "KES " + String.format(Locale.US, "%,d", rounded)
+    }
+
     /** Up to 5 factors, largest effect first, ignoring ones that round to nothing. */
     fun visible(factors: List<ExplanationFactor>): List<ExplanationFactor> =
         factors.filter { abs(it.effectKes) >= 250.0 }

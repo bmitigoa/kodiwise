@@ -29,6 +29,12 @@ class WhyEstimateTest {
         assertTrue(WhyEstimate.barFractions(emptyList()).isEmpty())
     }
 
+    @Test fun baselineIsRoundedToNearestThousand() {
+        assertEquals("KES 59,000", WhyEstimate.formatBaseline(59_004.0))
+        assertEquals("KES 60,000", WhyEstimate.formatBaseline(59_500.0))
+        assertEquals("KES 58,000", WhyEstimate.formatBaseline(58_499.0))
+    }
+
     @Test fun describeIsPlainLanguage() {
         assertEquals("Kilimani location, raises the estimate by about KES 15,000",
             WhyEstimate.describe(f("Kilimani location", 15000.0)))
