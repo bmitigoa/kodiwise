@@ -20,7 +20,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # (the single source of truth for feature construction, shared with
 # training), and the one versioned model directory currently served.
 COPY api/ ./api/
-COPY ml/__init__.py ml/features.py ./ml/
+COPY ml/__init__.py ml/features.py ml/explain.py ./ml/
 COPY ml/models/v20261107-appE2/ ./ml/models/v20261107-appE2/
 
 # Cloud Run sets PORT; default to 8080 for local runs.

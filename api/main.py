@@ -62,7 +62,7 @@ def locations() -> LocationsResponse:
     return LocationsResponse(locations=predictor.known_locations())
 
 
-@app.post("/predict", response_model=PredictResponse)
+@app.post("/predict", response_model=PredictResponse, response_model_exclude_none=True)
 def predict(req: PredictRequest) -> PredictResponse:
     if not predictor.loaded:
         raise HTTPException(status_code=503, detail="Model not loaded")
@@ -79,5 +79,6 @@ def predict(req: PredictRequest) -> PredictResponse:
         has_dsq=req.has_dsq,
         has_play_area=req.has_play_area,
         has_garden=req.has_garden,
+        explain=req.explain,
     )
     return PredictResponse(**result)

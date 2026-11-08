@@ -12,6 +12,7 @@ import joblib
 import numpy as np
 import pandas as pd
 
+from ml.explain import build_explanation, contributions
 from ml.features import (
     FEATURE_SETS,
     location_confidence,
@@ -49,7 +50,7 @@ class Predictor:
         training rows, not a real neighbourhood a user should pick)."""
         return sorted(loc for loc in self.location_lookup if loc not in ("__global__", "Unknown"))
 
-    def predict(
+    def build_row(
         self,
         bedrooms_num: int,
         bathrooms_num: int,
@@ -63,7 +64,7 @@ class Predictor:
         has_dsq: int | None = None,
         has_play_area: int | None = None,
         has_garden: int | None = None,
-    ) -> dict:
+    ) -> tuple[pd.DataFrame, str, bool, dict]:
         row = pd.DataFrame([{"bedrooms_num": bedrooms_num, "bathrooms_num": bathrooms_num}])
         row = recompute_rooms_bath_from_counts(row)
 
@@ -91,6 +92,27 @@ class Predictor:
 
         row = row[self.feature_set.numeric + self.feature_set.binary]
 
+        return row, resolved_location, location_recognised, loc_stats
+
+    def predict(
+        self,
+        bedrooms_num: int,
+        bathrooms_num: int,
+        location_std: str,
+        sq_m: float | None = None,
+        is_furnished: int | None = None,
+        property_type: str | None = None,
+        has_generator: int | None = None,
+        has_borehole: int | None = None,
+        has_cctv: int | None = None,
+        has_dsq: int | None = None,
+        has_play_area: int | None = None,
+        has_garden: int | None = None,
+        explain: bool = True,
+    ) -> dict:
+        row, resolved_location, location_recognised, loc_stats = self.build_row(
+            bedrooms_num, bathrooms_num, location_std, sq_m, is_furnished, property_type,
+            has_generator, has_borehole, has_cctv, has_dsq, has_play_area, has_garden)
         point = max(float(self.pipe.predict(row)[0]), 0.0)
 
         interval = self.metrics["prediction_interval"]
@@ -98,7 +120,19 @@ class Predictor:
         low = max(float(np.expm1(log_point + interval["q10_log"])), 0.0)
         high = max(float(np.expm1(log_point + interval["q90_log"])), low)
 
+        explanation = None
+        if explain:
+            names, contrib, bias = contributions(self.pipe, row)
+            explanation = build_explanation(names, contrib, bias, point, {
+                "location": resolved_location, "location_recognised": location_recognised,
+                "sq_m": sq_m, "bedrooms_num": bedrooms_num, "bathrooms_num": bathrooms_num,
+                "property_type": property_type, "is_furnished": is_furnished,
+                "has_generator": has_generator, "has_borehole": has_borehole, "has_cctv": has_cctv,
+                "has_dsq": has_dsq, "has_play_area": has_play_area, "has_garden": has_garden,
+            })
+
         return {
+            "explanation": explanation,
             "predicted_rent_kes": round(point, 2),
             "predicted_rent_low_kes": round(low, 2),
             "predicted_rent_high_kes": round(high, 2),

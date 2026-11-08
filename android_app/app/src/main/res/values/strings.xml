@@ -114,6 +114,9 @@
     <string name="result_point_only">No range available from this server</string>
     <string name="result_note_range">This is an estimate, not an exact valuation. Most similar homes rent somewhere in the range above.</string>
     <string name="result_note_point">This is an estimate, not an exact valuation.</string>
+    <string name="why_title">Why this estimate</string>
+    <string name="why_baseline">A typical home starts around %1$s. These are the biggest differences for yours:</string>
+    <string name="why_caption">Approximate effects. They do not add up exactly.</string>
     <string name="result_for">Estimate for</string>
     <string name="result_ar_unavailable">AR is available for saved listings</string>
     <plurals name="beds">

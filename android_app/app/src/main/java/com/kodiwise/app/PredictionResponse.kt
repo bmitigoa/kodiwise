@@ -31,7 +31,10 @@ data class PredictionResponse(
     @SerializedName("location_confidence")
     val locationConfidence: String? = null,
 
-    val note: String? = null
+    val note: String? = null,
+
+    // Null when the server predates explanations or explain=false.
+    val explanation: Explanation? = null
 ) {
 
     fun bestValue(): Double {
@@ -52,3 +55,17 @@ data class PredictionResponse(
         }
     }
 }
+
+/** "Why this estimate": approximate KES effects per factor, from /predict. */
+data class Explanation(
+    @SerializedName("baseline_rent_kes") val baselineRentKes: Double? = null,
+    val factors: List<ExplanationFactor> = emptyList(),
+    val note: String? = null
+)
+
+data class ExplanationFactor(
+    val name: String = "",
+    val label: String = "",
+    val direction: String = "+",
+    @SerializedName("effect_kes") val effectKes: Double = 0.0
+)

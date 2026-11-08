@@ -4,11 +4,13 @@ import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.widget.TextViewCompat
 import com.google.android.material.chip.Chip
+import com.google.gson.Gson
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -69,8 +71,45 @@ class PredictionResultActivity : AppCompatActivity() {
             chip.visibility = View.VISIBLE
         }
 
+        bindWhyCard()
+
         btnViewInAR.isEnabled = false
         btnViewInAR.text = getString(R.string.result_ar_unavailable)
+    }
+
+    /** "Why this estimate": up to 5 factors with +/- KES and a bar each. Hidden if absent. */
+    private fun bindWhyCard() {
+        val json = intent.getStringExtra("explanationJson") ?: return
+        val ex = runCatching { Gson().fromJson(json, Explanation::class.java) }.getOrNull() ?: return
+        val factors = WhyEstimate.visible(ex.factors)
+        if (factors.isEmpty()) return
+        val fractions = WhyEstimate.barFractions(factors)
+        val list = findViewById<LinearLayout>(R.id.whyList)
+        list.removeAllViews()
+        val up = ContextCompat.getColor(this, R.color.kw_primary)
+        val down = ContextCompat.getColor(this, R.color.kw_error)
+        factors.forEachIndexed { i, f ->
+            val row = layoutInflater.inflate(R.layout.item_why_factor, list, false)
+            val color = if (WhyEstimate.isUp(f)) up else down
+            row.findViewById<TextView>(R.id.tvFactorLabel).text = f.label
+            row.findViewById<TextView>(R.id.tvFactorEffect).apply {
+                text = WhyEstimate.formatEffect(f.effectKes)
+                setTextColor(color)
+            }
+            row.findViewById<View>(R.id.factorBar).apply {
+                backgroundTintList = ColorStateList.valueOf(color)
+                layoutParams = (layoutParams as LinearLayout.LayoutParams).apply {
+                    width = 0
+                    weight = fractions[i]
+                }
+            }
+            row.contentDescription = WhyEstimate.describe(f)
+            list.addView(row)
+        }
+        ex.baselineRentKes?.takeIf { it > 0 }?.let {
+            findViewById<TextView>(R.id.tvWhyBaseline).text = getString(R.string.why_baseline, formatKes(it))
+        }
+        findViewById<View>(R.id.cardWhy).visibility = View.VISIBLE
     }
 
     /** Places the marker along the low..high track at the point estimate. */

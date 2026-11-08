@@ -237,7 +237,7 @@ FastAPI service in `api/`, containerised with the root `Dockerfile` and deployed
 | GET | `/health` | Service status and loaded model version |
 | GET | `/model-version` | Version, feature set and test metrics of the served model |
 | GET | `/locations` | The 32 neighbourhoods the model recognises |
-| POST | `/predict` | Rent estimate with range and confidence |
+| POST | `/predict` | Rent estimate with range, confidence and a "why this estimate" explanation |
 
 **Request** (only the first three fields are required):
 
@@ -251,9 +251,12 @@ FastAPI service in `api/`, containerised with the root `Dockerfile` and deployed
   "property_type": "apartment",
   "has_generator": 1,
   "has_borehole": 1,
-  "has_cctv": 1
+  "has_cctv": 1,
+  "explain": true
 }
 ```
+
+`explain` is optional and defaults to `true`; send `false` to get only the estimate.
 
 **Response**
 
@@ -265,9 +268,28 @@ FastAPI service in `api/`, containerised with the root `Dockerfile` and deployed
   "model_version": "v20261107-appE2",
   "location_recognised": true,
   "location_confidence": "high",
-  "note": "Estimate only, not an exact valuation. ..."
+  "note": "Estimate only, not an exact valuation. ...",
+  "explanation": {
+    "baseline_rent_kes": 59004,
+    "factors": [
+      {"name": "Furnished", "label": "Furnished", "direction": "+", "effect_kes": 60467},
+      {"name": "Location", "label": "Kilimani location", "direction": "+", "effect_kes": 55600},
+      {"name": "Amenities", "label": "Amenities: generator, CCTV", "direction": "+", "effect_kes": 6543},
+      {"name": "Size", "label": "Size (90 m²)", "direction": "-", "effect_kes": -5613},
+      {"name": "Bedrooms/Bathrooms", "label": "2 bedrooms, 2 bathrooms", "direction": "+", "effect_kes": 4840}
+    ],
+    "note": "Approximate. Each effect is how much lower the estimate would be if that factor were average, ..."
+  }
 }
 ```
+
+**How the explanation works.** It uses LightGBM's built-in tree SHAP on the served model, with no extra dependency. The raw features are folded into six factors: Location (neighbourhood statistics, coordinates and distances), Size, Bedrooms/Bathrooms, Property type, Furnished and Amenities. A factor's effect is `estimate × (1 − e^(−c))`, where `c` is its log-space contribution: roughly, how much lower the estimate would be if that factor were average. Up to 5 factors are returned, largest first, and any smaller than `max(2% of the estimate, KES 1,000)` are hidden. The effects are approximate and do not add up exactly in KES, because the model works in log space. `baseline_rent_kes` is a typical rent with nothing known about the home, not the average of all rents. If the size was not given, the Size factor says a typical size was used.
+
+In the app, the result screen shows a "Why this estimate" card with the top factors and a small bar for each:
+
+| Light | Dark |
+|---|---|
+| ![Why this estimate](docs/screenshots/after/17_why_this_estimate.png) | ![Why this estimate, dark](docs/screenshots/after/17_why_this_estimate_dark.png) |
 
 Location names are matched case-insensitively, with a small alias table (e.g. "Westland" → Westlands, "Upper Hill" → Upperhill). Invalid input returns HTTP 422 with a clear message.
 
@@ -407,7 +429,7 @@ cd android_app
 ## Roadmap
 
 1. ~~**GPS features**~~: done (Run E2). Next step: per-listing coordinates where listing pages expose a map pin.
-2. **Explanations**: per-prediction SHAP values ("size added KES X").
+2. ~~**Explanations**~~: done, see *The prediction API*.
 3. ~~**Scheduled scraping**~~: weekly local Jiji run, see *Data collection*. Next: use it to grow the low-data neighbourhoods.
 4. **Monthly retraining**, gated by the deployment rule above.
 5. **On-device model** (ONNX) for offline estimates.

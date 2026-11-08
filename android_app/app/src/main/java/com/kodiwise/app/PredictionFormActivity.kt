@@ -125,6 +125,9 @@ class PredictionFormActivity : AppCompatActivity() {
                                 putExtra("bathrooms", bathrooms)
                                 putExtra("predicted", pred)
                                 body?.locationConfidence?.let { putExtra("locationConfidence", it) }
+                                body?.explanation?.takeIf { it.factors.isNotEmpty() }?.let {
+                                    putExtra("explanationJson", com.google.gson.Gson().toJson(it))
+                                }
                                 if (body?.hasRange() == true) {
                                     putExtra("predictedLow", body.predictedRentLowKes!!)
                                     putExtra("predictedHigh", body.predictedRentHighKes!!)

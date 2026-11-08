@@ -35,6 +35,9 @@ class PredictRequest(BaseModel):
     has_play_area: int | None = Field(None, ge=0, le=1)
     has_garden: int | None = Field(None, ge=0, le=1)
 
+    # Add the "why this estimate" factors to the response (default on).
+    explain: bool = True
+
     @field_validator("location_std")
     @classmethod
     def strip_location(cls, v: str) -> str:
@@ -42,6 +45,19 @@ class PredictRequest(BaseModel):
         if not v:
             raise ValueError("location_std must not be blank")
         return v
+
+
+class ExplanationFactor(BaseModel):
+    name: str          # Location | Size | Bedrooms/Bathrooms | Property type | Furnished | Amenities
+    label: str         # plain-language, e.g. "Kilimani location"
+    direction: Literal["+", "-"]
+    effect_kes: float  # signed, approximate
+
+
+class Explanation(BaseModel):
+    baseline_rent_kes: float
+    factors: list[ExplanationFactor]
+    note: str
 
 
 class PredictResponse(BaseModel):
@@ -52,6 +68,7 @@ class PredictResponse(BaseModel):
     location_recognised: bool
     location_confidence: Literal["high", "low", "none"]
     note: str
+    explanation: Explanation | None = None   # omitted when explain=false
 
 
 class LocationsResponse(BaseModel):
