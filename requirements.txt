@@ -11,3 +11,7 @@ httpx==0.28.1
 requests>=2.31
 google-cloud-storage>=2.18
 pathspec>=0.12
+# MCP server (agent/). Stay on 1.x: 2.x renames FastMCP and needs a newer starlette than the API pins.
+mcp>=1.30,<2
+httpx>=0.28
+google-cloud-firestore>=2.18

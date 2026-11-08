@@ -19,15 +19,16 @@ KodiWise is the product successor to **RentAR**, my MSc research prototype at St
 5. [The machine-learning model](#the-machine-learning-model)
 6. [Results](#results)
 7. [The prediction API](#the-prediction-api)
-8. [The Android app](#the-android-app)
-9. [Data model and security rules](#data-model-and-security-rules)
-10. [Getting started](#getting-started)
-11. [Testing](#testing)
-12. [Model versioning and deployment rule](#model-versioning-and-deployment-rule)
-13. [Limitations](#limitations)
-14. [Roadmap](#roadmap)
-15. [Research background](#research-background)
-16. [Author](#author)
+8. [AI assistant (MCP)](#ai-assistant-mcp)
+9. [The Android app](#the-android-app)
+10. [Data model and security rules](#data-model-and-security-rules)
+11. [Getting started](#getting-started)
+12. [Testing](#testing)
+13. [Model versioning and deployment rule](#model-versioning-and-deployment-rule)
+14. [Limitations](#limitations)
+15. [Roadmap](#roadmap)
+16. [Research background](#research-background)
+17. [Author](#author)
 
 ---
 
@@ -97,6 +98,7 @@ flowchart LR
 KodiWise/
 ├── android_app/            Android app (Kotlin, XML views, Material 3, ARCore)
 │   └── app/src/main/java/com/kodiwise/app/
+├── agent/                  MCP server for AI assistants (agent/core = tool logic)
 ├── api/                    FastAPI prediction service
 │   ├── main.py             endpoints
 │   ├── predictor.py        loads the model, builds features, returns a range
@@ -295,6 +297,70 @@ Location names are matched case-insensitively, with a small alias table (e.g. "W
 
 ---
 
+## AI assistant (MCP)
+
+An [MCP](https://modelcontextprotocol.io) server in `agent/` lets an AI assistant such as Claude Desktop answer Nairobi rent questions with KodiWise's real data. It is deliberately thin: every number comes from the live `kodiwise-api` over HTTPS, so there is one source of truth. It never loads the model and never writes anything.
+
+| Tool | What it does |
+|---|---|
+| `list_locations` | The 32 neighbourhoods KodiWise covers. |
+| `estimate_rent` | One home: estimate, likely range, location confidence, and the main reasons (approximate KES effects). |
+| `compare_areas` | The same home in 2–6 areas, ranked by estimate, each with range and confidence. |
+| `areas_within_budget` | Which areas fit a monthly budget: "comfortable" (estimate at or under budget) and "stretch" (only the low end of the range fits). At most 32 estimates, cached for the session. |
+| `check_listing_price` | Whether an asking rent is within, above or below the estimated range, using the same rule as the app. With too little local data it says "no verdict" and still shows the range. |
+| `search_listings` | Approved listings only, read-only: title, area, rent, beds, baths, size and the range badge. |
+
+**Guardrails**
+
+- **Read-only.** No tool writes anything.
+- **Numbers come from tools.** Every result carries the range, the location confidence and an "estimate only, not a valuation" note, added in one place so it cannot be dropped. The server's instructions tell the assistant to quote only tool results, always give ranges, say plainly when confidence is low or none, never invent prices or listings, and point to the app.
+- **Inputs are validated** (bedrooms 0–10, sane rents and sizes, known amenities and property types). Locations use the API's own alias rules; an unknown area gets "did you mean…" suggestions, never a silent "Nairobi average" estimate.
+- **Fields the user did not give stay "not given".** Size, furnishing, property type and amenities are only sent when supplied, and the explanation labels the rest "(not given)".
+- **Timeouts and retries.** 20 s timeout, two retries with backoff, and friendly error messages.
+- **No personal data in listings.** Listings are read with the user's own Google credentials, which bypass Firestore security rules, so the protections are in code: the query is `status == "approved"` (re-checked per row), only safe fields are requested, and a fixed set of output fields is copied, so owner IDs, emails, admin notes, image URLs and descriptions never reach the assistant. Titles are typed by landlords and are untrusted: they are cleaned (phone numbers, emails, links, markup and invisible characters removed, 80 characters at most), and the server tells the assistant to treat them as data, not instructions.
+
+**Setup (Windows)**
+
+```powershell
+cd C:\Projects\KodiWise
+.venv\Scripts\activate
+pip install -r requirements.txt
+gcloud auth application-default login      # only needed for search_listings
+```
+
+Add this to `claude_desktop_config.json` (Claude Desktop → Settings → Developer → Edit Config), then restart Claude Desktop:
+
+```json
+{
+  "mcpServers": {
+    "kodiwise": {
+      "command": "C:\\Projects\\KodiWise\\.venv\\Scripts\\python.exe",
+      "args": ["-m", "agent.mcp_server"],
+      "env": {
+        "PYTHONPATH": "C:\\Projects\\KodiWise",
+        "PYTHONUTF8": "1",
+        "KODIWISE_API_URL": "https://kodiwise-api-798766993143.africa-south1.run.app",
+        "GOOGLE_APPLICATION_CREDENTIALS": "C:\\Users\\user\\AppData\\Roaming\\gcloud\\application_default_credentials.json"
+      }
+    }
+  }
+}
+```
+
+Things to try: "2-bed under 40k near Westlands?", "Compare Kilimani, Kileleshwa and Lavington for a 3-bed", "Is 65k fair for a 2-bed in South B?", "Why is Karen expensive?", "Show approved listings in Kilimani".
+
+**Example conversation** (illustrative; the figures are from a real `check_listing_price` call)
+
+> **You:** Is 65k fair for a 2-bed, 1-bath in South B?
+>
+> **Assistant** *(calls `check_listing_price`)*: KodiWise's estimate for a 2-bed, 1-bath in South B is about KES 38,700, with a likely range of KES 26,300 to KES 57,900. There are enough local listings behind that number. KES 65,000 is above the range, so it is worth asking why: a newer building, furnishing, or parking could explain it. I assumed you didn't know the size, furnishing or amenities, and adding them would sharpen the estimate. This is an estimate, not a valuation, and the KodiWise app shows approved listings with photos.
+
+**Tests.** `pytest tests/test_agent_tools.py` runs per-tool tests with the API mocked, listing fixtures (the real collection may be empty), the injection and personal-data checks, an in-memory MCP session, and a check that every estimate carries range, confidence and note. `KODIWISE_LIVE_TESTS=1 pytest tests/test_agent_tools.py -k live` also calls the live API.
+
+The planned in-app chat will reuse the same tool code (`agent/core`) behind a server-side endpoint; no API key will ever ship in the app.
+
+---
+
 ## The Android app
 
 - **Language and UI**: Kotlin, XML views, Material 3 (`Theme.KodiWise`), Poppins and Inter fonts, light and dark themes.
@@ -433,7 +499,7 @@ cd android_app
 3. ~~**Scheduled scraping**~~: weekly local Jiji run, see *Data collection*. Next: use it to grow the low-data neighbourhoods.
 4. **Monthly retraining**, gated by the deployment rule above.
 5. **On-device model** (ONNX) for offline estimates.
-6. **Conversational assistant** that answers rent questions using the API as a tool.
+6. **Conversational assistant**: the MCP server is built (see *AI assistant (MCP)*); an in-app chat is planned and will run server-side.
 
 ---
 
