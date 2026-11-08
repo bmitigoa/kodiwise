@@ -73,7 +73,11 @@ def kes_effect(point: float, c: float) -> float:
 def _label(group: str, ctx: dict) -> str:
     if group == "Location":
         loc = ctx.get("location")
-        return f"{loc} location" if loc and ctx.get("location_recognised") else "Location (area average used)"
+        if not (loc and ctx.get("location_recognised")):
+            return "Location (area average used)"
+        if ctx.get("location_confidence") in ("low", "none"):
+            return f"{loc} location (limited local data)"
+        return f"{loc} location"
     if group == "Size":
         sq = ctx.get("sq_m")
         return f"Size ({sq:.0f} m²)" if sq is not None else "Size (not given, typical size used)"
@@ -85,8 +89,16 @@ def _label(group: str, ctx: dict) -> str:
         t = ctx.get("property_type")
         return t.capitalize() if t else "Property type (not given)"
     if group == "Furnished":
-        return "Furnished" if ctx.get("is_furnished") else "Not furnished"
-    have = [AMENITY_LABELS[k] for k in AMENITY_LABELS if ctx.get(k)]
+        fur = ctx.get("is_furnished")
+        if fur is None:
+            return "Furnishing (not given)"
+        return "Furnished" if fur else "Not furnished"
+    # Amenities. A missing field is not the same as "no": say so, never show
+    # "none listed" as a fact when the user was never asked / gave nothing.
+    given = {k: ctx.get(k) for k in AMENITY_LABELS}
+    if all(v is None for v in given.values()):
+        return "Amenities (not given)"
+    have = [AMENITY_LABELS[k] for k, v in given.items() if v]
     return "Amenities: " + ", ".join(have) if have else "No extra amenities listed"
 
 

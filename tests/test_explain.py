@@ -128,3 +128,86 @@ def test_explain_latency_overhead_is_small(client):
         return sorted(t)[len(t) // 2] * 1000
     off, on = p50({**ROWS[0], "explain": False}), p50(ROWS[0])
     assert on - off < 50, f"explain adds {on - off:.1f} ms (off {off:.1f}, on {on:.1f})"
+
+
+# --- labels: a missing field must never be shown as a fact -------------------
+from ml.explain import _label  # noqa: E402
+
+BASE = {"location": "Kilimani", "location_recognised": True, "location_confidence": "high",
+        "bedrooms_num": 2, "bathrooms_num": 2}
+
+
+def lab(group, **kw):
+    return _label(group, {**BASE, **kw})
+
+
+def test_furnished_label_missing_vs_given():
+    assert lab("Furnished") == "Furnishing (not given)"
+    assert lab("Furnished", is_furnished=None) == "Furnishing (not given)"
+    assert lab("Furnished", is_furnished=0) == "Not furnished"
+    assert lab("Furnished", is_furnished=1) == "Furnished"
+
+
+def test_size_and_property_type_label_missing_vs_given():
+    assert "not given" in lab("Size")
+    assert lab("Size", sq_m=90) == "Size (90 m²)"
+    assert lab("Property type") == "Property type (not given)"
+    assert lab("Property type", property_type="house") == "House"
+
+
+def test_amenities_label_missing_vs_given():
+    assert lab("Amenities") == "Amenities (not given)"
+    flags = ["has_generator", "has_borehole", "has_cctv", "has_dsq", "has_play_area", "has_garden"]
+    for f in flags:   # any single field given as absent is a real answer, not a gap
+        assert lab("Amenities", **{f: 0}) == "No extra amenities listed"
+        assert lab("Amenities", **{f: 1}).startswith("Amenities: ")
+    assert lab("Amenities", has_cctv=1, has_garden=None, has_generator=0) == "Amenities: CCTV"
+
+
+@pytest.mark.parametrize("conf,expected", [
+    ("high", "Kilimani location"),
+    ("low", "Kilimani location (limited local data)"),
+    ("none", "Kilimani location (limited local data)"),
+])
+def test_location_label_flags_thin_data(conf, expected):
+    assert lab("Location", location_confidence=conf) == expected
+
+
+def test_unrecognised_location_label_never_names_an_area():
+    assert lab("Location", location="Nowhereville", location_recognised=False,
+               location_confidence="none") == "Location (area average used)"
+
+
+def test_api_missing_optionals_never_appear_as_facts(client):
+    r = client.post("/predict", json={"bedrooms_num": 2, "bathrooms_num": 2,
+                                      "location_std": "Kilimani"}).json()
+    for f in r["explanation"]["factors"]:
+        if f["name"] == "Furnished":
+            assert f["label"] == "Furnishing (not given)"
+        if f["name"] == "Amenities":
+            assert f["label"] == "Amenities (not given)"
+        if f["name"] == "Size":
+            assert "not given" in f["label"]
+        if f["name"] == "Property type":
+            assert f["label"] == "Property type (not given)"
+
+
+def test_api_given_fields_are_labelled_as_facts(client):
+    r = client.post("/predict", json={**ROWS[0], "is_furnished": 0}).json()
+    labels = {f["name"]: f["label"] for f in r["explanation"]["factors"]}
+    if "Furnished" in labels:
+        assert labels["Furnished"] == "Not furnished"
+
+
+def test_api_location_label_follows_confidence(client):
+    by_conf = {}
+    for loc in predictor.known_locations():
+        c = client.post("/predict", json={"bedrooms_num": 2, "bathrooms_num": 2,
+                                          "location_std": loc}).json()
+        conf = c["location_confidence"]
+        label = [f["label"] for f in c["explanation"]["factors"] if f["name"] == "Location"]
+        if label:
+            by_conf.setdefault(conf, []).append(label[0])
+    assert by_conf.get("high") and by_conf.get("none")
+    assert all("limited local data" not in l for l in by_conf["high"])
+    assert all(l.endswith("(limited local data)") for l in by_conf["none"] + by_conf.get("low", []))

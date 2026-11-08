@@ -125,6 +125,7 @@ class Predictor:
             names, contrib, bias = contributions(self.pipe, row)
             explanation = build_explanation(names, contrib, bias, point, {
                 "location": resolved_location, "location_recognised": location_recognised,
+                "location_confidence": location_confidence(loc_stats["loc_count_tr"]),
                 "sq_m": sq_m, "bedrooms_num": bedrooms_num, "bathrooms_num": bathrooms_num,
                 "property_type": property_type, "is_furnished": is_furnished,
                 "has_generator": has_generator, "has_borehole": has_borehole, "has_cctv": has_cctv,
