@@ -13,7 +13,7 @@ from pydantic import BaseModel, Field
 
 from agent.core.tools import Tools
 from chat.auth import AuthError, TokenVerifier, verify_firebase_token
-from chat.engine import ChatEngine, LimitReached, clean_history
+from chat.engine import ChatEngine, Lane, LimitReached, clean_history
 from chat.gemini import GeminiBusy, GeminiClient, GeminiError
 from chat.limits import Counters, RateLimiter, nairobi_day, pacific_day
 
@@ -28,17 +28,19 @@ LIMIT_MESSAGES = {
 
 @dataclass
 class Settings:
-    user_daily: int = 15
-    global_daily_cap: int = 0          # Gemini requests per day; 0 = refuse (set CHAT_GLOBAL_DAILY_CAP)
-    rpm_cap: int = 0                   # per instance; 0 = refuse (set CHAT_RPM_CAP)
+    user_daily: int = 10
+    global_daily_cap: int = 0          # Gemini requests per day PER MODEL; 0 = refuse (CHAT_GLOBAL_DAILY_CAP)
+    rpm_cap: int = 0                   # requests per minute per model, per instance; 0 = refuse (CHAT_RPM_CAP)
     concurrent: int = 3
+    models: tuple[str, ...] = ()       # primary first, then the fallback (CHAT_MODELS, comma separated)
 
     @classmethod
     def from_env(cls) -> "Settings":
         instances = max(1, int(os.environ.get("CHAT_MAX_INSTANCES", "2")))
-        return cls(user_daily=int(os.environ.get("CHAT_USER_DAILY", "15")),
+        models = tuple(m.strip() for m in os.environ.get("CHAT_MODELS", "").split(",") if m.strip())
+        return cls(user_daily=int(os.environ.get("CHAT_USER_DAILY", "10")),
                    global_daily_cap=int(os.environ.get("CHAT_GLOBAL_DAILY_CAP", "0")),
-                   rpm_cap=int(os.environ.get("CHAT_RPM_CAP", "0")) // instances)
+                   rpm_cap=int(os.environ.get("CHAT_RPM_CAP", "0")) // instances, models=models)
 
 
 class Msg(BaseModel):
@@ -58,11 +60,12 @@ class ChatResponse(BaseModel):
     show_assistant_button: bool = False
 
 
-def create_app(settings: Settings, counters: Counters, tools: Tools, gemini: GeminiClient,
+def create_app(settings: Settings, counters: Counters, tools: Tools, clients: dict[str, GeminiClient],
                verifier: TokenVerifier = verify_firebase_token,
                known_locations: Callable[[], list[str]] | None = None) -> FastAPI:
     app = FastAPI(title="KodiWise chat", docs_url=None, redoc_url=None, openapi_url=None)
-    limiter = RateLimiter(settings.rpm_cap)
+    order = [m for m in (settings.models or tuple(clients)) if m in clients]
+    limiters = {m: RateLimiter(settings.rpm_cap) for m in order}
     slots = threading.BoundedSemaphore(settings.concurrent)
 
     def user(authorization: str | None = Header(None)) -> dict:
@@ -89,7 +92,7 @@ def create_app(settings: Settings, counters: Counters, tools: Tools, gemini: Gem
         if not history or history[-1]["role"] != "user":
             raise HTTPException(422, "Send a question.")
         uid, uday, gday = who["uid"], nairobi_day(), pacific_day()
-        if settings.global_daily_cap <= 0 or settings.rpm_cap <= 0:
+        if settings.global_daily_cap <= 0 or settings.rpm_cap <= 0 or not order:
             log.error("chat limits are not configured; refusing")
             return limit("limit_global")
         if not slots.acquire(blocking=False):
@@ -100,23 +103,31 @@ def create_app(settings: Settings, counters: Counters, tools: Tools, gemini: Gem
                 return limit("limit_user")
             remaining = max(0, settings.user_daily - used)
 
-            def take_global() -> bool:
-                return counters.global_take(gday, settings.global_daily_cap)
+            def lane(model: str) -> Lane:
+                key = f"{gday}_{model}"          # each model has its own free daily quota
+                return Lane(model, clients[model],
+                            take_global=lambda: counters.global_take(key, settings.global_daily_cap),
+                            allow_rate=limiters[model].allow,
+                            refund_global=lambda: counters.global_refund(key))
 
-            engine = ChatEngine(tools, gemini, take_global, limiter.allow)
+            engine = ChatEngine(tools, [lane(m) for m in order])
             try:
                 result = engine.run(history)
             except LimitReached as lim:
                 counters.user_refund(uid, uday)
                 return limit(lim.reason)
-            except GeminiBusy:
+            except GeminiBusy:                    # every model said 429 (the engine refunded those requests)
                 counters.user_refund(uid, uday)
-                counters.global_refund(gday)      # Google did not count a 429
                 return limit("busy")
             except GeminiError as exc:
                 log.warning("gemini error: %s", exc)
                 counters.user_refund(uid, uday)
                 raise HTTPException(502, "The assistant could not answer right now.") from None
+            log.info("chat ok: model=%s fallback=%s tool_calls=%d guard_failed=%s", result.model,
+                     result.fallback_used, result.tool_calls, result.guard_failed)
+            if result.guard_failed:               # no model left to ask: friendly message, not a user message used
+                counters.user_refund(uid, uday)
+                return limit("busy", remaining + 1)
             return ChatResponse(status="ok", reply=result.reply, cards=result.cards, remaining_today=remaining)
         finally:
             slots.release()
@@ -135,8 +146,9 @@ def build_default_app() -> FastAPI:        # pragma: no cover - wiring for Cloud
     db = firestore.Client(project="kodiwise-9adab")
     api = ApiClient()
     tools = Tools(api, FirestoreListingSource(client_factory=lambda: db))
-    gemini = GeminiClient(os.environ["GEMINI_API_KEY"], os.environ["GEMINI_MODEL"])
-    return create_app(settings, FirestoreCounters(db), tools, gemini, known_locations=api.locations)
+    key = os.environ["GEMINI_API_KEY"]
+    clients = {m: GeminiClient(key, m) for m in settings.models}
+    return create_app(settings, FirestoreCounters(db), tools, clients, known_locations=api.locations)
 
 
 def __getattr__(name: str):               # `uvicorn chat.main:app` builds the real app lazily

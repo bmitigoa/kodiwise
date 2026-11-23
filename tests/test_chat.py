@@ -10,7 +10,7 @@ from agent.core.client import ApiClient
 from agent.core.tools import Tools
 from chat import guard
 from chat.auth import AuthError
-from chat.engine import MAX_TOOL_CALLS, ChatEngine, LimitReached, clean_history
+from chat.engine import MAX_TOOL_CALLS, ChatEngine, Lane, LimitReached, clean_history
 from chat.gemini import GeminiBusy, GeminiClient, GeminiError
 from chat.limits import MemoryCounters, RateLimiter, nairobi_day, pacific_day
 from chat.main import Settings, create_app
@@ -52,7 +52,17 @@ def engine(turns, **kw):
     tools, api = make_tools()
     g = ScriptedGemini(turns, kw.pop("raises", None))
     taken = kw.pop("taken", [])
-    return ChatEngine(tools, g, lambda: taken.append(1) or True, kw.pop("allow", lambda: True)), g, api, taken
+    lane = Lane("primary", g, lambda: taken.append(1) or True, kw.pop("allow", lambda: True))
+    return ChatEngine(tools, [lane]), g, api, taken
+
+
+def two_lane_engine(primary, fallback, primary_raises=None, fallback_raises=None):
+    tools, api = make_tools()
+    g1, g2 = ScriptedGemini(primary, primary_raises), ScriptedGemini(fallback, fallback_raises)
+    refunds = []
+    lanes = [Lane("primary", g1, lambda: True, refund_global=lambda: refunds.append("primary")),
+             Lane("fallback", g2, lambda: True, refund_global=lambda: refunds.append("fallback"))]
+    return ChatEngine(tools, lanes), g1, g2, api, refunds
 
 
 def hist(text):
@@ -119,12 +129,20 @@ def test_no_tool_invented_prices_without_tools():
 
 
 def test_four_tool_call_cap_across_rounds_and_in_parallel():
-    many = [("estimate_rent", {"location": "Kilimani", "bedrooms": 2, "bathrooms": 1})] * 6
+    areas = ["Kilimani", "Kileleshwa", "Lavington", "South B", "Karen", "Westlands"]
+    many = [("estimate_rent", {"location": a, "bedrooms": 2, "bathrooms": 1}) for a in areas]
     e, g, api, _ = engine([many, "Done: KES 60,000."])
     r = e.run(hist("lots"))
     assert r.tool_calls == MAX_TOOL_CALLS and api.calls < 20
     answers = g.seen[1][1][-1]["parts"]
     assert sum("Tool limit reached" in str(p) for p in answers) == 2
+
+
+def test_repeating_the_same_call_counts_once():
+    same = [("estimate_rent", {"location": "Kilimani", "bedrooms": 2, "bathrooms": 1})] * 6
+    e, g, api, _ = engine([same, "Done: KES 60,000."])
+    r = e.run(hist("again"))
+    assert r.tool_calls == 1 and len(api.payloads) == 1
 
 
 def test_thin_data_is_stated_and_estimate_only_added():
@@ -193,13 +211,20 @@ def test_days_roll_over_in_the_right_zones():
 
 
 # --- HTTP ---------------------------------------------------------------------------------------
-def app_for(turns, settings=None, counters=None, raises=None, verifier=None):
+def app_for(turns, settings=None, counters=None, raises=None, verifier=None, fallback=None, fallback_raises=None):
     tools, _ = make_tools()
     g = ScriptedGemini(turns, raises)
+    clients = {"primary": g}
+    models = ("primary",)
+    if fallback is not None or fallback_raises is not None:
+        clients["fallback"] = ScriptedGemini(fallback or [], fallback_raises)
+        models = ("primary", "fallback")
     counters = counters or MemoryCounters()
     verifier = verifier or (lambda t: {"uid": "u1", "name": "Jane Wanjiru"})
-    s = settings or Settings(user_daily=2, global_daily_cap=50, rpm_cap=30)
-    return TestClient(create_app(s, counters, tools, g, verifier, lambda: ["Kilimani"])), g, counters
+    s = settings or Settings(user_daily=2, global_daily_cap=50, rpm_cap=30, models=models)
+    if not s.models:
+        s.models = models
+    return TestClient(create_app(s, counters, tools, clients, verifier, lambda: ["Kilimani"])), g, counters
 
 
 H = {"Authorization": "Bearer tok"}
@@ -248,7 +273,7 @@ def test_gemini_429_is_friendly_and_not_counted():
     c, *_ = app_for([], counters=cnt, raises=GeminiBusy("HTTP 429"))
     r = c.post("/chat", json=Q, headers=H).json()
     assert r["status"] == "busy" and r["show_assistant_button"]
-    assert cnt.users[("u1", nairobi_day())] == 0 and cnt.globals[pacific_day()] == 0
+    assert cnt.users[("u1", nairobi_day())] == 0 and cnt.globals[f"{pacific_day()}_primary"] == 0
 
 
 def test_gemini_failure_is_a_502_and_not_counted():
@@ -296,3 +321,149 @@ def test_guard_helpers():
     assert guard.untraceable_amounts("about 60k", [59749.0]) == []
     assert guard.untraceable_amounts("KES 61,000", [59749.0]) == [61000.0]
     assert guard.untraceable_amounts("2 bedrooms and 3 baths", []) == []
+
+
+# --- primary + fallback model ------------------------------------------------------------------
+GOOD = [[("estimate_rent", {"location": "Kilimani", "bedrooms": 2, "bathrooms": 2})], "About KES 60,000 a month."]
+BAD = [[("estimate_rent", {"location": "Kilimani", "bedrooms": 2, "bathrooms": 2})], "It is about KES 99,500."]
+
+
+def test_fallback_answers_when_the_primary_gets_429_and_the_request_is_refunded():
+    e, g1, g2, api, refunds = two_lane_engine([], GOOD, primary_raises=GeminiBusy("429"))
+    r = e.run(hist("2 bed Kilimani"))
+    assert r.fallback_used and r.model == "fallback" and not r.guard_failed
+    assert refunds == ["primary"]
+
+
+def test_fallback_is_asked_when_the_primary_fails_the_number_check_and_tools_run_once():
+    e, g1, g2, api, _ = two_lane_engine(BAD, GOOD)
+    r = e.run(hist("2 bed Kilimani"))
+    assert r.fallback_used and not r.guard_failed and "99,500" not in r.reply
+    assert len(api.payloads) == 1                      # the same tool call is shared, not repeated
+    assert r.tool_calls == 1
+
+
+def test_primary_is_used_alone_when_it_passes():
+    e, g1, g2, *_ = two_lane_engine(GOOD, ["never used"])
+    r = e.run(hist("2 bed Kilimani"))
+    assert not r.fallback_used and g2.seen == []
+
+
+def test_both_failing_the_number_check_gives_the_safe_templated_reply():
+    e, *_ = two_lane_engine(BAD, BAD)
+    r = e.run(hist("2 bed Kilimani"))
+    assert r.guard_failed and "99,500" not in r.reply and "KES 60,000" in r.reply
+
+
+def test_fallback_error_keeps_the_primary_reply_instead_of_failing():
+    e, *_ = two_lane_engine(BAD, [], fallback_raises=GeminiError("HTTP 500"))
+    r = e.run(hist("2 bed Kilimani"))
+    assert r.guard_failed and "99,500" not in r.reply and r.model == "primary"
+
+
+def test_all_models_limited_or_busy_raises_the_friendly_kind_of_error():
+    e, *_ = two_lane_engine([], [], primary_raises=GeminiBusy("429"), fallback_raises=GeminiBusy("429"))
+    with pytest.raises(GeminiBusy):
+        e.run(hist("x"))
+    e2, *_ = two_lane_engine([], [], primary_raises=GeminiError("500"), fallback_raises=GeminiBusy("429"))
+    with pytest.raises(GeminiBusy):
+        e2.run(hist("x"))
+    e3, *_ = two_lane_engine([], [], primary_raises=GeminiError("500"), fallback_raises=GeminiError("500"))
+    with pytest.raises(GeminiError):
+        e3.run(hist("x"))
+
+
+def test_each_model_has_its_own_daily_cap_and_the_fallback_takes_over_at_the_cap():
+    cnt = MemoryCounters()
+    s = Settings(user_daily=5, global_daily_cap=2, rpm_cap=30, models=("primary", "fallback"))
+    c, g1, _ = app_for(EST, settings=s, counters=cnt, fallback=EST + EST)
+    r1 = c.post("/chat", json=Q, headers=H).json()         # primary: 2 requests (tool round + answer)
+    assert r1["status"] == "ok" and cnt.globals[f"{pacific_day()}_primary"] == 2
+    r2 = c.post("/chat", json=Q, headers=H).json()         # primary is at its cap: fallback answers
+    assert r2["status"] == "ok" and cnt.globals[f"{pacific_day()}_fallback"] == 2
+    r3 = c.post("/chat", json=Q, headers=H).json()         # both at the cap
+    assert r3["status"] == "limit_global" and r3["show_assistant_button"]
+
+
+def test_primary_429_over_http_uses_the_fallback_and_does_not_count_the_429():
+    cnt = MemoryCounters()
+    c, *_ = app_for([], counters=cnt, raises=GeminiBusy("429"), fallback=EST)
+    assert c.post("/chat", json=Q, headers=H).json()["status"] == "ok"
+    assert cnt.globals[f"{pacific_day()}_primary"] == 0
+
+
+def test_user_limit_default_is_ten():
+    assert Settings().user_daily == 10
+
+
+# --- 503 "high demand" is temporary; only 429 is a quota hit -------------------------------------
+class FlakyGemini(ScriptedGemini):
+    """Fails with the given errors first, then replays the script."""
+
+    def __init__(self, turns, errors):
+        super().__init__(turns)
+        self.errors = list(errors)
+        self.requests = 0
+
+    def generate(self, system, contents, declarations):
+        self.requests += 1
+        if self.errors:
+            raise self.errors.pop(0)
+        return super().generate(system, contents, declarations)
+
+
+def flaky_engine(primary, fallback=None):
+    tools, api = make_tools()
+    taken, refunds, sleeps = [], [], []
+    lanes = [Lane("primary", primary, lambda: taken.append("p") or True, refund_global=lambda: refunds.append("p"))]
+    if fallback is not None:
+        lanes.append(Lane("fallback", fallback, lambda: taken.append("f") or True, refund_global=lambda: refunds.append("f")))
+    return ChatEngine(tools, lanes, sleep=sleeps.append, backoff=1.5), taken, refunds, sleeps
+
+
+def test_503_is_retried_once_on_the_same_model_after_a_short_backoff():
+    g = FlakyGemini(GOOD, [GeminiBusy("HTTP 503", quota=False)])
+    e, taken, refunds, sleeps = flaky_engine(g)
+    r = e.run(hist("2 bed Kilimani"))
+    assert not r.fallback_used and not r.guard_failed
+    assert sleeps == [1.5] and refunds == ["p"]            # the refused request is not counted
+    assert taken.count("p") == 3                            # failed try + retry + the answer round
+
+
+def test_second_503_switches_to_the_other_model():
+    g1 = FlakyGemini([], [GeminiBusy("HTTP 503", quota=False)] * 2)
+    g2 = ScriptedGemini(GOOD)
+    e, taken, refunds, sleeps = flaky_engine(g1, g2)
+    r = e.run(hist("2 bed Kilimani"))
+    assert r.fallback_used and r.model == "fallback"
+    assert g1.requests == 2 and sleeps == [1.5]
+
+
+def test_429_is_a_quota_hit_with_no_retry_and_goes_straight_to_the_fallback():
+    g1 = FlakyGemini([], [GeminiBusy("HTTP 429", quota=True)])
+    e, taken, refunds, sleeps = flaky_engine(g1, ScriptedGemini(GOOD))
+    r = e.run(hist("2 bed Kilimani"))
+    assert r.fallback_used and g1.requests == 1 and sleeps == []
+
+
+def test_client_marks_503_as_not_quota_and_429_as_quota():
+    seen = {}
+
+    def handler(req):
+        return httpx.Response(seen["status"], json={})
+
+    g = GeminiClient("K", "m", transport=httpx.MockTransport(handler))
+    for status, quota in ((503, False), (429, True)):
+        seen["status"] = status
+        with pytest.raises(GeminiBusy) as ei:
+            g.generate("s", [], [])
+        assert ei.value.quota is quota
+
+
+def test_failed_number_check_with_one_model_gives_friendly_message_and_is_not_counted():
+    bad = [[("estimate_rent", {"location": "Kilimani", "bedrooms": 2, "bathrooms": 2})], "It is about KES 99,500."]
+    cnt = MemoryCounters()
+    c, *_ = app_for(bad, counters=cnt)
+    r = c.post("/chat", json=Q, headers=H).json()
+    assert r["status"] == "busy" and r["show_assistant_button"] and "99,500" not in r["reply"]
+    assert cnt.users[("u1", nairobi_day())] == 0

@@ -8,7 +8,12 @@ BASE = "https://generativelanguage.googleapis.com/v1beta"
 
 
 class GeminiBusy(Exception):
-    """429 or a temporary overload: the free quota is used up for now."""
+    """The model cannot answer right now. `quota` is True for a 429 (the free quota is used up) and
+    False for a 503 "high demand" (temporary overload: worth one retry, then another model)."""
+
+    def __init__(self, message: str = "", quota: bool = True) -> None:
+        super().__init__(message)
+        self.quota = quota
 
 
 class GeminiError(Exception):
@@ -39,8 +44,10 @@ class GeminiClient:
             r = self._http.post(f"{BASE}/models/{self.model}:generateContent", json=body)
         except httpx.HTTPError as exc:
             raise GeminiError(f"network error ({type(exc).__name__})") from exc
-        if r.status_code in (429, 503):
-            raise GeminiBusy(f"HTTP {r.status_code}")
+        if r.status_code == 429:
+            raise GeminiBusy("HTTP 429", quota=True)
+        if r.status_code == 503:
+            raise GeminiBusy("HTTP 503", quota=False)
         if r.status_code != 200:
             raise GeminiError(f"HTTP {r.status_code}")
         try:
