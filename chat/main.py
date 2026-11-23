@@ -18,6 +18,9 @@ from chat.gemini import GeminiBusy, GeminiClient, GeminiError
 from chat.limits import Counters, RateLimiter, nairobi_day, pacific_day
 
 log = logging.getLogger("kodiwise.chat")
+log.setLevel(logging.INFO)
+if not log.handlers and not logging.getLogger().handlers:
+    logging.basicConfig(level=logging.WARNING, format="%(levelname)s %(name)s %(message)s")
 
 LIMIT_MESSAGES = {
     "limit_user": "You've used today's free chat messages. The guided Rent Assistant has no limit, and your chat messages reset tomorrow.",
