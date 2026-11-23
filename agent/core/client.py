@@ -35,6 +35,7 @@ class ApiClient:
         )
         self._lock = threading.Lock()
         self._locations: list[str] | None = None
+        self._model_version: dict | None = None
         self._predictions: dict[str, dict] = {}
         self.predict_calls = 0   # real HTTP predictions made (for tests and limits)
 
@@ -66,6 +67,19 @@ class ApiClient:
         with self._lock:
             self._locations = names
         return list(names)
+
+    def model_version(self) -> dict:
+        """Served model facts (version, feature set, row counts, test R2 and MAPE). Cached."""
+        with self._lock:
+            if self._model_version is not None:
+                return dict(self._model_version)
+        r = self._request("GET", "/model-version")
+        if r.status_code != 200:
+            raise KodiWiseError(f"Could not read the model version (HTTP {r.status_code}).")
+        data = r.json()
+        with self._lock:
+            self._model_version = data
+        return dict(data)
 
     def predict(self, payload: dict) -> dict:
         key = json.dumps(payload, sort_keys=True)
