@@ -18,6 +18,8 @@ Steps (CLAUDE.md rule 4 and the Phase 4 plan):
 It never edits the API, the Dockerfile or the README and never deploys. Deploying
 a version that passes is a separate, reviewed step.
 
+It also backs the new version up to gs://<bucket>/models/<version>/ (ml.fetch_model; --no-upload skips it).
+
 Exit codes: 0 gate passed | 1 gate failed | 2 usage / data error | 4 amenity-flag drift (stopped).
 """
 from __future__ import annotations
@@ -276,6 +278,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--version", help="new version name (default v<today>-app<next letter>)")
     ap.add_argument("--current", help="version to compare with (default: PRODUCTION_VERSION in api/main.py)")
     ap.add_argument("--report-only", action="store_true", help="step 1 only: nothing trained or saved")
+    ap.add_argument("--no-upload", action="store_true", help="do not back the new version up to the bucket")
     ap.add_argument("--allow-flag-drift", action="store_true", help="continue although a flag moved > 10 pp")
     args = ap.parse_args(argv)
 
@@ -338,6 +341,16 @@ def main(argv: list[str] | None = None) -> int:
     out = MODELS_DIR / version / "retrain_report.json"
     out.write_text(json.dumps(report, indent=2, default=str))
     print(f"\nReport saved to {out}")
+    if not args.no_upload:
+        bucket = args.bucket or "rent-prediction-ar-kodiwise-scrape"
+        try:
+            from ml.fetch_model import _store, upload_version
+            backup = upload_version(_store(bucket), version)
+            print(f"Backed up to gs://{bucket}/models/{version}/ "
+                  f"({backup['files']} files, {len(backup['uploaded'])} new)")
+        except Exception as exc:       # the model is saved locally; say so loudly and carry on
+            print(f"WARNING: backup to the bucket failed ({type(exc).__name__}: {str(exc)[:200]}). "
+                  f"Run: python -m ml.fetch_model --upload {version}")
     print("Gate " + ("PASSED" if gate["passes"] else "FAILED") + ". Nothing was deployed: "
           "review the report, then decide (a miss needs Baraka's call).")
     return EXIT_OK if gate["passes"] else EXIT_GATE_FAILED

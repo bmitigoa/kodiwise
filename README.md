@@ -510,6 +510,15 @@ gcloud run deploy kodiwise-api --source=. --region=africa-south1 \
 
 `.gcloudignore` is written explicitly so that only the API code and the served model version are uploaded.
 
+**On a fresh clone the model file is missing.** `model.joblib` is not in Git (`.gitignore`), but the image needs it. Every model version is backed up in the private scrape bucket at `gs://rent-prediction-ar-kodiwise-scrape/models/<version>/` (all files of the version folder, plus `snapshot.csv`, the exact rows it was trained on, and a `MANIFEST.json` of SHA-256 checksums). After `gcloud auth application-default login`:
+
+```bash
+python -m ml.fetch_model                  # the version api/main.py serves (PRODUCTION_VERSION)
+python -m ml.fetch_model v20261107-appE2  # or any named version, e.g. for a rollback
+```
+
+This restores the files into `ml/models/<version>/` and the snapshot into `data/processed/snapshots/` (which the deployment rule needs to compare a later candidate with this version), checks every checksum, and refuses to replace a local file whose content differs (`--force` overrides). Then run the deploy command above. Backups are never overwritten: an upload of a version that already exists must be identical. `python -m ml.retrain` backs each new version up automatically (`--no-upload` skips it; if the upload fails it prints the command to run by hand), and `python -m ml.fetch_model --upload <version>` backs one up manually. The bucket is private; the snapshots contain listing data, so do not share them.
+
 ### 5. Firebase
 
 1. Create a Firebase project and add an Android app with package `com.kodiwise.app`.
@@ -554,7 +563,7 @@ cd android_app
 
 ## Model versioning and deployment rule
 
-- Every trained model gets an immutable folder `ml/models/v<date>-<feature set>/` with `metrics.json`, `feature_importance.json`, `location_lookup.json` and the exact evaluation rows used.
+- Every trained model gets an immutable folder `ml/models/v<date>-<feature set>/` with `metrics.json`, `feature_importance.json`, `location_lookup.json` and the exact evaluation rows used, and is backed up to the bucket (`models/<version>/`, see *Deploy the API*).
 - A new model is compared with the deployed one **on the same test rows and the same cross-validation folds**, averaged over **5 training seeds** (LightGBM's sampling alone moves test MAPE by up to ~0.8 points).
 - It may replace the deployed model only if mean test MAPE is not worse by more than 0.5 percentage points **and** mean *strict* CV R² is not lower by more than 0.01. Strict CV scores only the rows the deployed model was also trained on (rows new to the candidate are always in training); the looser CV that also holds out new rows is reported for information. Anything else needs a manual decision.
 - The previous version is kept for rollback.
