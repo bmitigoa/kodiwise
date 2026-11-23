@@ -432,12 +432,15 @@ Add this to `claude_desktop_config.json` (Claude Desktop → Settings → Develo
       "env": {
         "PYTHONPATH": "C:\\path\\to\\KodiWise",
         "PYTHONUTF8": "1",
-        "KODIWISE_API_URL": "https://kodiwise-api-798766993143.africa-south1.run.app"
+        "KODIWISE_API_URL": "https://kodiwise-api-798766993143.africa-south1.run.app",
+        "KODIWISE_MCP_IMPERSONATE": "kodiwise-mcp-readonly@rent-prediction-ar.iam.gserviceaccount.com"
       }
     }
   }
 }
 ```
+
+**Read-only access to listings.** With `KODIWISE_MCP_IMPERSONATE` set, the server acts as the `kodiwise-mcp-readonly` service account (it holds only `roles/datastore.viewer` on the Firebase project), built in code from your own `gcloud auth application-default login`. Your login is not changed or replaced; your user needs `roles/iam.serviceAccountTokenCreator` on that one service account. Without the variable, your own login is used as before.
 
 Things to try: "2-bed under 40k near Westlands?", "Compare Kilimani, Kileleshwa and Lavington for a 3-bed", "Is 65k fair for a 2-bed in South B?", "Why is Karen expensive?", "Show approved listings in Kilimani".
 

@@ -214,7 +214,8 @@ def build_default_app() -> FastAPI:        # pragma: no cover - wiring for Cloud
     # service writes, live in a separate Firestore database in the service's own project, so the account
     # never needs write access to the app's data.
     listings_db = firestore.Client(project="kodiwise-9adab")
-    counters_db = firestore.Client(project=os.environ.get("CHAT_COUNTERS_PROJECT", "rent-prediction-ar"))
+    counters_db = firestore.Client(project=os.environ.get("CHAT_COUNTERS_PROJECT", "rent-prediction-ar"),
+                                   database=os.environ.get("CHAT_COUNTERS_DATABASE", "kodiwise-counters"))
     api = ApiClient()
     tools = Tools(api, FirestoreListingSource(client_factory=lambda: listings_db))
     key = os.environ["GEMINI_API_KEY"]

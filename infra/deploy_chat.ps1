@@ -24,7 +24,7 @@ try {
         --platform=managed --allow-unauthenticated --memory=512Mi --min-instances=0 --max-instances=1 `
         --service-account="kodiwise-chat@rent-prediction-ar.iam.gserviceaccount.com" `
         --set-secrets="GEMINI_API_KEY=kodiwise-gemini-key:latest" `
-        --set-env-vars="^@^CHAT_MODELS=$Models@CHAT_GLOBAL_DAILY_CAP=$DailyCap@CHAT_RPM_CAP=$Rpm@CHAT_MAX_INSTANCES=1@CHAT_USER_DAILY=$UserDaily@CHAT_COUNTERS_PROJECT=rent-prediction-ar" `
+        --set-env-vars="^@^CHAT_MODELS=$Models@CHAT_GLOBAL_DAILY_CAP=$DailyCap@CHAT_RPM_CAP=$Rpm@CHAT_MAX_INSTANCES=1@CHAT_USER_DAILY=$UserDaily@CHAT_COUNTERS_PROJECT=rent-prediction-ar@CHAT_COUNTERS_DATABASE=kodiwise-counters" `
         --quiet
 } finally {
     Remove-Item $stage -Recurse -Force -ErrorAction SilentlyContinue

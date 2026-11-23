@@ -8,7 +8,8 @@
 | `agent/core` | library | Tool logic shared by both surfaces: validation, tools, injection defence, config, telemetry, resources. |
 | MCP server | `agent/mcp_server`, stdio, local | Tools plus read-only resources for desktop assistants. |
 | `kodiwise-chat` | Cloud Run, `chat/` | Firebase-authenticated `/chat`; Gemini function calling over the same tools. |
-| Firestore (kodiwise-9adab) | Firebase | Approved listings (read). Usage counters (see Open items). |
+| Firestore (kodiwise-9adab) | Firebase | Approved listings. The chat and MCP accounts have `datastore.viewer` only. |
+| Firestore `kodiwise-counters` | rent-prediction-ar, africa-south1 | Chat usage counters (`chatUsage`, `chatGlobal`, TTL on `expireAt`). The only data the chat writes. |
 
 ## Data flow (chat)
 
@@ -35,6 +36,8 @@ See the generated table in README.md ("Limits and thresholds"), produced from `a
 
 Fixed prompt plus tool declarations: about 1,400 -> 1,020 tokens per request. Typical tool results sent to the model are 55-60% smaller (full results still drive cards and the number check).
 
-## Open items
+## Least privilege (as deployed)
 
-IAM: Firestore IAM Conditions only target the database (`projects/.../databases/...`), not collections or documents, so the planned collection-level restriction is not possible. The chosen alternative is to keep counters in a Firestore database in rent-prediction-ar (`CHAT_COUNTERS_PROJECT`) and give the chat service account only read access (`roles/datastore.viewer`) on kodiwise-9adab. This needs a Firestore database in rent-prediction-ar and IAM changes, which are applied only after approval.
+- `kodiwise-chat` service account: `roles/datastore.viewer` on kodiwise-9adab; `roles/datastore.user` on rent-prediction-ar **with an IAM Condition** limiting it to the database `projects/rent-prediction-ar/databases/kodiwise-counters`; secret accessor on the Gemini key only. Firestore IAM Conditions work per database, not per collection, which is why the counters have their own database.
+- Verified live (impersonating the account): writes to `properties/`, `users/` and `chatUsage/` in kodiwise-9adab, and to `users/` and `properties/` in rent-prediction-ar `(default)`, are denied; writes to `chatUsage`/`chatGlobal` in `kodiwise-counters` succeed; approved listings can be read.
+- `kodiwise-mcp-readonly` service account: `roles/datastore.viewer` on kodiwise-9adab. The MCP server impersonates it when `KODIWISE_MCP_IMPERSONATE` is set. Firestore has no read-only OAuth scope, so the role is what makes it read-only.

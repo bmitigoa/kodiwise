@@ -30,6 +30,22 @@ class ListingSource(Protocol):
     def fetch(self) -> list[dict]: ...
 
 
+IMPERSONATE_ENV = "KODIWISE_MCP_IMPERSONATE"
+
+
+def impersonate(source: Any, scopes: list[str]) -> Any:
+    """If KODIWISE_MCP_IMPERSONATE names a service account, act as that account (built from the user's own
+    credentials, which stay untouched). The account is meant to hold a read-only role, so this process cannot
+    write even if the code were wrong. The source credentials are used unscoped (a user's refresh token cannot be
+    narrowed). Firestore has no read-only OAuth scope: the role is what makes it read-only."""
+    target = os.environ.get(IMPERSONATE_ENV, "").strip()
+    if not target:
+        return source
+    from google.auth import impersonated_credentials
+    return impersonated_credentials.Credentials(
+        source_credentials=source, target_principal=target, target_scopes=scopes, lifetime=3600)
+
+
 class FirestoreListingSource:
     """Approved listings from Firestore using Application Default Credentials.
 
@@ -75,12 +91,16 @@ class FirestoreListingSource:
             # Scopes are applied only where the credential supports them: a
             # user's ADC refresh token keeps the scope it was granted, and asking
             # for a narrower one makes the token refresh fail (and retry forever).
+            impersonating = bool(os.environ.get(IMPERSONATE_ENV, "").strip())
+            # With impersonation the calls are billed to the project that owns the data, so no quota project.
             creds, _ = google.auth.load_credentials_from_file(
-                str(path), quota_project_id=self.quota_project)
+                str(path), quota_project_id=None if impersonating else self.quota_project)
+            if impersonating:
+                return firestore.Client(project=self.project, credentials=impersonate(creds, scopes))
             creds = google.auth.credentials.with_scopes_if_required(creds, scopes)
         else:   # e.g. Cloud Run: the metadata server supplies the credentials
             creds, _ = google.auth.default(scopes=scopes, quota_project_id=self.quota_project)
-        return firestore.Client(project=self.project, credentials=creds)
+        return firestore.Client(project=self.project, credentials=impersonate(creds, scopes))
 
     def fetch(self) -> list[dict]:
         from google.cloud import firestore
