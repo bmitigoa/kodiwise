@@ -147,6 +147,23 @@
                 android:textColor="?attr/colorOnSurfaceVariant" />
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnTenantAsk"
+                style="@style/Widget.KodiWise.Button.Action"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="@string/action_ask"
+                app:icon="@drawable/ic_chat" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="4dp"
+                android:text="@string/action_ask_sub"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="?attr/colorOnSurfaceVariant" />
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnTenantAr"
                 style="@style/Widget.KodiWise.Button.Action"
                 android:layout_width="match_parent"

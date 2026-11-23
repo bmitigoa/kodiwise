@@ -104,6 +104,11 @@
             android:exported="false" />
 
         <activity
+            android:name=".ChatActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
             android:name=".PredictionFormActivity"
             android:exported="false" />
         <activity

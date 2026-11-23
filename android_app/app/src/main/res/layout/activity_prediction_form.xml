@@ -37,6 +37,15 @@
                 android:text="@string/action_find_areas"
                 app:icon="@drawable/ic_place" />
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAsk"
+                style="@style/Widget.KodiWise.Button.Outlined"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/action_ask"
+                app:icon="@drawable/ic_chat" />
+
             <!-- Unused by the current flow; kept because PredictionFormActivity's
                  layout contract included it. -->
             <TextView

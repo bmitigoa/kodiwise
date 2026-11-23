@@ -1,15 +1,11 @@
 package com.kodiwise.app
 
-import android.content.res.ColorStateList
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import androidx.core.widget.TextViewCompat
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -133,52 +129,8 @@ class AreaResultsActivity : AppCompatActivity() {
         rows.forEach { list.addView(card(list, it)) }
     }
 
-    private fun card(parent: LinearLayout, row: AreaRow): View {
-        val v = LayoutInflater.from(this).inflate(R.layout.item_area_card, parent, false)
-        v.findViewById<TextView>(R.id.tvAreaName).text = row.area
-        v.findViewById<TextView>(R.id.tvAreaEstimate).text =
-            getString(R.string.listing_price_month, ListingCard.formatKes(row.estimateKes))
-        v.findViewById<TextView>(R.id.tvAreaLow).text = ListingCard.formatKes(row.rangeLowKes)
-        v.findViewById<TextView>(R.id.tvAreaHigh).text = ListingCard.formatKes(row.rangeHighKes)
-
-        row.distanceKm?.let { d ->
-            v.findViewById<TextView>(R.id.tvAreaDistance).apply {
-                text = AreaAssistant.formatKm(d)
-                backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.kw_primary_container))
-                setTextColor(ContextCompat.getColor(context, R.color.kw_on_primary_container))
-                visibility = View.VISIBLE
-            }
-        }
-
-        if (AreaAssistant.needsWarning(row.locationConfidence)) {
-            val low = row.locationConfidence == "low"
-            val chip = v.findViewById<TextView>(R.id.tvAreaConfidence)
-            val fg = ColorStateList.valueOf(
-                ContextCompat.getColor(this, if (low) R.color.kw_on_secondary_container else R.color.kw_on_neutral_chip)
-            )
-            chip.setText(if (low) R.string.area_rough else R.string.area_no_data)
-            chip.backgroundTintList = ColorStateList.valueOf(
-                ContextCompat.getColor(this, if (low) R.color.kw_secondary_container else R.color.kw_neutral_chip)
-            )
-            chip.setTextColor(fg)
-            TextViewCompat.setCompoundDrawableTintList(chip, fg)
-            chip.visibility = View.VISIBLE
-        }
-
-        val bar = v.findViewById<View>(R.id.areaRangeBar)
-        val marker = v.findViewById<View>(R.id.areaRangeMarker)
-        val fraction = AreaAssistant.rangeFraction(row.rangeLowKes, row.estimateKes, row.rangeHighKes)
-        bar.post {
-            val x = ((bar.width - marker.width) * fraction).toFloat()
-            marker.translationX = if (bar.layoutDirection == View.LAYOUT_DIRECTION_RTL) -x else x
-        }
-        bar.contentDescription = getString(
-            R.string.cd_area_range, ListingCard.formatKes(row.rangeLowKes), ListingCard.formatKes(row.rangeHighKes)
-        )
-
-        v.setOnClickListener { openEstimate(row.area) }
-        return v
-    }
+    private fun card(parent: LinearLayout, row: AreaRow): View =
+        AreaCardBinder.bind(parent, row) { openEstimate(it.area) }
 
     private fun openEstimate(area: String) {
         if (opening) return

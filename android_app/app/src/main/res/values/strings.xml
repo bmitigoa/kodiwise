@@ -287,4 +287,29 @@
     <string name="fair_below">The asking rent is below the estimated range (%1$s). Cheaper than typical, so check the home in person.</string>
     <string name="fair_no_verdict">No verdict: there is too little local data for this area to judge the price. The range (%1$s) is for context only.</string>
     <string name="fair_note">Estimate only. It shows where the rent sits against similar homes, not whether a listing is genuine or a good deal.</string>
+    <!-- Ask KodiWise (AI chat, free tier) -->
+    <string name="action_ask">Ask KodiWise</string>
+    <string name="action_ask_sub">Chat about rents. Free, with a few messages a day</string>
+    <string name="title_chat">Ask KodiWise</string>
+    <string name="chat_notice">Don\'t share personal details. Answers are estimates only.</string>
+    <string name="chat_hint">Ask about rent in Nairobi</string>
+    <string name="chat_send">Send</string>
+    <string name="chat_thinking">Looking up rents…</string>
+    <string name="chat_retry">Try again</string>
+    <string name="chat_open_assistant">Open the Rent Assistant</string>
+    <string name="chat_welcome">Hi! Ask me about rents in Nairobi: what a home should cost, which areas fit your budget, or whether an asking rent is fair. I use KodiWise\'s estimates, so my answers are ranges, not exact prices.</string>
+    <string name="chat_suggest_1">2 bedroom in Kilimani?</string>
+    <string name="chat_suggest_2">Areas for KES 60,000, 2 bedrooms</string>
+    <string name="chat_suggest_3">Is KES 90,000 fair for a 3 bedroom in Kileleshwa?</string>
+    <string name="chat_card_compare">Compared areas</string>
+    <string name="chat_card_budget">Areas for %1$s a month</string>
+    <string name="chat_listings_title">Approved listings (%1$d found)</string>
+    <string name="chat_listings_more">Open Browse in the app for photos and details.</string>
+    <string name="chat_verdict_above">Asking %1$s: above the range</string>
+    <string name="chat_verdict_within">Asking %1$s: within the range</string>
+    <string name="chat_verdict_below">Asking %1$s: below the range</string>
+    <string name="chat_verdict_none">Asking %1$s: no verdict</string>
+    <string name="chat_badge_above">Above the estimated range</string>
+    <string name="chat_badge_within">Within the estimated range</string>
+    <string name="chat_badge_below">Below the estimated range</string>
 </resources>

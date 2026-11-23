@@ -21,15 +21,16 @@ KodiWise is the product successor to **RentAR**, my MSc research prototype at St
 7. [The prediction API](#the-prediction-api)
 8. [Rent Assistant (free, no AI)](#rent-assistant-free-no-ai)
 9. [AI assistant (MCP)](#ai-assistant-mcp)
-10. [The Android app](#the-android-app)
-11. [Data model and security rules](#data-model-and-security-rules)
-12. [Getting started](#getting-started)
-13. [Testing](#testing)
-14. [Model versioning and deployment rule](#model-versioning-and-deployment-rule)
-15. [Limitations](#limitations)
-16. [Roadmap](#roadmap)
-17. [Research background](#research-background)
-18. [Author](#author)
+10. [Ask KodiWise: AI chat, free tier, limits, privacy](#ask-kodiwise-ai-chat-free-tier-limits-privacy)
+11. [The Android app](#the-android-app)
+12. [Data model and security rules](#data-model-and-security-rules)
+13. [Getting started](#getting-started)
+14. [Testing](#testing)
+15. [Model versioning and deployment rule](#model-versioning-and-deployment-rule)
+16. [Limitations](#limitations)
+17. [Roadmap](#roadmap)
+18. [Research background](#research-background)
+19. [Author](#author)
 
 ---
 
@@ -103,6 +104,7 @@ KodiWise/
 ├── android_app/            Android app (Kotlin, XML views, Material 3, ARCore)
 │   └── app/src/main/java/com/kodiwise/app/
 ├── agent/                  MCP server for AI assistants (agent/core = tool logic)
+├── chat/                   kodiwise-chat: Gemini chat service for the app (Cloud Run)
 ├── api/                    FastAPI prediction service
 │   ├── main.py             endpoints
 │   ├── predictor.py        loads the model, builds features, returns a range
@@ -352,6 +354,36 @@ GET /areas-within-budget?budget_kes=60000&bedrooms=2&bathrooms=1&near=Kilimani&m
 ```
 
 Everything it returns is an estimate, never a promise or a valuation.
+
+---
+
+## Ask KodiWise: AI chat, free tier, limits, privacy
+
+"Ask KodiWise" is a short chat in the Android app (tenant Home and the Predict tab). It answers rent questions in plain language, using the same estimate tools as the rest of KodiWise. It is **free to run**: it uses the Gemini API free tier from a Google Cloud project with no billing account (`kodiwise-ai-free`), so there is no way for it to be charged. If the free quota runs out, the chat stops and the guided Rent Assistant (no AI, no limit) keeps working.
+
+**How it works.** The app sends the user's last six messages and their Firebase sign-in token to `kodiwise-chat`, a small Cloud Run service (`chat/`, region africa-south1, scales to zero). The service checks the token, strips personal details, and runs a Gemini function-calling loop over `agent/core` tools (estimate, compare areas, areas within a budget near a place, fair-rent check, locations, approved listings). Those tools call `kodiwise-api`; Gemini never produces a price on its own. Nothing is stored on the server except two usage counters.
+
+**Guardrails (enforced in code, not only in the prompt).**
+- At most **4 tool calls** per message, and short answers.
+- **Numbers only from tools.** Every amount of KES 1,000 or more in the reply must match a number from a tool result (or one the user typed). If not, the reply is replaced with wording built from the tool data.
+- **Range, confidence, "estimate only".** Added to the reply automatically if the model leaves them out; thin data (low or no local listings) is always stated.
+- The cards under an answer (estimate with range bar, area lists, listings) come from the tool results, not from the model's text.
+- Listing titles are treated as data, never as instructions; owner ids and contact details are never read or sent. No legal, tenancy or financial advice, and no claims about photos.
+
+**Limits.**
+- **15 messages per user per day** (a Firestore counter; the day ends at midnight in Nairobi).
+- **A global daily cap** on Gemini requests, set at 60% of the free daily request limit (the day ends at midnight Pacific, when Google's quota resets), plus a per-minute cap below the free requests-per-minute limit. One chat message can use several Gemini requests, so the cap counts requests, not messages.
+- When a limit is hit or Gemini answers "too many requests", the app shows a friendly message and an **Open the Rent Assistant** button. A failed call is not counted against the user.
+- Current values: set on deploy (`infra/deploy_chat.ps1 -Model -DailyCap -Rpm`); see the deploy notes in `docs/PROGRESS.md`.
+
+**Privacy.** On the free tier Google may use what is sent to it, so:
+- Before anything is sent, **phone numbers, emails, links, long ID-like numbers and names** the user gives ("my name is ...", their own account name) are removed. Names in free text cannot be detected perfectly, so the screen always shows **"Don't share personal details."**
+- Owner data of listings is never sent. Only the last six messages are sent, and the server keeps no conversation: only a count per user per day and one global count per day, with no message text.
+- **Kenya only.** The free tier is not available to users in the EU, UK or Switzerland. The server cannot tell where a user is without a paid load balancer, so availability is limited by distributing the app in Kenya only (Play Store country targeting).
+
+**Secrets.** The Gemini key is stored only in Google Secret Manager (`kodiwise-gemini-key`) and given to the chat service as an environment secret. It is never in the app or this repository, and it must come from the unbilled project, never from a billed one.
+
+**Deploy.** `infra/deploy_chat.ps1` stages `chat/`, `agent/core/` and the neighbourhood centre points into a temporary folder and deploys `kodiwise-chat`. `python -m chat.model_eval <model-id> ...` runs the six demo questions against a model and reports tool-calling accuracy and guardrail failures.
 
 ---
 

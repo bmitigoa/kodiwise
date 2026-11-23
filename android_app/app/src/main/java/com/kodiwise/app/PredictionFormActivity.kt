@@ -27,6 +27,9 @@ class PredictionFormActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btnFindAreas).setOnClickListener {
             startActivity(Intent(this, FindAreasActivity::class.java))
         }
+        findViewById<Button>(R.id.btnAsk).setOnClickListener {
+            startActivity(Intent(this, ChatActivity::class.java))
+        }
         val btnPredict = findViewById<Button>(R.id.btnPredictNow)
         val progress = findViewById<android.view.View>(R.id.progressPredict)
         FormWidgets.bindStepper(findViewById(R.id.btnBedroomsMinus), etBedrooms, findViewById(R.id.btnBedroomsPlus))

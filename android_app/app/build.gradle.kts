@@ -26,6 +26,13 @@ android {
             "API_BASE_URL",
             "\"${project.findProperty("KODIWISE_API_URL") ?: "https://kodiwise-api-798766993143.africa-south1.run.app/"}\""
         )
+        // kodiwise-chat (Cloud Run, rent-prediction-ar): the AI chat service. It holds the Gemini key;
+        // the app only sends the user's Firebase ID token. Override with KODIWISE_CHAT_URL.
+        buildConfigField(
+            "String",
+            "CHAT_BASE_URL",
+            "\"${project.findProperty("KODIWISE_CHAT_URL") ?: "https://kodiwise-chat-798766993143.africa-south1.run.app/"}\""
+        )
     }
 
     testOptions {

@@ -1,0 +1,114 @@
+"""Hard guardrails applied in code to every reply, whatever the model wrote."""
+from __future__ import annotations
+
+import re
+from typing import Any
+
+MIN_CHECKED = 1000          # amounts (KES) are checked; counts such as "2 bedrooms" are not
+TOLERANCE = 0.01            # "about 60k" for 59,749 is fine; invented prices are not
+MAX_BASE_CHARS = 650   # the model's own text; required wording is added after
+
+_NUM = re.compile(r"(?<![\w.])(\d{1,3}(?:[ ,]\d{3})+|\d+(?:\.\d+)?)\s*(k|m|million|thousand)?\b", re.I)
+
+
+def kes(x: float) -> str:
+    return f"KES {x:,.0f}"
+
+
+def _numbers_in_text(text: str) -> list[float]:
+    out = []
+    for m in _NUM.finditer(text):
+        raw, suffix = m.group(1), (m.group(2) or "").lower()
+        try:
+            val = float(raw.replace(",", "").replace(" ", ""))
+        except ValueError:
+            continue
+        if suffix in ("k", "thousand"):
+            val *= 1_000
+        elif suffix in ("m", "million"):
+            val *= 1_000_000
+        out.append(val)
+    return out
+
+
+def _walk(obj: Any, acc: list[float]) -> None:
+    if isinstance(obj, bool):
+        return
+    if isinstance(obj, (int, float)):
+        acc.append(float(obj))
+    elif isinstance(obj, str):
+        acc.extend(_numbers_in_text(obj))
+    elif isinstance(obj, dict):
+        for v in obj.values():
+            _walk(v, acc)
+    elif isinstance(obj, (list, tuple)):
+        for v in obj:
+            _walk(v, acc)
+
+
+def allowed_numbers(tool_results: list[Any], user_texts: list[str]) -> list[float]:
+    acc: list[float] = []
+    _walk(tool_results, acc)
+    for t in user_texts:
+        acc.extend(_numbers_in_text(t))
+    return acc
+
+
+def untraceable_amounts(reply: str, allowed: list[float]) -> list[float]:
+    """Amounts in the reply (>= 1000) that match no number from a tool result or the user's message."""
+    bad = []
+    for n in _numbers_in_text(reply):
+        if n < MIN_CHECKED:
+            continue
+        if not any(abs(n - a) <= max(1.0, TOLERANCE * a) for a in allowed):
+            bad.append(n)
+    return bad
+
+
+def fallback_reply(cards: list[dict]) -> str:
+    """Plain wording built only from the cards, used when the model's text fails the number check."""
+    parts = []
+    for c in cards:
+        if c["type"] == "estimate":
+            parts.append(f"{c['area']}: about {kes(c['estimate_kes'])} a month "
+                         f"(range {kes(c['range_low_kes'])} to {kes(c['range_high_kes'])}).")
+        elif c["type"] == "areas":
+            rows = (c.get("areas") or []) + (c.get("comfortable") or []) + (c.get("stretch") or [])
+            parts.append("Here is what I found; see the cards for each area's range.")
+            if not rows:
+                parts[-1] = "No area matched."
+    return " ".join(parts) or "Sorry, I couldn't put a reliable answer together. Please try the Rent Assistant."
+
+
+def finish(reply: str, cards: list[dict], guard_failed: bool) -> str:
+    """Required wording, added deterministically: range for a single estimate, thin-data note,
+    and "estimate only"."""
+    empty = not reply.strip()
+    if (guard_failed or empty) and cards:
+        text = fallback_reply(cards)
+    elif guard_failed:
+        text = "Sorry, I can only share rent figures that come from KodiWise's estimates. Please ask me for an estimate."
+    elif empty:
+        text = "Sorry, I couldn't answer that. Please try again or use the Rent Assistant."
+    else:
+        text = reply.strip()
+    if len(text) > MAX_BASE_CHARS:
+        text = text[: MAX_BASE_CHARS - 1].rstrip() + "…"
+    est = [c for c in cards if c["type"] == "estimate"]
+    if len(est) == 1 and not guard_failed:
+        c = est[0]
+        lo, hi = f"{c['range_low_kes']:,.0f}", f"{c['range_high_kes']:,.0f}"
+        if lo not in text or hi not in text:
+            text += f" Range: {kes(c['range_low_kes'])} to {kes(c['range_high_kes'])}."
+    thin = sorted({r["area"] for c in cards for r in _rows(c) if r.get("confidence") in ("low", "none") and r.get("area")})
+    if thin and not re.search(r"thin|rough|little|limited|few listings|not much", text, re.I):
+        text += f" Note: {', '.join(thin)} {'has' if len(thin) == 1 else 'have'} little local data, so treat that figure as rough."
+    if cards and "estimate only" not in text.lower():
+        text += " Estimate only, not a valuation."
+    return text
+
+
+def _rows(card: dict) -> list[dict]:
+    if card["type"] == "estimate":
+        return [card]
+    return (card.get("areas") or []) + (card.get("comfortable") or []) + (card.get("stretch") or [])

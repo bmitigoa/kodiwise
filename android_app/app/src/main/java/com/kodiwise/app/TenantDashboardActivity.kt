@@ -38,6 +38,9 @@ class TenantDashboardActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btnTenantFindAreas).setOnClickListener {
             startActivity(Intent(this, FindAreasActivity::class.java))
         }
+        findViewById<Button>(R.id.btnTenantAsk).setOnClickListener {
+            startActivity(Intent(this, ChatActivity::class.java))
+        }
 
         findViewById<Button>(R.id.btnLogout).setOnClickListener {
             AuthManager.signOut()

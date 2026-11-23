@@ -1,0 +1,7 @@
+fastapi==0.115.6
+uvicorn[standard]==0.32.1
+httpx==0.28.1
+requests>=2.31
+google-auth>=2.30
+google-cloud-firestore>=2.18
+tzdata
