@@ -141,6 +141,17 @@ New listings come from **Jiji only**, once a week, from the maintainer's own mac
 `infra/run_scrape.ps1` and `infra/kodiwise_scrape_task.xml`). Each run writes a **new dated dataset** to a
 private Cloud Storage bucket and never overwrites an existing one.
 
+- **Runs hidden and survives normal laptop use:** the task launches PowerShell through `conhost.exe --headless`
+  (no console window to close), runs only while you are logged on (no password is stored; it uses your own gcloud
+  login), may start and continue on battery, runs as soon as possible after a missed start (once the network is up),
+  starts no second copy while one is running, and is stopped after 1 hour. The script keeps Windows awake while it
+  runs and releases that when it ends. Re-import the task after editing the XML:
+  `schtasks /Create /TN "KodiWise Weekly Scrape" /XML "C:\Projects\KodiWise\infra\kodiwise_scrape_task.xml" /F`.
+- **Always logged:** every run writes a start line and an end line with the exit code to
+  `%LOCALAPPDATA%\KodiWise\logs\scrape_YYYYMMDD.log`, and a `runs/<time>.json` log to the bucket even on failure
+  (`status` is `ok`, `stopped` or `error`) when the network is up. Exit codes: 0 ok, 1 crashed or lost the network
+  part-way (rows fetched so far are kept), 2 script failure, 3 HTTP 403/429 (week skipped).
+
 - **Why Jiji only:** its terms have no automated-access clause (§7.16 on copying other users' content is
   respected by keeping text private). KenyaPropertyCentre's terms forbid automated access, Property24's
   forbid robots, and BuyRentKenya blocks automated clients, so none of them are scraped.

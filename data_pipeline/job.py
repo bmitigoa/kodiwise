@@ -150,12 +150,37 @@ def _count(d: dict, key: str) -> None:
     d[key] = d.get(key, 0) + 1
 
 
+def _runs_name(now: datetime) -> str:
+    return f"runs/{now:%Y%m%dT%H%M%S}.json"
+
+
+def write_failure_log(store: Store, summary: dict, now: datetime, exc: BaseException) -> None:
+    """Best effort: leave a runs/ log for a run that failed (if the bucket is reachable).
+    Only the exception type and message are stored, never listing text."""
+    summary["status"] = "error"
+    summary["error"] = f"{type(exc).__name__}: {str(exc)[:300]}"
+    summary["finished"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    try:
+        store.write_new(_runs_name(now), json.dumps(summary, indent=2).encode())
+    except Exception:
+        pass   # network down or name taken: the local log still records the failure
+
+
 def run(store: Store, max_listings: int, work_dir: Path, fetcher: Fetcher | None = None,
         now: datetime | None = None) -> dict:
     now = now or datetime.now(timezone.utc)
+    summary: dict = {"started": now.isoformat(timespec="seconds"), "max_listings": max_listings, "stopped": None}
+    try:
+        return _run(store, max_listings, work_dir, fetcher, now, summary)
+    except BaseException as exc:      # includes KeyboardInterrupt / SystemExit (console closed, logoff)
+        write_failure_log(store, summary, now, exc)
+        raise
+
+
+def _run(store: Store, max_listings: int, work_dir: Path, fetcher: Fetcher | None, now: datetime,
+         summary: dict) -> dict:
     day = now.date().isoformat()
     ts = now.isoformat(timespec="seconds")
-    summary: dict = {"started": ts, "max_listings": max_listings, "stopped": None}
 
     base_name = latest_dataset(store)
     base = pd.read_csv(io.BytesIO(store.read(base_name)))
@@ -201,6 +226,8 @@ def run(store: Store, max_listings: int, work_dir: Path, fetcher: Fetcher | None
                 raw_recs.append(rec)
     except StopScraping as e:
         summary["stopped"] = str(e)
+    except Exception as e:            # e.g. a dropped connection: keep what was fetched so far
+        summary["error"] = f"{type(e).__name__}: {str(e)[:300]}"
     summary["parse"] = parse_stats
     summary["requests"] = getattr(f, "n_requests", None)
     summary["index_requests"] = index_requests
@@ -222,22 +249,34 @@ def run(store: Store, max_listings: int, work_dir: Path, fetcher: Fetcher | None
 
     n_up, n_del = upload_snapshots_and_prune(store, snap_dir, day) if snap_dir.exists() else (0, 0)
     summary["snapshots_uploaded"], summary["old_snapshots_deleted"] = n_up, n_del
+    summary["status"] = "stopped" if summary["stopped"] else ("error" if summary.get("error") else "ok")
     summary["finished"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
-    store.write_new(f"runs/{now:%Y%m%dT%H%M%S}.json", json.dumps(summary, indent=2).encode())
+    store.write_new(_runs_name(now), json.dumps(summary, indent=2).encode())
     return summary
 
 
+EXIT_ERROR = 1    # crashed or lost the network part-way (a runs/ log is written if the bucket is reachable)
 EXIT_STOPPED = 3  # 403/429 or robots disallow: this week is skipped
 
 
 def main() -> int:
     max_listings = int(os.environ.get("MAX_LISTINGS", "300"))
     local = os.environ.get("LOCAL_STORE_DIR")
-    store: Store = LocalStore(Path(local)) if local else GcsStore(os.environ["BUCKET"])
+    try:
+        store: Store = LocalStore(Path(local)) if local else GcsStore(os.environ["BUCKET"])
+    except Exception as exc:         # cannot reach the bucket at all: nothing to write a log to
+        print(f"scrape failed: {type(exc).__name__}: {str(exc)[:300]}")
+        return EXIT_ERROR
     with tempfile.TemporaryDirectory() as tmp:
-        summary = run(store, max_listings, Path(tmp))
+        try:
+            summary = run(store, max_listings, Path(tmp))
+        except Exception as exc:     # run() has already tried to write the failure log
+            print(f"scrape failed: {type(exc).__name__}: {str(exc)[:300]}")
+            return EXIT_ERROR
     print(json.dumps(summary))   # counts only; never listing text
-    return EXIT_STOPPED if summary["stopped"] else 0
+    if summary["stopped"]:
+        return EXIT_STOPPED
+    return EXIT_ERROR if summary.get("error") else 0
 
 
 if __name__ == "__main__":

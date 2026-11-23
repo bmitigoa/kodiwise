@@ -171,3 +171,88 @@ def test_round_robin_spreads_budget():
     q = {"a": ["a1", "a2", "a3"], "b": ["b1"], "c": []}
     got = round_robin(q, 3, per_cap=5)
     assert len(got) == 3 and "b1" in got
+
+
+# ---- failures still leave a runs/ log -------------------------------------------------------
+
+class DropsConnection(FakeFetcher):
+    """Goes offline after `ok_after` listing fetches (index pages still answer)."""
+    ok_after = 4
+
+    def get(self, url):
+        if url.endswith("houses-apartments-for-rent") or len(self.fetched) < self.ok_after:
+            return super().get(url)
+        raise ConnectionError("network is unreachable")
+
+
+def test_dropped_connection_keeps_partial_rows_and_logs_status_error(store, tmp_path):
+    s = run(store, 20, tmp_path / "w", fetcher=DropsConnection(tmp_path / "w", listings()), now=NOW)
+    assert s["status"] == "error" and s["error"].startswith("ConnectionError")
+    assert s["parse"]["fetched"] == 4 and s["new_rows"] >= 1       # what was fetched is kept
+    logs = store.list("runs/")
+    assert len(logs) == 1 and json.loads(store.read(logs[0]))["status"] == "error"
+
+
+def test_ok_and_stopped_runs_carry_a_status(store, tmp_path):
+    ok = run(store, 20, tmp_path / "w", fetcher=FakeFetcher(tmp_path / "w", listings()), now=NOW)
+    assert ok["status"] == "ok" and "error" not in ok
+    f = FakeFetcher(tmp_path / "w2", listings())
+    f.stop_after = 1
+    stopped = run(store, 20, tmp_path / "w2", fetcher=f, now=datetime(2026, 11, 10, tzinfo=timezone.utc))
+    assert stopped["status"] == "stopped"
+
+
+class BrokenRead(LocalStore):
+    def read(self, name):
+        raise OSError("bucket unreachable")
+
+
+def test_crash_writes_failure_log_then_reraises(tmp_path):
+    s = BrokenRead(tmp_path / "bucket")
+    s.write_new("datasets/nairobi_rentals_clean_20260108.csv", base_df().to_csv(index=False).encode())
+    with pytest.raises(OSError):
+        run(s, 20, tmp_path / "w", fetcher=FakeFetcher(tmp_path / "w", {}), now=NOW)
+    (name,) = s.list("runs/")
+    body = json.loads(LocalStore.read(s, name))
+    assert body["status"] == "error" and body["error"] == "OSError: bucket unreachable"
+    assert "finished" in body and body["started"].startswith("2026-11-09")
+
+
+def test_interrupt_is_logged_and_reraised(store, tmp_path):
+    class Interrupted(FakeFetcher):
+        def get(self, url):
+            raise KeyboardInterrupt()
+
+    with pytest.raises(KeyboardInterrupt):
+        run(store, 20, tmp_path / "w", fetcher=Interrupted(tmp_path / "w", listings()), now=NOW)
+    (name,) = store.list("runs/")
+    assert json.loads(store.read(name))["error"].startswith("KeyboardInterrupt")
+
+
+def test_failure_log_problems_never_mask_the_real_error(tmp_path):
+    class NoWrites(BrokenRead):
+        def write_new(self, name, data):
+            if name.startswith("runs/"):
+                raise OSError("offline")
+            super().write_new(name, data)
+
+    s = NoWrites(tmp_path / "bucket")
+    s.write_new("datasets/nairobi_rentals_clean_20260108.csv", base_df().to_csv(index=False).encode())
+    with pytest.raises(OSError, match="bucket unreachable"):
+        run(s, 20, tmp_path / "w", fetcher=FakeFetcher(tmp_path / "w", {}), now=NOW)
+
+
+def test_main_exit_codes(monkeypatch, tmp_path):
+    from data_pipeline import job
+    monkeypatch.setenv("LOCAL_STORE_DIR", str(tmp_path / "b"))
+    monkeypatch.setattr(job, "run", lambda *a, **k: {"stopped": "HTTP 403", "status": "stopped"})
+    assert job.main() == job.EXIT_STOPPED == 3
+    monkeypatch.setattr(job, "run", lambda *a, **k: {"stopped": None, "error": "X: y", "status": "error"})
+    assert job.main() == job.EXIT_ERROR == 1
+    monkeypatch.setattr(job, "run", lambda *a, **k: {"stopped": None, "status": "ok"})
+    assert job.main() == 0
+
+    def boom(*a, **k):
+        raise RuntimeError("x")
+    monkeypatch.setattr(job, "run", boom)
+    assert job.main() == 1
