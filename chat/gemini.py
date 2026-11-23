@@ -42,6 +42,8 @@ class GeminiClient:
         }
         try:
             r = self._http.post(f"{BASE}/models/{self.model}:generateContent", json=body)
+        except httpx.TimeoutException as exc:
+            raise GeminiBusy(f"timeout ({type(exc).__name__})", quota=False) from exc
         except httpx.HTTPError as exc:
             raise GeminiError(f"network error ({type(exc).__name__})") from exc
         if r.status_code == 429:

@@ -36,3 +36,10 @@ def test_text_without_money_is_unchanged_and_counts_are_not_touched():
 def test_words_ending_in_kes_are_not_mistaken_for_the_currency():
     s = "She likes 2 bedrooms."
     assert guard.normalize_money(s, ALLOWED) == s
+
+
+def test_exact_case_from_review_gets_a_space_on_both_sides_of_each_figure():
+    assert guard.normalize_money("KES30,244to KES67,019", ALLOWED) == "KES 30,244 to KES 67,019"
+    assert guard.normalize_money("Range:KES30,244to KES67,019.", ALLOWED) == "Range: KES 30,244 to KES 67,019."
+    assert guard.normalize_money("(KES 45,510)", ALLOWED) == "(KES 45,510)"
+    assert guard.normalize_money("It is KES 45,510, or 60,000KES!", ALLOWED) == "It is KES 45,510, or KES 60,000!"

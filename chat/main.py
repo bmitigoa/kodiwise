@@ -128,9 +128,6 @@ def create_app(settings: Settings, counters: Counters, tools: Tools, clients: di
                 raise HTTPException(502, "The assistant could not answer right now.") from None
             log.info("chat ok: model=%s fallback=%s tool_calls=%d guard_failed=%s", result.model,
                      result.fallback_used, result.tool_calls, result.guard_failed)
-            if result.guard_failed:               # no model left to ask: friendly message, not a user message used
-                counters.user_refund(uid, uday)
-                return limit("busy", remaining + 1)
             return ChatResponse(status="ok", reply=result.reply, cards=result.cards, remaining_today=remaining)
         finally:
             slots.release()

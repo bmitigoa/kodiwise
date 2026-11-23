@@ -460,13 +460,15 @@ def test_client_marks_503_as_not_quota_and_429_as_quota():
         assert ei.value.quota is quota
 
 
-def test_failed_number_check_with_one_model_gives_friendly_message_and_is_not_counted():
+def test_failed_number_check_gives_the_templated_answer_as_a_normal_counted_turn():
     bad = [[("estimate_rent", {"location": "Kilimani", "bedrooms": 2, "bathrooms": 2})], "It is about KES 99,500."]
     cnt = MemoryCounters()
     c, *_ = app_for(bad, counters=cnt)
     r = c.post("/chat", json=Q, headers=H).json()
-    assert r["status"] == "busy" and r["show_assistant_button"] and "99,500" not in r["reply"]
-    assert cnt.users[("u1", nairobi_day())] == 0
+    assert r["status"] == "ok" and not r["show_assistant_button"] and "99,500" not in r["reply"]
+    assert "KES 60,000" in r["reply"] and "Confidence:" in r["reply"] and "Estimate only" in r["reply"]
+    assert "range KES" in r["reply"] and r["cards"]
+    assert cnt.users[("u1", nairobi_day())] == 1
 
 
 def test_engine_rewrites_broken_kes_formats_using_the_tool_value():
@@ -474,3 +476,13 @@ def test_engine_rewrites_broken_kes_formats_using_the_tool_value():
     e, *_ = engine(msg)
     r = e.run(hist("2 bed Kilimani"))
     assert not r.guard_failed and "KES 60,000 a month, or KES 60,000." in r.reply
+
+
+def test_client_treats_a_timeout_as_temporary_busy_not_quota():
+    def handler(req):
+        raise httpx.ReadTimeout("slow", request=req)
+
+    g = GeminiClient("K", "m", transport=httpx.MockTransport(handler))
+    with pytest.raises(GeminiBusy) as ei:
+        g.generate("s", [], [])
+    assert ei.value.quota is False

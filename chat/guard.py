@@ -106,7 +106,9 @@ def normalize_money(reply: str, allowed: list[float]) -> str | None:
         best = min(near, key=lambda a: abs(a - val))
         before = reply[m.start() - 1] if m.start() else " "
         after = reply[m.end()] if m.end() < len(reply) else " "
-        return (" " if before.isalnum() else "") + f"KES {best:,.0f}" + (" " if after.isalnum() else "")
+        lead = " " if (before.isalnum() or before in ":;,") else ""      # one space before, unless at an opening mark
+        tail = " " if after.isalnum() else ""                            # one space after, none before punctuation
+        return lead + f"KES {best:,.0f}" + tail
 
     out = _MONEY.sub(one, reply)
     if failed:
@@ -119,8 +121,9 @@ def fallback_reply(cards: list[dict]) -> str:
     parts = []
     for c in cards:
         if c["type"] == "estimate":
+            conf = f" Confidence: {c['confidence']}." if c.get("confidence") else ""
             parts.append(f"{c['area']}: about {kes(c['estimate_kes'])} a month "
-                         f"(range {kes(c['range_low_kes'])} to {kes(c['range_high_kes'])}).")
+                         f"(range {kes(c['range_low_kes'])} to {kes(c['range_high_kes'])}).{conf}")
         elif c["type"] == "areas":
             rows = (c.get("areas") or []) + (c.get("comfortable") or []) + (c.get("stretch") or [])
             parts.append("Here is what I found; see the cards for each area's range.")
