@@ -1,7 +1,18 @@
 package com.kodiwise.app
 
+import android.Manifest
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.FileProvider
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.progressindicator.LinearProgressIndicator
+import kotlinx.coroutines.suspendCancellableCoroutine
+import java.io.File
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
@@ -25,6 +36,26 @@ class PropertyUploadActivity : AppCompatActivity() {
     // UI
     private lateinit var btnSubmit: Button
     private lateinit var tvUploadStatus: TextView
+    private lateinit var tvPhotoCount: TextView
+    private lateinit var photosAdapter: PickedPhotosAdapter
+    private val picked = mutableListOf<PendingPhoto>()
+    private var cameraFile: File? = null
+
+    private enum class Choice { RETRY, KEEP, DISCARD }
+
+    private val pickGallery = registerForActivityResult(
+        ActivityResultContracts.PickMultipleVisualMedia(PhotoRules.MAX_PHOTOS)
+    ) { uris -> addPhotos(uris) }
+
+    private val takePicture = registerForActivityResult(ActivityResultContracts.TakePicture()) { ok ->
+        val f = cameraFile
+        cameraFile = null
+        if (ok && f != null) addPhotos(listOf(Uri.fromFile(f))) else f?.delete()
+    }
+
+    private val askCamera = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        if (granted) launchCamera() else toast(getString(R.string.photos_camera_denied))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,6 +85,29 @@ class PropertyUploadActivity : AppCompatActivity() {
         // (it accepts 0 bedrooms, e.g. a bedsitter, so the stepper allows 0).
         FormWidgets.bindStepper(findViewById(R.id.btnBedroomsMinus), etBedrooms, findViewById(R.id.btnBedroomsPlus), min = 0)
         FormWidgets.bindStepper(findViewById(R.id.btnBathroomsMinus), etBathrooms, findViewById(R.id.btnBathroomsPlus), min = 0)
+
+        tvPhotoCount = findViewById(R.id.tvPhotoCount)
+        photosAdapter = PickedPhotosAdapter(mutableListOf()) { photo ->
+            picked.remove(photo)
+            photosAdapter.remove(photo)
+            refreshPhotoUi()
+        }
+        findViewById<RecyclerView>(R.id.rvPickedPhotos).adapter = photosAdapter
+        findViewById<View>(R.id.btnPickGallery).setOnClickListener {
+            if (PhotoRules.slotsLeft(picked.size) == 0) {
+                toast(getString(R.string.photos_max, PhotoRules.MAX_PHOTOS))
+            } else {
+                pickGallery.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+            }
+        }
+        findViewById<View>(R.id.btnPickCamera).setOnClickListener {
+            if (PhotoRules.slotsLeft(picked.size) == 0) {
+                toast(getString(R.string.photos_max, PhotoRules.MAX_PHOTOS))
+            } else {
+                askCamera.launch(Manifest.permission.CAMERA)
+            }
+        }
+        refreshPhotoUi()
 
         RealisticPropertyFields.bindCollapse(this)
         RealisticPropertyFields.bindDontKnowSize(this)
@@ -186,10 +240,14 @@ class PropertyUploadActivity : AppCompatActivity() {
 
                     propertyRef.set(propertyData).await()
 
-                    tvUploadStatus.text = "Done ✅"
-                    toast("Uploaded ✅ (Pending Admin Approval)")
-                    setResult(RESULT_OK)
-                    finish()
+                    if (picked.isEmpty()) {
+                        tvUploadStatus.text = "Done"
+                        toast("Uploaded (Pending Admin Approval)")
+                        setResult(RESULT_OK)
+                        finish()
+                    } else {
+                        uploadPhotos(PhotoUploadSession(propertyId, picked.toList()))
+                    }
 
                 } catch (e: Exception) {
                     Log.e("PROPERTY_UPLOAD", "Upload failed", e)
@@ -201,12 +259,108 @@ class PropertyUploadActivity : AppCompatActivity() {
         }
     }
 
+    private fun addPhotos(uris: List<Uri>) {
+        val room = PhotoRules.slotsLeft(picked.size)
+        if (uris.size > room) toast(getString(R.string.photos_max, PhotoRules.MAX_PHOTOS))
+        val fresh = uris.take(room).map { PendingPhoto(it) }
+        if (fresh.isEmpty()) return
+        picked.addAll(fresh)
+        photosAdapter.add(fresh)
+        refreshPhotoUi()
+    }
+
+    private fun refreshPhotoUi() {
+        tvPhotoCount.text = getString(R.string.photos_count, picked.size, PhotoRules.MAX_PHOTOS)
+        findViewById<View>(R.id.rvPickedPhotos).visibility = if (picked.isEmpty()) View.GONE else View.VISIBLE
+    }
+
+    private fun launchCamera() {
+        val dir = File(cacheDir, "camera").apply { mkdirs() }
+        val file = File.createTempFile("capture_", ".jpg", dir)
+        cameraFile = file
+        val uri = FileProvider.getUriForFile(this, "$packageName.fileprovider", file)
+        takePicture.launch(uri)
+    }
+
+    /**
+     * The listing document already exists (pending). Upload its photos, then write
+     * the media docs. On failure the user chooses: retry, keep the listing with the
+     * photos that made it, or discard the listing. Nothing is left half-saved silently.
+     */
+    private suspend fun uploadPhotos(session: PhotoUploadSession) {
+        val total = session.photos.size
+        val bar = findViewById<LinearProgressIndicator>(R.id.progressUpload)
+        bar.isIndeterminate = false
+        bar.max = 1000
+        while (true) {
+            try {
+                session.run(this) { done, count, fraction ->
+                    tvUploadStatus.text = getString(R.string.photos_uploading, minOf(done + 1, count), count)
+                    bar.progress = (((done + fraction) / count) * 1000).toInt()
+                }
+                session.saveMedia()
+                tvUploadStatus.text = "Done"
+                toast("Uploaded (Pending Admin Approval)")
+                setResult(RESULT_OK)
+                finish()
+                return
+            } catch (e: Exception) {
+                Log.e("PROPERTY_UPLOAD", "Photo upload failed", e)
+                val reason = if (e is ImageCompressor.TooLargeException) {
+                    "A photo is too large."
+                } else {
+                    e.localizedMessage ?: "Network problem."
+                }
+                when (askFailureChoice(total - session.uploadedCount, total, reason)) {
+                    Choice.RETRY -> continue
+                    Choice.KEEP -> {
+                        try {
+                            session.saveMedia()
+                            toast(getString(R.string.photos_saved_partial, session.uploadedCount, total))
+                            setResult(RESULT_OK)
+                            finish()
+                            return
+                        } catch (e2: Exception) {
+                            Log.e("PROPERTY_UPLOAD", "Saving media failed", e2)
+                        }
+                    }
+                    Choice.DISCARD -> {
+                        session.discardUploads()
+                        try {
+                            ListingPhotos.deleteListing(session.propertyId)
+                            tvUploadStatus.text = "Listing discarded"
+                        } catch (e2: Exception) {
+                            Log.e("PROPERTY_UPLOAD", "Discard failed", e2)
+                            toast("Could not discard the listing. Delete it from My listings.")
+                        }
+                        setUploading(false)
+                        return
+                    }
+                }
+            }
+        }
+    }
+
+    private suspend fun askFailureChoice(missing: Int, total: Int, reason: String): Choice =
+        suspendCancellableCoroutine { cont ->
+            val dialog = MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.photos_failed_title)
+                .setMessage(getString(R.string.photos_failed_message, missing, total, reason))
+                .setCancelable(false)
+                .setPositiveButton(R.string.photos_retry) { _, _ -> if (cont.isActive) cont.resume(Choice.RETRY) {} }
+                .setNeutralButton(R.string.photos_skip) { _, _ -> if (cont.isActive) cont.resume(Choice.KEEP) {} }
+                .setNegativeButton(R.string.photos_discard) { _, _ -> if (cont.isActive) cont.resume(Choice.DISCARD) {} }
+                .show()
+            cont.invokeOnCancellation { dialog.dismiss() }
+        }
+
     private fun setUploading(uploading: Boolean) {
         btnSubmit.isEnabled = !uploading
         btnSubmit.setText(if (uploading) R.string.upload_button_busy else R.string.upload_button)
         // The status line starts hidden; once an upload starts it stays visible
         // so its last message ("Upload failed", ...) remains readable.
         if (uploading) tvUploadStatus.visibility = android.view.View.VISIBLE
+        if (uploading) findViewById<LinearProgressIndicator>(R.id.progressUpload).isIndeterminate = true
         findViewById<android.view.View>(R.id.progressUpload).visibility =
             if (uploading) android.view.View.VISIBLE else android.view.View.GONE
     }

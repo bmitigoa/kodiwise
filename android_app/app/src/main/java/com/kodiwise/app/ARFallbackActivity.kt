@@ -83,7 +83,7 @@ class ARFallbackActivity : AppCompatActivity() {
                     findViewById(R.id.tvFallbackBand), quoted, doc.getDouble("predictedLow"),
                     doc.getDouble("predictedHigh"), doc.getString("locationConfidence")
                 )
-                ListingCard.bindCover(findViewById<ImageView>(R.id.ivFallbackCover), cover)
+                ListingCard.bindCover(findViewById<ImageView>(R.id.ivFallbackCover), cover, doc.getString("coverPath") ?: "")
             }
             .addOnFailureListener { e ->
                 Toast.makeText(this, "Load failed: ${e.message}", Toast.LENGTH_LONG).show()

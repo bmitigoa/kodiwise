@@ -168,6 +168,22 @@
     <string name="upload_field_rent">Monthly rent</string>
     <string name="currency_kes" translatable="false">KES </string>
     <string name="per_month">/ month</string>
+    <string name="upload_section_photos">Photos</string>
+    <string name="photos_gallery">Gallery</string>
+    <string name="photos_camera">Camera</string>
+    <string name="photos_count">%1$d of %2$d photos. Optional, but listings with photos get more attention.</string>
+    <string name="photos_max">You can add up to %1$d photos.</string>
+    <string name="photos_camera_denied">Camera permission is needed to take a photo.</string>
+    <string name="cd_remove_photo">Remove photo</string>
+    <string name="photos_uploading">Uploading photo %1$d of %2$d…</string>
+    <string name="photos_failed_title">Some photos did not upload</string>
+    <string name="photos_failed_message">Your listing is saved, but %1$d of %2$d photos are still missing. %3$s</string>
+    <string name="photos_retry">Retry</string>
+    <string name="photos_skip">Keep without them</string>
+    <string name="photos_discard">Discard listing</string>
+    <string name="photos_saved_partial">Listing submitted with %1$d of %2$d photos.</string>
+    <string name="status_deleting">Deleting</string>
+    <string name="delete_unfinished">Delete did not finish. Tap Delete again to finish it.</string>
     <string name="upload_button">Submit listing</string>
     <string name="upload_button_busy">Submitting…</string>
 

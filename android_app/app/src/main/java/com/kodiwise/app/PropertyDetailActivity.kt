@@ -8,11 +8,12 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
+import kotlinx.coroutines.launch
 
 class PropertyDetailActivity : AppCompatActivity() {
 
@@ -90,6 +91,7 @@ class PropertyDetailActivity : AppCompatActivity() {
                         )
 
                 val cover = doc.getString("coverImageUrl") ?: ""
+                val coverPath = doc.getString("coverPath") ?: ""
 
                 ListingCard.bindStatus(tvStatus, statusRaw)
                 tvTitle.text = title
@@ -106,7 +108,7 @@ class PropertyDetailActivity : AppCompatActivity() {
                 )
                 tvDesc.text = desc.ifBlank { getString(R.string.detail_no_description) }
 
-                ListingCard.bindCover(ivCover, cover)
+                ListingCard.bindCover(ivCover, cover, coverPath)
             }
             .addOnFailureListener { e ->
                 Toast.makeText(this, "Load failed: ${e.message}", Toast.LENGTH_LONG).show()
@@ -114,23 +116,17 @@ class PropertyDetailActivity : AppCompatActivity() {
     }
 
     private fun loadGallery() {
-        db.collection("properties")
-            .document(propertyId)
-            .collection("media")
-            .orderBy("createdAt", Query.Direction.ASCENDING)
-            .get()
-            .addOnSuccessListener { snap ->
+        lifecycleScope.launch {
+            try {
+                val urls = ListingPhotos.forProperty(propertyId)
                 mediaItems.clear()
-                snap.documents.forEach { d ->
-                    val url = d.getString("url") ?: return@forEach
-                    mediaItems.add(MediaItem(url))
-                }
+                urls.forEach { mediaItems.add(MediaItem(it)) }
                 mediaAdapter.notifyDataSetChanged()
-                findViewById<android.view.View>(R.id.tvGalleryEmpty).visibility =
-                    if (mediaItems.isEmpty()) android.view.View.VISIBLE else android.view.View.GONE
+            } catch (e: Exception) {
+                Toast.makeText(this@PropertyDetailActivity, "Gallery load failed: ${e.message}", Toast.LENGTH_LONG).show()
             }
-            .addOnFailureListener { e ->
-                Toast.makeText(this, "Gallery load failed: ${e.message}", Toast.LENGTH_LONG).show()
-            }
+            findViewById<android.view.View>(R.id.tvGalleryEmpty).visibility =
+                if (mediaItems.isEmpty()) android.view.View.VISIBLE else android.view.View.GONE
+        }
     }
 }

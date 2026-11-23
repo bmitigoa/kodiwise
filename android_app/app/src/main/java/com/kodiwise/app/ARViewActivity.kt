@@ -8,6 +8,8 @@ import android.opengl.GLSurfaceView
 import android.opengl.Matrix
 import android.os.Bundle
 import android.util.Log
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Button
@@ -386,29 +388,37 @@ class ARViewActivity : AppCompatActivity(), GLSurfaceView.Renderer {
                 pMeta = "$bedrooms beds • $bathrooms baths • KES $quoted"
                 pCoverUrl = doc.getString("coverImageUrl") ?: ""
 
-                imageUrls.clear()
-                imageUrls.addAll(extractImageUrls(doc))
-
-                if (imageUrls.isEmpty() && pCoverUrl.isNotBlank()) {
-                    imageUrls.add(pCoverUrl)
-                }
+                val legacyUrls = extractImageUrls(doc)
 
                 currentImageIndex = 0
                 tvArTitle.text = pTitle
                 tvArLocation.text = pLocation
                 tvArMeta.text = pMeta
-
-                if (imageUrls.isNotEmpty()) {
-                    showImageAt(0)
-                    renderThumbnails()
-                } else {
-                    showInfoCard(
-                        bedrooms, bathrooms, quoted, doc.getDouble("predictedLow"),
-                        doc.getDouble("predictedHigh"), doc.getString("locationConfidence")
-                    )
-                }
-
                 tvHint.text = "Move phone slowly, then tap a floor or flat surface to place the property gallery"
+
+                // Real photos come from Storage (via the media docs); fall back to any
+                // legacy URLs on the doc, and to the info card when there are none.
+                lifecycleScope.launch {
+                    val stored = try {
+                        ListingPhotos.forProperty(propertyId)
+                    } catch (e: Exception) {
+                        Log.w(TAG, "Photo list failed: ${e.message}")
+                        emptyList()
+                    }
+                    imageUrls.clear()
+                    imageUrls.addAll((stored + legacyUrls).distinct())
+                    if (imageUrls.isEmpty() && pCoverUrl.isNotBlank()) imageUrls.add(pCoverUrl)
+
+                    if (imageUrls.isNotEmpty()) {
+                        showImageAt(0)
+                        renderThumbnails()
+                    } else {
+                        showInfoCard(
+                            bedrooms, bathrooms, quoted, doc.getDouble("predictedLow"),
+                            doc.getDouble("predictedHigh"), doc.getString("locationConfidence")
+                        )
+                    }
+                }
             }
             .addOnFailureListener { e ->
                 Toast.makeText(this, "AR load failed: ${e.message}", Toast.LENGTH_LONG).show()

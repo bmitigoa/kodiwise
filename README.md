@@ -2,7 +2,7 @@
 
 **Fair rent estimates for Nairobi homes, with augmented-reality previews.**
 
-KodiWise is an Android app backed by a machine-learning API. A tenant or landlord enters what they know about a home (neighbourhood, bedrooms, bathrooms and, optionally, size, type, furnishing and amenities) and gets an estimated monthly rent **as a range**, together with an honest note on how much local data supports that estimate. Landlords can list properties, an admin approves them, tenants browse approved listings and can open an augmented-reality (AR) view of a listing. AR places a listing's photo gallery in the room, so it only has something to show when a listing has photos, which this free-plan version does not store (see Limitations).
+KodiWise is an Android app backed by a machine-learning API. A tenant or landlord enters what they know about a home (neighbourhood, bedrooms, bathrooms and, optionally, size, type, furnishing and amenities) and gets an estimated monthly rent **as a range**, together with an honest note on how much local data supports that estimate. Landlords can list properties, an admin approves them, tenants browse approved listings and can open an augmented-reality (AR) view of a listing. Landlords attach up to 8 photos to a listing; AR places a listing's photo gallery in the room, and listings without photos show an info card instead.
 
 *Kodi* is Swahili for "rent".
 
@@ -38,7 +38,8 @@ KodiWise is the product successor to **RentAR**, my MSc research prototype at St
 - Estimate a fair monthly rent for any of 32 Nairobi neighbourhoods, shown as a likely range (low – estimate – high) rather than one misleading number.
 - Location confidence hint: *high*, *low* ("treat this estimate as rough") or *none* ("based mostly on the Nairobi average").
 - Browse admin-approved listings, search them, and see whether a listing's asking rent is **within, above or below** the estimated range.
-- AR view on ARCore phones places a listing's photo gallery in the room (only listings that have photos; none of the listings saved by this version do). Phones without ARCore get a details screen instead.
+- Listing photos on cards and in a gallery on the detail screen.
+- AR view on ARCore phones places a listing's photo gallery in the room. Listings without photos show an info card (title, area, beds, baths, rent and range) instead. Phones without ARCore get a details screen.
 
 **For landlords**
 - Add a listing (neighbourhood picked from a validated list, size, type, furnishing, amenities). Each listing is priced against the model at upload time.
@@ -370,7 +371,13 @@ The planned in-app chat will reuse the same tool code (`agent/core`) behind a se
 - **Key screens**: `PredictionFormActivity`, `PredictionResultActivity`, `PropertyUploadActivity`, `PropertyListActivity`, `PropertyDetailActivity`, `AdminApprovalsActivity`, `AdminReviewPropertyActivity`, `ARViewActivity`, `ARFallbackActivity`.
 - **Configuration**: the API address is a Gradle property (`KODIWISE_API_URL`). If it is not set, the build uses the deployed KodiWise API.
 
-Property photos are not stored in this version, because Firebase Storage requires a paid plan; listings save without images.
+**Listing photos** use Firebase Storage (the project must be on the Blaze plan; the default bucket is created in the Firebase console, location `us-central1`, production mode).
+
+- A landlord can add up to 8 photos from the gallery or camera. Each photo is resized to at most 1600 px on its long side and re-encoded as JPEG (about 80%, lowered until under about 400 KB). Re-encoding drops EXIF data, so GPS position and device details are never uploaded.
+- Saving creates the listing as `pending`, uploads the photos to `properties/{id}/photos/{uuid}.jpg`, then writes one media entry per photo (`storagePath`, `order`, `createdAt`) and sets `coverPath` on the listing. If an upload fails, the landlord can retry, keep the listing with the photos that uploaded, or discard the listing. If the app is closed mid-upload, the listing exists without (some) photos.
+- Photos are stored by path and their download URLs are resolved when shown, so Storage rules always apply.
+- **Deleting a listing** first sets its status to `deleting` (visible only to the owner; hidden from tenants, admins and Browse), then deletes the photo files, then the media entries, then the listing. If it fails midway the listing stays in "Deleting" and the owner can tap Delete again to finish it.
+- Cost: Storage is billed per GB stored and downloaded; at about 400 KB per photo the free tier covers a lot of listings. Create a budget alert on the billing account (suggested: USD 5 per month, alerts at 50%, 90% and 100%).
 
 ---
 
@@ -385,11 +392,19 @@ Property photos are not stored in this version, because Firebase Storage require
 
 - Users can only read and edit their own profile; at sign-up the role must be tenant or landlord, and the role can never be changed from the app. Admins are assigned by hand in the Firebase console.
 - New listings must be created by their owner with status `pending`.
-- Owners can edit their listings but cannot change the status (no self-approval) or the owner.
-- Admins can set the status to approved, rejected or pending.
-- Tenants can read approved listings only; owners and admins can also read pending ones.
+- Owners can edit their listings but cannot change the status (no self-approval) or the owner. The one exception: an owner can move their own listing to `deleting`, and nothing can move it back.
+- Admins can set the status to approved, rejected or pending (not on a listing that is `deleting`).
+- Tenants can read approved listings only; owners and admins can also read pending ones. A `deleting` listing is readable by its owner only.
+- Media entries (`properties/{id}/media`) follow the listing: readable by whoever can read it, writable by its owner.
 - Everything else is denied.
 
+**Storage rules (`storage.rules`)**
+
+- Photos live at `properties/{id}/photos/{file}`. Only the listing's owner can write or delete (the rule looks up `ownerId` on the listing), and only `image/*` files of at most 2 MB.
+- Read: the owner, admins, or any signed-in user when the listing is approved.
+- Everything else is denied.
+
+Rules tests (Node, Java 21+ and firebase-tools needed): `cd tests/rules && npm install && npm test`. They run both rule files against the local emulators.
 ---
 
 ## Getting started
@@ -447,6 +462,12 @@ gcloud run deploy kodiwise-api --source=. --region=africa-south1 \
 firebase deploy --only firestore:rules,firestore:indexes --project <your-project-id>
 ```
 
+For listing photos, upgrade the project to Blaze, create the default Storage bucket in the console (Build → Storage → Get started, production mode, `us-central1`), then deploy the Storage rules:
+
+```bash
+firebase deploy --only storage --project <your-project-id>
+```
+
 To create an admin, register in the app, then change that user's `role` to `admin` in the Firestore console.
 
 ### 6. Android app
@@ -487,7 +508,7 @@ cd android_app
 - **Asking rents, not agreed rents**: listings show what landlords ask, which may differ from what tenants pay.
 - **Two sources, one point in time**: scraped from two websites in early 2026; prices drift.
 - **Wide ranges**: a typical range is about KES 50,000 wide; the estimate is a guide, not a valuation.
-- **No photos** in this version (free Firebase plan). The AR view still opens for any listing, showing its title, area, beds, baths and rent in the header, but the card it places in the room is a gallery frame with no image in it. AR is only useful once photo storage is enabled.
+- **Photos are optional.** Listings without photos show a placeholder on cards, and AR places an info card (title, area, beds, baths, rent and range) instead of a photo gallery. Photos need Firebase Storage on the Blaze plan, which is a paid plan.
 
 ---
 

@@ -50,7 +50,7 @@ class PendingApprovalAdapter(
             else -> ""
         }
 
-        ListingCard.bindCover(holder.ivCover, imageUrl)
+        ListingCard.bindCover(holder.ivCover, imageUrl, item.coverPath)
 
         holder.btnReview.setOnClickListener {
             onReview(item)

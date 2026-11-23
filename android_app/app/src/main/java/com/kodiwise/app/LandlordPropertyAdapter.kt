@@ -52,7 +52,7 @@ class LandlordPropertyAdapter(
         ListingCard.bindRange(h.tvBand, p.price, p.predictedLow, p.predictedHigh, p.locationConfidence)
         h.tvPrice.text = ListingCard.priceText(ctx, p.price)
         ListingCard.bindChips(h.chipBeds, h.chipBaths, h.chipSize, p.bedrooms, p.bathrooms, p.sqM)
-        ListingCard.bindCover(h.ivCover, p.coverImageUrl)
+        ListingCard.bindCover(h.ivCover, p.coverImageUrl, p.coverPath)
 
         // ✅ SHOW ADMIN REVIEW COMMENT
         val notes = p.adminNotes.trim()

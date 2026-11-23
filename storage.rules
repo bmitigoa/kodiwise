@@ -1,0 +1,41 @@
+rules_version = '2';
+
+// Listing photos live at properties/{propertyId}/photos/{file}.
+// Ownership and approval are read from the listing document in Firestore.
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function listing(propertyId) {
+      return firestore.get(/databases/(default)/documents/properties/$(propertyId)).data;
+    }
+
+    function isOwner(propertyId) {
+      return request.auth != null && listing(propertyId).ownerId == request.auth.uid;
+    }
+
+    function isAdmin() {
+      return request.auth != null
+             && firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    match /properties/{propertyId}/photos/{photoId} {
+      // Owner, admins, or any signed-in user once the listing is approved.
+      allow read: if request.auth != null
+                  && (isOwner(propertyId)
+                      || (isAdmin() && listing(propertyId).status != 'deleting')
+                      || listing(propertyId).status == 'approved');
+
+      // Only the owner writes: images only, at most 2 MB per file.
+      allow create, update: if isOwner(propertyId)
+                            && request.resource.contentType.matches('image/.*')
+                            && request.resource.size <= 2 * 1024 * 1024;
+
+      allow delete: if isOwner(propertyId);
+    }
+
+    // Everything else is denied.
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

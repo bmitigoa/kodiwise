@@ -7,8 +7,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.findViewTreeLifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import coil.load
 import com.google.android.material.chip.Chip
+import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Locale
 import kotlin.math.roundToInt
@@ -44,6 +47,10 @@ object ListingCard {
             }
             "rejected" -> {
                 tv.setText(R.string.status_rejected)
+                tint(tv, R.color.kw_error_container, R.color.kw_on_error_container)
+            }
+            "deleting" -> {
+                tv.setText(R.string.status_deleting)
                 tint(tv, R.color.kw_error_container, R.color.kw_on_error_container)
             }
             else -> {
@@ -94,16 +101,36 @@ object ListingCard {
         }
     }
 
-    /** Loads the cover, or shows the branded placeholder when there is none. */
-    fun bindCover(iv: ImageView, url: String) {
-        if (url.isNotBlank()) {
-            iv.imageTintList = null // never tint real photos
-            iv.scaleType = ImageView.ScaleType.CENTER_CROP
-            iv.load(url) { crossfade(true) }
+    /**
+     * Loads the cover, or shows the branded placeholder when there is none.
+     * [coverPath] (a Storage path) wins over the legacy [url]; its download URL is
+     * resolved asynchronously, and the placeholder shows until then.
+     */
+    fun bindCover(iv: ImageView, url: String, coverPath: String = "") {
+        iv.tag = coverPath.ifBlank { null }
+        if (coverPath.isNotBlank()) {
+            placeholder(iv)
+            val owner = iv.findViewTreeLifecycleOwner() ?: return
+            owner.lifecycleScope.launch {
+                val resolved = ListingPhotos.url(coverPath) ?: return@launch
+                if (iv.tag == coverPath) show(iv, resolved)
+            }
+        } else if (url.isNotBlank()) {
+            show(iv, url)
         } else {
-            iv.imageTintList = ContextCompat.getColorStateList(iv.context, R.color.kw_on_primary_container)
-            iv.scaleType = ImageView.ScaleType.CENTER
-            iv.setImageResource(R.drawable.ic_home)
+            placeholder(iv)
         }
+    }
+
+    private fun show(iv: ImageView, url: String) {
+        iv.imageTintList = null // never tint real photos
+        iv.scaleType = ImageView.ScaleType.CENTER_CROP
+        iv.load(url) { crossfade(true) }
+    }
+
+    private fun placeholder(iv: ImageView) {
+        iv.imageTintList = ContextCompat.getColorStateList(iv.context, R.color.kw_on_primary_container)
+        iv.scaleType = ImageView.ScaleType.CENTER
+        iv.setImageResource(R.drawable.ic_home)
     }
 }

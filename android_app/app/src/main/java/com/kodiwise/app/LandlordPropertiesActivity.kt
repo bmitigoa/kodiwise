@@ -13,10 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
 
 class LandlordPropertiesActivity : AppCompatActivity() {
 
@@ -110,6 +107,7 @@ class LandlordPropertiesActivity : AppCompatActivity() {
                         price = quoted,
                         description = doc.getString("description") ?: "",
                         coverImageUrl = cover,
+                        coverPath = doc.getString("coverPath") ?: "",
                         imageUrls = emptyList(),
                         adminNotes = adminNotes,
                         status = status,
@@ -156,32 +154,22 @@ class LandlordPropertiesActivity : AppCompatActivity() {
         lifecycleScope.launch {
             progress.visibility = View.VISIBLE
             try {
-                deleteSubcollectionDocs(propertyId)
-                db.collection("properties").document(propertyId).delete().await()
+                ListingPhotos.deleteListing(propertyId)
 
                 Toast.makeText(this@LandlordPropertiesActivity, "Deleted ✅", Toast.LENGTH_SHORT).show()
                 loadMyProperties()
 
             } catch (e: Exception) {
                 progress.visibility = View.GONE
-                Toast.makeText(this@LandlordPropertiesActivity, "Delete failed: ${e.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    this@LandlordPropertiesActivity,
+                    getString(R.string.delete_unfinished) + " (${e.message})",
+                    Toast.LENGTH_LONG
+                ).show()
+                loadMyProperties()
                 Log.e("LANDLORD_DELETE", "deleteProperty failed", e)
             }
         }
-    }
-
-    private suspend fun deleteSubcollectionDocs(propertyId: String) = withContext(Dispatchers.IO) {
-        val mediaSnap = db.collection("properties")
-            .document(propertyId)
-            .collection("media")
-            .get()
-            .await()
-
-        if (mediaSnap.isEmpty) return@withContext
-
-        val batch = db.batch()
-        mediaSnap.documents.forEach { d -> batch.delete(d.reference) }
-        batch.commit().await()
     }
 
 }

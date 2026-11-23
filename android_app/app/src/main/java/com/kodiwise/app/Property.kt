@@ -28,6 +28,9 @@ data class Property(
 
     var coverImageUrl: String = "",
 
+    // Storage path of the cover photo (properties/{id}/photos/{uuid}.jpg).
+    var coverPath: String = "",
+
     // Optional (if you later decide to save imageUrls directly on property doc)
     var imageUrls: List<String> = emptyList(),
 

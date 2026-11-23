@@ -7,6 +7,8 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
@@ -90,14 +92,22 @@ class AdminReviewPropertyActivity : AppCompatActivity() {
                 ListingCard.bindStatus(tvStatus, p.status)
                 ListingCard.bindRange(findViewById(R.id.tvBand), p.price, p.predictedLow, p.predictedHigh, p.locationConfidence)
 
-                val galleryUrls: List<String> =
+                val legacyUrls: List<String> =
                     if (p.imageUrls.isNotEmpty()) p.imageUrls
                     else if (p.coverImageUrl.isNotBlank()) listOf(p.coverImageUrl)
                     else emptyList()
 
-                galleryAdapter.replaceAll(galleryUrls)
-                findViewById<View>(R.id.tvGalleryEmpty).visibility =
-                    if (galleryUrls.isEmpty()) View.VISIBLE else View.GONE
+                lifecycleScope.launch {
+                    val stored = try {
+                        ListingPhotos.forProperty(propertyId)
+                    } catch (e: Exception) {
+                        emptyList()
+                    }
+                    val galleryUrls = stored.ifEmpty { legacyUrls }
+                    galleryAdapter.replaceAll(galleryUrls)
+                    findViewById<View>(R.id.tvGalleryEmpty).visibility =
+                        if (galleryUrls.isEmpty()) View.VISIBLE else View.GONE
+                }
             }
             .addOnFailureListener {
                 Toast.makeText(this, "Failed to load property", Toast.LENGTH_SHORT).show()

@@ -44,7 +44,7 @@ class BrowsePropertyAdapter(
         h.tvStatus.visibility = View.GONE
         ListingCard.bindRange(h.tvBand, p.price, p.predictedLow, p.predictedHigh, p.locationConfidence)
         ListingCard.bindChips(h.chipBeds, h.chipBaths, h.chipSize, p.bedrooms, p.bathrooms, p.sqM)
-        ListingCard.bindCover(h.ivCover, p.coverImageUrl)
+        ListingCard.bindCover(h.ivCover, p.coverImageUrl, p.coverPath)
 
         h.itemView.setOnClickListener { onClick(p) }
     }

@@ -327,7 +327,7 @@ def test_titles_are_truncated_and_never_empty():
 
 def test_descriptions_are_never_requested_or_returned():
     assert "description" not in L.SAFE_FIELDS
-    assert not {"ownerId", "adminNotes", "imageUrls", "coverImageUrl", "email"} & set(L.SAFE_FIELDS)
+    assert not {"ownerId", "adminNotes", "imageUrls", "coverImageUrl", "coverPath", "email"} & set(L.SAFE_FIELDS)
 
 
 # ---- Firestore reader: query shape, quota project (no network) -------------------------------
@@ -417,12 +417,17 @@ def test_firestore_falls_back_to_default_credentials_when_there_is_no_adc_file(m
 
 # ---- MCP wiring ------------------------------------------------------------------------------
 
-def test_no_photo_claims_in_tool_text_or_instructions(fake):
+def test_photos_are_pointed_to_the_app_but_never_leak_or_described(fake):
+    # Listing photos exist now, so "photos" may be mentioned (they are viewed in the app).
+    # The assistant still never receives photo URLs or storage paths, and is told it cannot see them.
     from agent.mcp_server.server import INSTRUCTIONS
     api = ApiClient(base_url="http://kodiwise.test", transport=httpx.MockTransport(fake.handler))
-    out = Tools(api, L.StaticListingSource([doc()])).search_listings()
-    assert "photo" not in json.dumps(out).lower() and "photo" not in INSTRUCTIONS.lower()
-    assert "full details and AR views" in out["more"]
+    out = Tools(api, L.StaticListingSource([doc(coverPath="properties/p1/photos/a.jpg")])).search_listings()
+    text = json.dumps(out).lower()
+    assert "photos, full details and AR views" in out["more"]
+    assert "photos" in INSTRUCTIONS.lower() and "cannot see photos" in INSTRUCTIONS.lower()
+    for leak in (".jpg", "firebasestorage", "storagepath", "coverpath", "imageurls", "coverimageurl", "https://x/"):
+        assert leak not in text
 
 
 def test_mcp_server_exposes_the_six_read_only_tools_with_instructions(fake):
