@@ -467,3 +467,10 @@ def test_failed_number_check_with_one_model_gives_friendly_message_and_is_not_co
     r = c.post("/chat", json=Q, headers=H).json()
     assert r["status"] == "busy" and r["show_assistant_button"] and "99,500" not in r["reply"]
     assert cnt.users[("u1", nairobi_day())] == 0
+
+
+def test_engine_rewrites_broken_kes_formats_using_the_tool_value():
+    msg = [[("estimate_rent", {"location": "Kilimani", "bedrooms": 2, "bathrooms": 2})], "About KES60,000 a month, or 60,000KES."]
+    e, *_ = engine(msg)
+    r = e.run(hist("2 bed Kilimani"))
+    assert not r.guard_failed and "KES 60,000 a month, or KES 60,000." in r.reply

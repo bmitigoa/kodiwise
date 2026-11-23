@@ -65,6 +65,55 @@ def untraceable_amounts(reply: str, allowed: list[float]) -> list[float]:
     return bad
 
 
+_AMT = r"(?:\d{1,3}(?:,\s?\d{3}|\s\d{3})+|\d+(?:\.\d+)?)"
+_SUF = r"(?:\s?(?:k|m|million|thousand)\b)?"
+_MONEY = re.compile(
+    rf"(?<![A-Za-z])(?:K\s?ES|KSh?s?)\.?\s*(?P<a>{_AMT}){_SUF}"          # KES 45,510 / KES45,510 / K ES 45, 510
+    rf"|(?<![\w.,])(?P<b>{_AMT}){_SUF}\s*(?:KES|KSh?s?)\b",                # 45,510KES / 45,510 KES
+    re.I)
+
+
+def _money_value(raw: str, text: str) -> float | None:
+    m = re.match(r"\s?(k|m|million|thousand)\b", text[len(raw):], re.I)
+    try:
+        val = float(re.sub(r"[,\s]", "", raw))
+    except ValueError:
+        return None
+    if m:
+        val *= 1_000 if m.group(1).lower() in ("k", "thousand") else 1_000_000
+    return val
+
+
+def normalize_money(reply: str, allowed: list[float]) -> str | None:
+    """Rewrite every KES figure as "KES 45,510", using the tool's own number, and fix the spacing around it.
+    Returns None if a figure of KES 1,000 or more matches no tool or user number (the caller then uses the
+    templated answer instead)."""
+    failed = False
+
+    def one(m: re.Match) -> str:
+        nonlocal failed
+        raw = m.group("a") or m.group("b")
+        val = _money_value(raw, m.group(0)[m.group(0).find(raw):])
+        if val is None:
+            failed = True
+            return m.group(0)
+        if val < MIN_CHECKED:
+            return f"KES {val:,.0f}"
+        near = [a for a in allowed if abs(val - a) <= max(1.0, TOLERANCE * a)]
+        if not near:
+            failed = True
+            return m.group(0)
+        best = min(near, key=lambda a: abs(a - val))
+        before = reply[m.start() - 1] if m.start() else " "
+        after = reply[m.end()] if m.end() < len(reply) else " "
+        return (" " if before.isalnum() else "") + f"KES {best:,.0f}" + (" " if after.isalnum() else "")
+
+    out = _MONEY.sub(one, reply)
+    if failed:
+        return None
+    return re.sub(r"[ 	]{2,}", " ", out)
+
+
 def fallback_reply(cards: list[dict]) -> str:
     """Plain wording built only from the cards, used when the model's text fails the number check."""
     parts = []

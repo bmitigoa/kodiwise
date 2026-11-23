@@ -157,7 +157,14 @@ class ChatEngine:
             contents.append({"role": "user", "parts": answers})
         else:
             reply = ""
-        bad = guard.untraceable_amounts(reply, guard.allowed_numbers(results, user_texts))
+        allowed = guard.allowed_numbers(results, user_texts)
+        bad = guard.untraceable_amounts(reply, allowed)
+        if not bad and reply:
+            tidy = guard.normalize_money(reply, allowed)
+            if tidy is None:
+                bad = [0.0]                           # a KES figure could not be matched to a tool value
+            else:
+                reply = tidy
         if bad:
             log.warning("%s: reply dropped, %d untraceable amount(s)", lane.name, len(bad))
         text = guard.finish(reply or "", cards, guard_failed=bool(bad))
