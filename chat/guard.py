@@ -4,9 +4,11 @@ from __future__ import annotations
 import re
 from typing import Any
 
-MIN_CHECKED = 1000          # amounts (KES) are checked; counts such as "2 bedrooms" are not
-TOLERANCE = 0.01            # "about 60k" for 59,749 is fine; invented prices are not
-MAX_BASE_CHARS = 650   # the model's own text; required wording is added after
+from agent.core import config
+
+MIN_CHECKED = config.MIN_CHECKED_AMOUNT   # amounts (KES) are checked; counts such as "2 bedrooms" are not
+TOLERANCE = config.TOLERANCE              # "about 60k" for 59,749 is fine; invented prices are not
+MAX_BASE_CHARS = config.MAX_REPLY_CHARS   # the model's own text; required wording is added after
 
 _NUM = re.compile(r"(?<![\w.])(\d{1,3}(?:[ ,]\d{3})+|\d+(?:\.\d+)?)\s*(k|m|million|thousand)?\b", re.I)
 

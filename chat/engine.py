@@ -7,6 +7,7 @@ import time
 from dataclasses import dataclass, field
 from typing import Callable
 
+from agent.core import config
 from agent.core.tools import Tools
 from chat import guard, toolspec
 from chat.gemini import GeminiBusy, GeminiClient, GeminiError
@@ -14,9 +15,9 @@ from chat.pii import MAX_MESSAGE_CHARS, strip_pii
 
 log = logging.getLogger("kodiwise.chat")
 
-MAX_TOOL_CALLS = 4
-OVERLOAD_BACKOFF_SECONDS = 1.5   # one retry after a 503 "high demand", then the other model
-MAX_HISTORY = 6
+MAX_TOOL_CALLS = config.MAX_TOOL_CALLS
+OVERLOAD_BACKOFF_SECONDS = config.OVERLOAD_BACKOFF_SECONDS   # one retry after a 503 "high demand"
+MAX_HISTORY = config.MAX_HISTORY
 
 SYSTEM = """\
 You are KodiWise's rent assistant for Nairobi, Kenya. Keep answers short (2-4 sentences), in the user's \

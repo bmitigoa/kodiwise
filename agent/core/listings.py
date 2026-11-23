@@ -14,11 +14,12 @@ import os
 from pathlib import Path
 from typing import Any, Callable, Protocol
 
+from agent.core import config
 from agent.core.safe_text import clean_title
 
 PROJECT_ID = "kodiwise-9adab"
 COLLECTION = "properties"
-FETCH_LIMIT = 200
+FETCH_LIMIT = config.LISTING_FETCH_LIMIT
 
 # Fields requested from Firestore. "status" is only used to re-check approval.
 SAFE_FIELDS = ["title", "locationName", "quotedRent", "bedrooms", "bathrooms", "sq_m",

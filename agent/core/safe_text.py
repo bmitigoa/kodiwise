@@ -9,7 +9,9 @@ from __future__ import annotations
 import re
 import unicodedata
 
-MAX_TITLE_CHARS = 80
+from agent.core import config
+
+MAX_TITLE_CHARS = config.MAX_TITLE_CHARS
 
 _EMAIL = re.compile(r"[\w.+-]+@[\w-]+(?:\.[\w-]+)+")
 _URL = re.compile(r"(?:https?://|www\.)\S+", re.I)

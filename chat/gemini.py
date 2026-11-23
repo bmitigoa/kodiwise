@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import httpx
 
+from agent.core import config
+
 BASE = "https://generativelanguage.googleapis.com/v1beta"
 
 
@@ -21,8 +23,8 @@ class GeminiError(Exception):
 
 
 class GeminiClient:
-    def __init__(self, api_key: str, model: str, timeout: float = 30.0,
-                 transport: httpx.BaseTransport | None = None, max_output_tokens: int = 400) -> None:
+    def __init__(self, api_key: str, model: str, timeout: float = config.GEMINI_TIMEOUT_SECONDS,
+                 transport: httpx.BaseTransport | None = None, max_output_tokens: int = config.MAX_OUTPUT_TOKENS) -> None:
         api_key = (api_key or "").strip()      # a piped secret may carry a trailing newline
         if not api_key:
             raise GeminiError("no Gemini key configured")

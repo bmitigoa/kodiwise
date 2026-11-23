@@ -10,6 +10,7 @@ from typing import Callable
 
 import httpx
 
+from agent.core import config
 from agent.core.errors import KodiWiseError
 
 DEFAULT_API_URL = "https://kodiwise-api-798766993143.africa-south1.run.app"
@@ -20,8 +21,8 @@ class ApiClient:
     def __init__(
         self,
         base_url: str | None = None,
-        timeout: float = 20.0,
-        retries: int = 2,
+        timeout: float = config.API_TIMEOUT_SECONDS,
+        retries: int = config.API_RETRIES,
         transport: httpx.BaseTransport | None = None,
         sleep: Callable[[float], None] = time.sleep,
     ) -> None:

@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import difflib
 
+from agent.core import config
 from agent.core.errors import KodiWiseError
 
 AMENITY_FIELDS = {
@@ -19,9 +20,10 @@ PROPERTY_TYPES = {"apartment", "house", "bedsitter"}
 _TYPE_ALIASES = {"flat": "apartment", "studio": "bedsitter", "bed sitter": "bedsitter",
                  "maisonette": "house", "bungalow": "house"}
 
-MAX_BEDROOMS = 10
-MAX_BATHROOMS = 10
-MIN_RENT, MAX_RENT = 3_000, 2_000_000
+MAX_BEDROOMS = config.MAX_BEDROOMS
+MAX_BATHROOMS = config.MAX_BATHROOMS
+MIN_RENT, MAX_RENT = config.MIN_RENT, config.MAX_RENT
+MAX_LOCATION_CHARS = config.MAX_LOCATION_CHARS
 
 
 def bedrooms(n: object) -> int:
@@ -46,8 +48,9 @@ def rent(value: object, what: str) -> float:
 def sq_m(value: object) -> float | None:
     if value is None:
         return None
-    if isinstance(value, bool) or not isinstance(value, (int, float)) or not 10 <= value <= 2000:
-        raise KodiWiseError("Size must be between 10 and 2,000 square metres (or left out).")
+    if isinstance(value, bool) or not isinstance(value, (int, float)) or not config.MIN_SQ_M <= value <= config.MAX_SQ_M:
+        raise KodiWiseError(
+            f"Size must be between {config.MIN_SQ_M:g} and {config.MAX_SQ_M:,.0f} square metres (or left out).")
     return float(value)
 
 
@@ -84,12 +87,12 @@ def location_text(value: object) -> str:
     if not isinstance(value, str) or not value.strip():
         raise KodiWiseError("Please give a Nairobi neighbourhood name, e.g. Kilimani.")
     v = " ".join(value.split())
-    if len(v) > 60:
+    if len(v) > MAX_LOCATION_CHARS:
         raise KodiWiseError("That neighbourhood name is too long.")
     return v
 
 
-def location_list(values: object, lo: int = 2, hi: int = 6) -> list[str]:
+def location_list(values: object, lo: int = 2, hi: int = config.MAX_COMPARE_AREAS) -> list[str]:
     if isinstance(values, str) or not isinstance(values, (list, tuple)):
         raise KodiWiseError(f"Give a list of {lo} to {hi} neighbourhoods.")
     seen: dict[str, str] = {}

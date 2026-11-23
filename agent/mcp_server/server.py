@@ -14,6 +14,7 @@ from mcp.server.fastmcp.exceptions import ToolError
 from mcp.types import ToolAnnotations
 from pydantic import Field
 
+from agent.core import config
 from agent.core.client import ApiClient
 from agent.core.errors import KodiWiseError
 from agent.core.listings import FirestoreListingSource, ListingSource
@@ -46,8 +47,8 @@ so never describe or claim anything about what a listing's photos show.
 
 READ_ONLY = ToolAnnotations(readOnlyHint=True, destructiveHint=False, idempotentHint=True, openWorldHint=True)
 
-Beds = Annotated[int, Field(ge=0, le=10, description="Bedrooms. 0 means a studio or bedsitter.")]
-Baths = Annotated[int, Field(ge=1, le=10, description="Bathrooms.")]
+Beds = Annotated[int, Field(ge=0, le=config.MAX_BEDROOMS, description="Bedrooms. 0 means a studio or bedsitter.")]
+Baths = Annotated[int, Field(ge=1, le=config.MAX_BATHROOMS, description="Bathrooms.")]
 Size = Annotated[float | None, Field(description="Floor area in square metres. Leave out if unknown.")]
 Furnished = Annotated[bool | None, Field(description="True if furnished, False if not. Leave out if the user did not say.")]
 PType = Annotated[str | None, Field(description="apartment, house or bedsitter. Leave out if unknown.")]
@@ -98,7 +99,7 @@ def build_server(api: ApiClient | None = None, listings: ListingSource | None = 
     @mcp.tool(annotations=READ_ONLY)
     @_friendly
     def compare_areas(
-        locations: Annotated[list[str], Field(min_length=2, max_length=6, description="2 to 6 neighbourhoods.")],
+        locations: Annotated[list[str], Field(min_length=2, max_length=config.MAX_COMPARE_AREAS, description="2 to 6 neighbourhoods.")],
         bedrooms: Beds, bathrooms: Baths, sq_m: Size = None, furnished: Furnished = None,
         property_type: PType = None, amenities: Amen = None,
     ) -> dict:
@@ -109,11 +110,11 @@ def build_server(api: ApiClient | None = None, listings: ListingSource | None = 
     @mcp.tool(annotations=READ_ONLY)
     @_friendly
     def areas_within_budget(
-        budget_kes: Annotated[float, Field(ge=3000, le=2_000_000, description="Monthly budget in KES.")],
+        budget_kes: Annotated[float, Field(ge=config.MIN_RENT, le=config.MAX_RENT, description="Monthly budget in KES.")],
         bedrooms: Beds, bathrooms: Baths, sq_m: Size = None, furnished: Furnished = None,
         property_type: PType = None, amenities: Amen = None,
         near: Annotated[str | None, Field(description="Optional neighbourhood to search around.")] = None,
-        max_km: Annotated[float, Field(ge=0.5, le=50, description="With near: straight-line radius in km (default 5).")] = 5.0,
+        max_km: Annotated[float, Field(ge=config.MIN_KM, le=config.MAX_KM, description="With near: straight-line radius in km (default 5).")] = config.DEFAULT_MAX_KM,
     ) -> dict:
         """Find which neighbourhoods fit a monthly budget for a home of the given size. Checks every covered
         area (up to 32 estimates, so it can take several seconds). Returns comfortable areas (estimate at or
@@ -127,7 +128,7 @@ def build_server(api: ApiClient | None = None, listings: ListingSource | None = 
     @mcp.tool(annotations=READ_ONLY)
     @_friendly
     def check_listing_price(
-        asking_rent_kes: Annotated[float, Field(ge=3000, le=2_000_000, description="The landlord's monthly asking rent in KES.")],
+        asking_rent_kes: Annotated[float, Field(ge=config.MIN_RENT, le=config.MAX_RENT, description="The landlord's monthly asking rent in KES.")],
         location: Annotated[str, Field(description="Nairobi neighbourhood.")],
         bedrooms: Beds, bathrooms: Baths, sq_m: Size = None, furnished: Furnished = None,
         property_type: PType = None, amenities: Amen = None,
@@ -144,8 +145,8 @@ def build_server(api: ApiClient | None = None, listings: ListingSource | None = 
     def search_listings(
         location: Annotated[str | None, Field(description="Neighbourhood to search in. Leave out for all areas.")] = None,
         max_rent: Annotated[float | None, Field(description="Maximum monthly rent in KES.")] = None,
-        bedrooms: Annotated[int | None, Field(ge=0, le=10, description="Exact number of bedrooms (0 = studio).")] = None,
-        limit: Annotated[int, Field(ge=1, le=20, description="How many to return (cheapest first).")] = 10,
+        bedrooms: Annotated[int | None, Field(ge=0, le=config.MAX_BEDROOMS, description="Exact number of bedrooms (0 = studio).")] = None,
+        limit: Annotated[int, Field(ge=1, le=config.MAX_SEARCH_LIMIT, description="How many to return (cheapest first).")] = 10,
     ) -> dict:
         """Search APPROVED KodiWise listings posted by landlords (read-only; title, area, rent, beds, baths,
         size and a badge comparing the asking rent with KodiWise's range). May return nothing: the listing

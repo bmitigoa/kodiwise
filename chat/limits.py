@@ -14,6 +14,8 @@ from collections import deque
 from datetime import datetime, timedelta, timezone
 from typing import Callable, Protocol
 
+from agent.core import config
+
 NAIROBI = timezone(timedelta(hours=3))
 
 
@@ -90,7 +92,7 @@ class FirestoreCounters:
     def user_take(self, uid: str, day: str, limit: int) -> tuple[bool, int]:
         ref = self.db.collection(self.USERS).document(f"{uid}_{day}")
         return self._tx_take(ref, limit, {"uid": uid, "day": day,
-                                          "expireAt": datetime.now(timezone.utc) + timedelta(days=3)})
+                                          "expireAt": datetime.now(timezone.utc) + timedelta(days=config.USER_COUNTER_TTL_DAYS)})
 
     def user_refund(self, uid: str, day: str) -> None:
         from google.cloud import firestore
@@ -98,7 +100,7 @@ class FirestoreCounters:
 
     def global_take(self, day: str, cap: int) -> bool:
         ref = self.db.collection(self.GLOBAL).document(day)
-        return self._tx_take(ref, cap, {"day": day, "expireAt": datetime.now(timezone.utc) + timedelta(days=3)})[0]
+        return self._tx_take(ref, cap, {"day": day, "expireAt": datetime.now(timezone.utc) + timedelta(days=config.USER_COUNTER_TTL_DAYS)})[0]
 
     def global_refund(self, day: str) -> None:
         from google.cloud import firestore

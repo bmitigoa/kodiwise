@@ -11,6 +11,7 @@ from typing import Callable, Literal
 from fastapi import Depends, FastAPI, Header, HTTPException
 from pydantic import BaseModel, Field
 
+from agent.core import config
 from agent.core.tools import Tools
 from chat.auth import AuthError, TokenVerifier, verify_firebase_token
 from chat.engine import ChatEngine, Lane, LimitReached, clean_history
@@ -31,19 +32,19 @@ LIMIT_MESSAGES = {
 
 @dataclass
 class Settings:
-    user_daily: int = 10
+    user_daily: int = config.CHAT_USER_DAILY
     global_daily_cap: int = 0          # Gemini requests per day PER MODEL; 0 = refuse (CHAT_GLOBAL_DAILY_CAP)
     rpm_cap: int = 0                   # requests per minute per model, per instance; 0 = refuse (CHAT_RPM_CAP)
-    concurrent: int = 3
+    concurrent: int = config.CHAT_CONCURRENT
     models: tuple[str, ...] = ()       # primary first, then the fallback (CHAT_MODELS, comma separated)
 
     @classmethod
     def from_env(cls) -> "Settings":
-        instances = max(1, int(os.environ.get("CHAT_MAX_INSTANCES", "2")))
+        instances = max(1, config.CHAT_MAX_INSTANCES)
         models = tuple(m.strip() for m in os.environ.get("CHAT_MODELS", "").split(",") if m.strip())
-        return cls(user_daily=int(os.environ.get("CHAT_USER_DAILY", "10")),
-                   global_daily_cap=int(os.environ.get("CHAT_GLOBAL_DAILY_CAP", "0")),
-                   rpm_cap=int(os.environ.get("CHAT_RPM_CAP", "0")) // instances, models=models)
+        return cls(user_daily=config.CHAT_USER_DAILY,
+                   global_daily_cap=config.CHAT_GLOBAL_DAILY_CAP,
+                   rpm_cap=config.CHAT_RPM_CAP // instances, models=models)
 
 
 class Msg(BaseModel):

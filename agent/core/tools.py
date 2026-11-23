@@ -10,6 +10,7 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+from agent.core import config
 from agent.core import listings as listings_mod
 from agent.core import validate as v
 from agent.core.errors import KodiWiseError
@@ -25,9 +26,9 @@ CONFIDENCE_TEXT = {
     "none": "Not enough local data: this estimate is based mostly on the Nairobi average.",
 }
 CENTROIDS_CSV = Path(__file__).resolve().parents[2] / "data" / "reference" / "neighbourhood_centroids.csv"
-DEFAULT_MAX_KM = 5.0
-MAX_PREDICTIONS = 32      # hard cap per tool call
-PARALLEL = 5
+DEFAULT_MAX_KM = config.DEFAULT_MAX_KM
+MAX_PREDICTIONS = config.MAX_PREDICTIONS      # hard cap per tool call
+PARALLEL = config.PARALLEL
 
 
 def kes(x: float | int | None) -> str | None:
@@ -193,8 +194,8 @@ class Tools:
             tips = v.suggest(place, list(cents))
             hint = f" Did you mean: {', '.join(tips)}?" if tips else " Use list_locations to see the known areas."
             raise KodiWiseError(f"I don't have a map position for '{place}'.{hint}")
-        if isinstance(max_km, bool) or not isinstance(max_km, (int, float)) or not 0.5 <= max_km <= 50:
-            raise KodiWiseError("max_km must be a number between 0.5 and 50.")
+        if isinstance(max_km, bool) or not isinstance(max_km, (int, float)) or not config.MIN_KM <= max_km <= config.MAX_KM:
+            raise KodiWiseError(f"max_km must be a number between {config.MIN_KM:g} and {config.MAX_KM:g}.")
         origin = cents[key]
         return key, {n: haversine_km(origin, cents[n]) for n in names if n in cents}, float(max_km)
 
@@ -228,8 +229,8 @@ class Tools:
             loc = self._canonical(loc, self.api.locations())
         rent = v.rent(max_rent, "Maximum rent") if max_rent is not None else None
         beds = v.bedrooms(bedrooms) if bedrooms is not None else None
-        if not isinstance(limit, int) or isinstance(limit, bool) or not 1 <= limit <= 20:
-            raise KodiWiseError("Limit must be between 1 and 20.")
+        if not isinstance(limit, int) or isinstance(limit, bool) or not 1 <= limit <= config.MAX_SEARCH_LIMIT:
+            raise KodiWiseError(f"Limit must be between 1 and {config.MAX_SEARCH_LIMIT}.")
         try:
             found, total = listings_mod.search(self.listings, loc, rent, beds, limit)
         except KodiWiseError:

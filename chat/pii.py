@@ -7,6 +7,8 @@ from __future__ import annotations
 import re
 from typing import Iterable
 
+from agent.core import config
+
 EMAIL = re.compile(r"[\w.+-]+@[\w-]+(?:\.[\w-]+)+")
 URL = re.compile(r"(?:https?://|www\.)\S+", re.I)
 # Kenyan mobile: 07xx / 01xx / +2547xx / 2541xx, with optional spaces or dashes.
@@ -21,7 +23,7 @@ NAME_INTRO = re.compile(
     re.I)
 SPACES = re.compile(r"[ \t]+")
 
-MAX_MESSAGE_CHARS = 500
+MAX_MESSAGE_CHARS = config.MAX_MESSAGE_CHARS
 
 
 def strip_pii(text: str, known_names: Iterable[str] = (), keep: Iterable[str] = ()) -> str:
