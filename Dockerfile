@@ -20,6 +20,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 # (the single source of truth for feature construction, shared with
 # training), and the one versioned model directory currently served.
 COPY api/ ./api/
+# Rent Assistant (/areas-within-budget): shared agent logic + neighbourhood centre points.
+COPY agent/__init__.py ./agent/
+COPY agent/core/ ./agent/core/
+COPY data/reference/neighbourhood_centroids.csv ./data/reference/
 COPY ml/__init__.py ml/features.py ml/explain.py ./ml/
 COPY ml/models/v20261107-appE2/ ./ml/models/v20261107-appE2/
 

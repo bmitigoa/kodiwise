@@ -24,6 +24,9 @@ class PredictionFormActivity : AppCompatActivity() {
         val etLocation = findViewById<AutoCompleteTextView>(R.id.etPLocation)
         val etBedrooms = findViewById<EditText>(R.id.etPBedrooms)
         val etBathrooms = findViewById<EditText>(R.id.etPBathrooms)
+        findViewById<Button>(R.id.btnFindAreas).setOnClickListener {
+            startActivity(Intent(this, FindAreasActivity::class.java))
+        }
         val btnPredict = findViewById<Button>(R.id.btnPredictNow)
         val progress = findViewById<android.view.View>(R.id.progressPredict)
         FormWidgets.bindStepper(findViewById(R.id.btnBedroomsMinus), etBedrooms, findViewById(R.id.btnBedroomsPlus))

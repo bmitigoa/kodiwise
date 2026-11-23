@@ -8,11 +8,14 @@ import csv
 import math
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from agent.core import listings as listings_mod
 from agent.core import validate as v
-from agent.core.client import ApiClient
 from agent.core.errors import KodiWiseError
+
+if TYPE_CHECKING:  # the HTTP client is only a type here; the API server passes its own in-process object
+    from agent.core.client import ApiClient
 
 NOTE = ("Estimate only, not a valuation. The range is the 10th-90th percentile of past prediction "
         "error, so treat it as a rough guide. Asking rents and estimates can both be wrong.")

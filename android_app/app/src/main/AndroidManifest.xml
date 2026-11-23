@@ -96,6 +96,14 @@
             android:exported="false" />
 
         <activity
+            android:name=".FindAreasActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".AreaResultsActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".PredictionFormActivity"
             android:exported="false" />
         <activity

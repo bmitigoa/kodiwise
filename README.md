@@ -19,16 +19,17 @@ KodiWise is the product successor to **RentAR**, my MSc research prototype at St
 5. [The machine-learning model](#the-machine-learning-model)
 6. [Results](#results)
 7. [The prediction API](#the-prediction-api)
-8. [AI assistant (MCP)](#ai-assistant-mcp)
-9. [The Android app](#the-android-app)
-10. [Data model and security rules](#data-model-and-security-rules)
-11. [Getting started](#getting-started)
-12. [Testing](#testing)
-13. [Model versioning and deployment rule](#model-versioning-and-deployment-rule)
-14. [Limitations](#limitations)
-15. [Roadmap](#roadmap)
-16. [Research background](#research-background)
-17. [Author](#author)
+8. [Rent Assistant (free, no AI)](#rent-assistant-free-no-ai)
+9. [AI assistant (MCP)](#ai-assistant-mcp)
+10. [The Android app](#the-android-app)
+11. [Data model and security rules](#data-model-and-security-rules)
+12. [Getting started](#getting-started)
+13. [Testing](#testing)
+14. [Model versioning and deployment rule](#model-versioning-and-deployment-rule)
+15. [Limitations](#limitations)
+16. [Roadmap](#roadmap)
+17. [Research background](#research-background)
+18. [Author](#author)
 
 ---
 
@@ -37,6 +38,8 @@ KodiWise is the product successor to **RentAR**, my MSc research prototype at St
 **For tenants**
 - Estimate a fair monthly rent for any of 32 Nairobi neighbourhoods, shown as a likely range (low – estimate – high) rather than one misleading number.
 - Location confidence hint: *high*, *low* ("treat this estimate as rough") or *none* ("based mostly on the Nairobi average").
+- **Find areas for my budget** (Rent Assistant): enter a budget, bedrooms and bathrooms, optionally "near this area" within 2, 5 or 10 km, and see which neighbourhoods are comfortable or a stretch, with the estimate, range and a confidence warning for each. It runs on free rules and the existing rent model, with no AI service.
+- **Is this rent fair?** Enter an asking rent and see whether it is within, above or below the estimated range, or get no verdict when local data is too thin.
 - Browse admin-approved listings, search them, and see whether a listing's asking rent is **within, above or below** the estimated range.
 - Listing photos on cards and in a gallery on the detail screen.
 - AR view on ARCore phones places a listing's photo gallery in the room. Listings without photos show an info card (title, area, beds, baths, rent and range) instead. Phones without ARCore get a details screen.
@@ -241,6 +244,7 @@ FastAPI service in `api/`, containerised with the root `Dockerfile` and deployed
 | GET | `/model-version` | Version, feature set and test metrics of the served model |
 | GET | `/locations` | The 32 neighbourhoods the model recognises |
 | POST | `/predict` | Rent estimate with range, confidence and a "why this estimate" explanation |
+| GET, POST | `/areas-within-budget` | Areas that fit a monthly budget, split into comfortable and stretch, optionally near an area (see [Rent Assistant](#rent-assistant-free-no-ai)) |
 
 **Request** (only the first three fields are required):
 
@@ -295,6 +299,37 @@ In the app, the result screen shows a "Why this estimate" card with the top fact
 | ![Why this estimate](docs/screenshots/after/17_why_this_estimate.png) | ![Why this estimate, dark](docs/screenshots/after/17_why_this_estimate_dark.png) |
 
 Location names are matched case-insensitively, with a small alias table (e.g. "Westland" → Westlands, "Upper Hill" → Upperhill). Invalid input returns HTTP 422 with a clear message.
+
+---
+
+## Rent Assistant (free, no AI)
+
+"Find areas for my budget" in the app (tenant Home, and a button on the Estimate screen) answers: *where could my rent go?* It costs nothing to run beyond the API the app already uses: no Claude API, no other paid service, no model calls to a third party.
+
+**Flow**
+
+1. **Budget:** monthly budget in KES (3,000 to 2,000,000), bedrooms, bathrooms.
+2. **Near an area (optional):** pick an area from the list and a distance of 2, 5 or 10 km (straight line between neighbourhood centre points, not travel time).
+3. **Results:** two sections.
+   - **Comfortable:** the estimate is at or under the budget. Without a "near" filter these are listed with the highest estimate first (most home for the money); with one, nearest first.
+   - **Stretch:** only the low end of the range fits the budget.
+   - Areas whose whole range is above the budget are left out (the count is shown).
+
+Each card shows the area, distance (when "near" is used), the estimate, a range bar, and a warning chip when local data is thin ("low": rough estimate; "none": based mostly on the Nairobi average). Tapping a card opens the full estimate with "Why this estimate". An "Estimate only" note is always shown.
+
+**Is this rent fair?** (a shortcut on the first step and on the results screen) takes an area, bedrooms, bathrooms and an asking rent, and says whether it is within, above or below the estimated range. When local data for the area is too thin it gives no verdict. This uses the same rule as the MCP `check_listing_price` tool and the listing range badge.
+
+**Backend:** `GET` or `POST /areas-within-budget` (`budget_kes`, `bedrooms`, `bathrooms`, optional `near`, `max_km`, `sq_m`) runs the same `agent/core` logic as the MCP `areas_within_budget` tool, against the in-process model (`api/areas.py`). Work per request is capped:
+
+- at most 32 model runs (the number of covered areas), with explanations switched off for the sweep;
+- at most 2 sweeps at a time; extra requests get HTTP 429 and the app asks the user to retry;
+- inputs are validated (budget range, 0 to 10 bedrooms and bathrooms, `max_km` 0.5 to 50, a known `near` area), and bad input returns HTTP 422 with a plain-language message.
+
+```
+GET /areas-within-budget?budget_kes=60000&bedrooms=2&bathrooms=1&near=Kilimani&max_km=5
+```
+
+Everything it returns is an estimate, never a promise or a valuation.
 
 ---
 
@@ -484,7 +519,7 @@ To create an admin, register in the app, then change that user's `role` to `admi
 pytest
 ```
 
-The Python suite covers cleaning rules, feature building (including location matching and confidence levels), the API contract, and the model deployment rule. The Android app has unit tests for the rent-range badge, location validation, confidence hints and the AR launcher:
+The Python suite covers cleaning rules, feature building (including location matching and confidence levels), the API contract, and the model deployment rule. The Android app has unit tests for the rent-range badge, location validation, confidence hints, the AR launcher, photo rules and the Rent Assistant (budget parsing, fair-rent verdict, error messages, response parsing):
 
 ```bash
 cd android_app
