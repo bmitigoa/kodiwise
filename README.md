@@ -21,6 +21,7 @@ KodiWise is the product successor to **RentAR**, my MSc research prototype at St
 7. [The prediction API](#the-prediction-api)
 8. [Rent Assistant (free, no AI)](#rent-assistant-free-no-ai)
 9. [AI assistant (MCP)](#ai-assistant-mcp)
+   - [Security and reliability](#security-and-reliability) (limits and thresholds table)
 10. [Ask KodiWise: AI chat, free tier, limits, privacy](#ask-kodiwise-ai-chat-free-tier-limits-privacy)
 11. [The Android app](#the-android-app)
 12. [Data model and security rules](#data-model-and-security-rules)
@@ -448,7 +449,75 @@ Things to try: "2-bed under 40k near Westlands?", "Compare Kilimani, Kileleshwa 
 
 **Tests.** `pytest tests/test_agent_tools.py` runs per-tool tests with the API mocked, listing fixtures (the real collection may be empty), the injection and personal-data checks, an in-memory MCP session, and a check that every estimate carries range, confidence and note. `KODIWISE_LIVE_TESTS=1 pytest tests/test_agent_tools.py -k live` also calls the live API.
 
-The planned in-app chat will reuse the same tool code (`agent/core`) behind a server-side endpoint; no API key will ever ship in the app.
+The in-app chat ([Ask KodiWise](#ask-kodiwise-ai-chat-free-tier-limits-privacy)) reuses this tool code (`agent/core`) behind a server-side endpoint; no API key ships in the app.
+
+---
+
+## Security and reliability
+
+Both ways of asking (the MCP server and the in-app chat) share one tool core, `agent/core`. Full detail, data flow and trust boundaries are in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). In short:
+
+- **Read-only tools.** There is no write tool. The only writes in the whole system are the chat's usage counters (`chatUsage`, `chatGlobal`), made by one module (`chat/limits.py`). A test fails if any other code writes to Firestore, writes a file (other than local traces) or runs a command.
+- **Untrusted text is data.** Listing titles, area names, the user's messages and earlier assistant turns sent by the app are untrusted. Listing text is returned inside an `{"untrusted_text": ...}` field, instruction-like text ("ignore previous instructions", role tags, tool-call syntax, links) is cut out and logged (category only, never the text), and both the MCP instructions and the chat prompt say such content is data. Tool arguments are validated again by the core, so an injected title cannot change them or cause a write.
+- **Every figure traced.** Each amount in a chat reply must match a tool result (or a number the user typed), is rewritten into one format ("KES 45,510") using the tool's value, and otherwise the reply is replaced by wording built from the tool data.
+- **Scope guard.** Off-topic and non-Nairobi questions are answered without calling Gemini and without using up a user message.
+- **Failures are contained.** A 503 is retried once, then the message is busy; an empty or malformed model reply is re-asked at most twice (inside the caps); a message has a time budget; if counters or Firestore are unavailable the chat fails closed with the friendly message; unexpected errors return a short structured error, never a stack trace.
+- **Free to run.** Gemini free tier only, with the caps below. OpenTelemetry is the free open-source SDK; nothing is exported anywhere unless you set `KW_OTLP_ENDPOINT`.
+
+**MCP resources** (read-only, no tool call needed): `kodiwise://locations` (areas, confidence tier, training-listing count), `kodiwise://model-card` (served version, metrics, known limitations) and `kodiwise://area/{name}` (centre point, tier, count, nearby areas). Each carries the model version so answers can cite it. The chat keeps using tools (Gemini function calling does not read MCP resources).
+
+**Traces.** The MCP server writes one JSON line per tool call to `logs/traces.jsonl` (git-ignored; `KODIWISE_TRACE=off` disables, `KODIWISE_TRACE_FILE` moves it): tool, redacted inputs (numbers and lengths only), output size, duration, status. The chat service prints one structured JSON line per tool call, Gemini request and chat turn (model, request count, tool calls, status; no message text) to Cloud Logging.
+
+**Token use (chat).** Tool results are compacted for the model (the full result still feeds the cards and the number check) and tool descriptions are short by default (`CHAT_TOOL_DETAIL=full` restores the long ones). Per request, the fixed prompt plus tool list went from about 1,400 to about 1,020 tokens, and typical tool results are 55-60% smaller.
+
+### Limits and thresholds
+
+All of them live in `agent/core/config.py`, each with an environment override (out-of-range overrides are ignored). `python -m agent.core.config` prints this table, and a test keeps it identical to the code.
+
+<!-- limits:start -->
+| Setting | Default | Env override | Meaning |
+|---|---|---|---|
+| `MAX_TOOL_CALLS` | 4 calls | `KW_MAX_TOOL_CALLS` | distinct tool calls per chat message |
+| `MAX_PREDICTIONS` | 32 estimates | `KW_MAX_PREDICTIONS` | model estimates per tool call |
+| `PARALLEL` | 5 threads | `KW_PARALLEL` | parallel estimate requests to the API |
+| `DEFAULT_MAX_KM` | 5 km | `KW_DEFAULT_MAX_KM` | default radius for budget search near an area |
+| `MIN_KM` | 0.5 km | `KW_MIN_KM` | smallest allowed max_km |
+| `MAX_KM` | 50 km | `KW_MAX_KM` | largest allowed max_km |
+| `MIN_RENT` | 3,000 KES | `KW_MIN_RENT` | smallest monthly rent or budget accepted |
+| `MAX_RENT` | 2,000,000 KES | `KW_MAX_RENT` | largest monthly rent or budget accepted |
+| `MAX_BEDROOMS` | 10 rooms | `KW_MAX_BEDROOMS` | most bedrooms accepted |
+| `MAX_BATHROOMS` | 10 rooms | `KW_MAX_BATHROOMS` | most bathrooms accepted |
+| `MIN_SQ_M` | 10 m² | `KW_MIN_SQ_M` | smallest floor area accepted |
+| `MAX_SQ_M` | 2,000 m² | `KW_MAX_SQ_M` | largest floor area accepted |
+| `MAX_LOCATION_CHARS` | 60 chars | `KW_MAX_LOCATION_CHARS` | longest neighbourhood name accepted |
+| `MAX_COMPARE_AREAS` | 6 areas | `KW_MAX_COMPARE_AREAS` | most areas in a comparison |
+| `MAX_SEARCH_LIMIT` | 20 listings | `KW_MAX_SEARCH_LIMIT` | most listings one search returns |
+| `LISTING_FETCH_LIMIT` | 200 documents | `KW_LISTING_FETCH_LIMIT` | approved listings read per search |
+| `MAX_TITLE_CHARS` | 80 chars | `KW_MAX_TITLE_CHARS` | longest listing title returned |
+| `API_TIMEOUT_SECONDS` | 20 s | `KW_API_TIMEOUT_SECONDS` | timeout per kodiwise-api request |
+| `API_RETRIES` | 2 retries | `KW_API_RETRIES` | retries per kodiwise-api request |
+| `CHAT_USER_DAILY` | 10 messages | `CHAT_USER_DAILY` | chat messages per user per day (Nairobi day) |
+| `CHAT_GLOBAL_DAILY_CAP` | 0 requests | `CHAT_GLOBAL_DAILY_CAP` | Gemini requests per model per day (Pacific day); 0 = refuse. Set on deploy (300) |
+| `CHAT_RPM_CAP` | 0 requests | `CHAT_RPM_CAP` | Gemini requests per model per minute; 0 = refuse. Set on deploy (12) |
+| `CHAT_MAX_INSTANCES` | 1 instances | `CHAT_MAX_INSTANCES` | Cloud Run instances (the per-minute cap is split across them) |
+| `CHAT_CONCURRENT` | 3 requests | `CHAT_CONCURRENT` | chat requests handled at once per instance |
+| `MAX_HISTORY` | 6 messages | `KW_MAX_HISTORY` | previous messages sent to Gemini |
+| `MAX_MESSAGE_CHARS` | 500 chars | `KW_MAX_MESSAGE_CHARS` | longest user message sent to Gemini |
+| `MAX_MODEL_TURN_CHARS` | 300 chars | `KW_MAX_MODEL_TURN_CHARS` | longest earlier assistant turn kept |
+| `MAX_REPLY_CHARS` | 650 chars | `KW_MAX_REPLY_CHARS` | longest model reply kept |
+| `MAX_OUTPUT_TOKENS` | 400 tokens | `KW_MAX_OUTPUT_TOKENS` | Gemini output tokens per request |
+| `GEMINI_TIMEOUT_SECONDS` | 30 s | `KW_GEMINI_TIMEOUT_SECONDS` | timeout per Gemini request |
+| `MESSAGE_DEADLINE_SECONDS` | 60 s | `KW_MESSAGE_DEADLINE_SECONDS` | total time budget for one chat message |
+| `MODEL_RETRIES` | 2 retries | `KW_MODEL_RETRIES` | re-asks after an empty or malformed model reply |
+| `OVERLOAD_BACKOFF_SECONDS` | 1.5 s | `KW_OVERLOAD_BACKOFF_SECONDS` | wait before the one retry after a 503 |
+| `NUMBER_TOLERANCE_PERCENT` | 1 % | `KW_NUMBER_TOLERANCE_PERCENT` | how close a quoted figure must be to a tool figure |
+| `MIN_CHECKED_AMOUNT` | 1,000 KES | `KW_MIN_CHECKED_AMOUNT` | figures at or above this are checked against tool results |
+| `USER_COUNTER_TTL_DAYS` | 3 days | `KW_USER_COUNTER_TTL_DAYS` | expireAt on counter documents |
+| `CONFIDENCE_HIGH_MIN_LISTINGS` | 10 listings | `KW_CONFIDENCE_HIGH_MIN` | training listings for confidence "high" |
+| `CONFIDENCE_LOW_MIN_LISTINGS` | 3 listings | `KW_CONFIDENCE_LOW_MIN` | training listings for confidence "low" (below = "none") |
+<!-- limits:end -->
+
+Deployed values (set by `infra/deploy_chat.ps1`): `-DailyCap 300` Gemini requests per model per day, `-Rpm 12` requests per minute, 10 messages per user per day, 1 instance.
 
 ---
 

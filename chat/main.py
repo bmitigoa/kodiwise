@@ -210,12 +210,16 @@ def build_default_app() -> FastAPI:        # pragma: no cover - wiring for Cloud
     telemetry.setup_json_logging()          # structured logs for Cloud Logging (free allowance)
     telemetry.configure_stdout()
     settings = Settings.from_env()
-    db = firestore.Client(project="kodiwise-9adab")
+    # Listings are read from the Firebase project (read-only role). The usage counters, the only thing this
+    # service writes, live in a separate Firestore database in the service's own project, so the account
+    # never needs write access to the app's data.
+    listings_db = firestore.Client(project="kodiwise-9adab")
+    counters_db = firestore.Client(project=os.environ.get("CHAT_COUNTERS_PROJECT", "rent-prediction-ar"))
     api = ApiClient()
-    tools = Tools(api, FirestoreListingSource(client_factory=lambda: db))
+    tools = Tools(api, FirestoreListingSource(client_factory=lambda: listings_db))
     key = os.environ["GEMINI_API_KEY"]
     clients = {m: GeminiClient(key, m) for m in settings.models}
-    return create_app(settings, FirestoreCounters(db), tools, clients, known_locations=api.locations)
+    return create_app(settings, FirestoreCounters(counters_db), tools, clients, known_locations=api.locations)
 
 
 def __getattr__(name: str):               # `uvicorn chat.main:app` builds the real app lazily
