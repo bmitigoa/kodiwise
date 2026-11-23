@@ -20,7 +20,7 @@ from api import areas as areas_mod
 from api.predictor import Predictor
 from api.schemas import HealthResponse, LocationsResponse, ModelVersionResponse, PredictRequest, PredictResponse
 
-PRODUCTION_VERSION = "v20261107-appE2"
+PRODUCTION_VERSION = "v20261123-appF"
 predictor = Predictor(PRODUCTION_VERSION)
 
 

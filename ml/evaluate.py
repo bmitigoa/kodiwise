@@ -18,6 +18,7 @@ from sklearn.pipeline import Pipeline
 from lightgbm import LGBMRegressor
 from xgboost import XGBRegressor
 
+from data_pipeline.derive import fingerprint_hash
 from ml.features import (
     FeatureSet, LGBM_PARAMS, TARGET, add_location_stats, build_preprocessor, location_confidence,
 )
@@ -83,16 +84,28 @@ def kfold_labels(n: int, k: int = 5, seed: int = RANDOM_STATE) -> np.ndarray:
 
 def cross_validate(
     pipeline_factory, train_df: pd.DataFrame, fs: FeatureSet, k: int = 5, seed: int = RANDOM_STATE,
-    folds: np.ndarray | None = None, return_oof: bool = False,
+    folds: np.ndarray | None = None, return_oof: bool = False, fixed_train: np.ndarray | None = None,
 ):
     """Generic k-fold CV with location stats recomputed per fold (no
     validation rent ever informs that fold's features). `folds` (one label
     per row of train_df) overrides the default KFold assignment. With
-    return_oof, also returns the out-of-fold predictions (train_df order)."""
+    return_oof, also returns the out-of-fold predictions (train_df order).
+
+    `fixed_train` (bool per row) marks rows that are never validated: they
+    stay in the training part of every fold (their fold label is ignored) and
+    get no out-of-fold prediction (NaN). Used for the strict deploy CV, where
+    rows new to a candidate only ever train."""
     trd = train_df.reset_index(drop=True)
     scores = []
     oof = np.full(len(trd), np.nan)
+    fixed = None if fixed_train is None else np.asarray(fixed_train, dtype=bool)
     for tr_idx, va_idx in _fold_splits(len(trd), k, seed, folds):
+        if fixed is not None:
+            held = fixed[va_idx]
+            tr_idx = np.concatenate([tr_idx, va_idx[held]])
+            va_idx = va_idx[~held]
+            if len(va_idx) == 0:
+                continue
         f_tr, f_va, _ = add_location_stats(trd.iloc[tr_idx], trd.iloc[va_idx])
         pipe = pipeline_factory()
         pipe.fit(f_tr, f_tr[TARGET].values)
@@ -108,10 +121,11 @@ def cross_validate(
 
 def cross_validate_lgbm(
     train_df: pd.DataFrame, fs: FeatureSet, k: int = 5, seed: int = RANDOM_STATE, folds: np.ndarray | None = None,
-    model_seed: int | None = None, return_oof: bool = False,
+    model_seed: int | None = None, return_oof: bool = False, fixed_train: np.ndarray | None = None,
 ):
     """`seed` picks the KFold split; `model_seed` the LightGBM training seed."""
-    return cross_validate(lambda: make_lgbm_log_pipeline(fs, model_seed), train_df, fs, k, seed, folds, return_oof)
+    return cross_validate(lambda: make_lgbm_log_pipeline(fs, model_seed), train_df, fs, k, seed, folds, return_oof,
+                          fixed_train)
 
 
 def cross_validate_baselines(train_df: pd.DataFrame, fs: FeatureSet, k: int = 5, seed: int = RANDOM_STATE) -> dict:
@@ -178,6 +192,26 @@ DEPLOY_MAX_CV_R2_DROP = 0.01
 DEPLOY_SEEDS = (42, 43, 44, 45, 46)
 
 
+def to_row_id(value: object) -> str:
+    """Row id used across data versions. Old datasets carry the raw fingerprint
+    (it contains '|'); new rows carry only its hash. Both map to the hash, so a
+    version saved with either can be compared with one saved with the other."""
+    v = str(value)
+    return fingerprint_hash(v) if "|" in v else v
+
+
+def normalize_ids(df: pd.DataFrame) -> pd.DataFrame:
+    out = df.copy()
+    out[ID_COL] = out[ID_COL].map(to_row_id)
+    return out
+
+
+def normalize_rows_record(rows: dict) -> dict:
+    """Same, for a saved eval_rows.json (order is kept)."""
+    return {**rows, "test_ids": [to_row_id(i) for i in rows["test_ids"]],
+            "cv_folds": {to_row_id(i): f for i, f in rows["cv_folds"].items()}}
+
+
 def eval_rows_record(train: pd.DataFrame, test: pd.DataFrame, k: int = 5, seed: int = RANDOM_STATE) -> dict:
     """Which rows a version was evaluated on, by row id: its test rows and
     the CV fold of each training row (same assignment cross_validate uses
@@ -226,10 +260,20 @@ def _group_errors(y: np.ndarray, pred: np.ndarray, groups: np.ndarray) -> dict:
     """MAPE / MAE per location-confidence group."""
     out = {}
     for g in CONFIDENCE_GROUPS:
-        mask = groups == g
+        mask = (groups == g) & ~np.isnan(pred)
         if mask.any():
             err = np.abs(y[mask] - pred[mask])
             out[g] = {"n": int(mask.sum()), "MAPE": float(np.mean(err / y[mask]) * 100), "MAE": float(np.mean(err))}
+    return out
+
+
+def _area_errors(y: np.ndarray, pred: np.ndarray, areas: np.ndarray) -> dict:
+    """MAPE per area (rows with a prediction only)."""
+    out = {}
+    for a in sorted(set(areas.tolist())):
+        mask = (areas == a) & ~np.isnan(pred)
+        if mask.any():
+            out[a] = {"n": int(mask.sum()), "MAPE": float(np.mean(np.abs(y[mask] - pred[mask]) / y[mask]) * 100)}
     return out
 
 
@@ -281,7 +325,14 @@ def compare_on_same_rows(
     # sides are broken down over identical rows.
     train_counts = cur_train.groupby("location_std").size().astype(float)
 
-    def run_side(train: pd.DataFrame, test: pd.DataFrame, folds: np.ndarray, side_fs: FeatureSet) -> dict:
+    cand_is_new = ~cand_fold_ids.isin(fold_of.keys()).to_numpy()
+    cur_is_new = np.zeros(len(cur_train), dtype=bool)
+
+    def run_side(train: pd.DataFrame, test: pd.DataFrame, folds: np.ndarray, side_fs: FeatureSet,
+                 is_new: np.ndarray) -> dict:
+        """Gate CV is strict: rows new to the candidate only ever train, so the
+        scored rows are exactly the current version's training rows. The loose
+        CV (new rows also held out in their fold) is reported for information."""
         per_seed = []
         y_tr = train[TARGET].to_numpy(float)
         y_te = test[TARGET].to_numpy(float)
@@ -289,22 +340,65 @@ def compare_on_same_rows(
         g_te = _confidence_groups(test, train_counts)
         for s in seeds:
             test_m, test_pred = _fit_and_score(train, test, side_fs, model_seed=s, return_pred=True)
-            cv, oof = cross_validate_lgbm(train, side_fs, k=k, folds=folds, model_seed=s, return_oof=True)
+            cv, oof = cross_validate_lgbm(train, side_fs, k=k, folds=folds, model_seed=s, return_oof=True,
+                                          fixed_train=is_new if is_new.any() else None)
+            if is_new.any():
+                cv_loose, oof_loose = cross_validate_lgbm(train, side_fs, k=k, folds=folds, model_seed=s,
+                                                          return_oof=True)
+            else:
+                cv_loose, oof_loose = cv, oof
             per_seed.append({
                 "seed": s, "test": test_m,
                 "cv_r2_mean": cv["R2"]["mean"], "cv_mape_mean": cv["MAPE"]["mean"],
+                "cv_r2_loose_mean": cv_loose["R2"]["mean"], "cv_mape_loose_mean": cv_loose["MAPE"]["mean"],
                 "groups_oof": _group_errors(y_tr, oof, g_tr),
                 "groups_test": _group_errors(y_te, test_pred, g_te),
+                "new_rows_oof_by_area": (_area_errors(y_tr[is_new], oof_loose[is_new],
+                                                      train["location_std"].to_numpy()[is_new])
+                                         if is_new.any() else {}),
             })
         return {"feature_set": side_fs.name, "per_seed": per_seed, "summary": {
             "test_mape": _spread([r["test"]["MAPE"] for r in per_seed]),
             "test_r2": _spread([r["test"]["R2"] for r in per_seed]),
             "cv_r2": _spread([r["cv_r2_mean"] for r in per_seed]),
             "cv_mape": _spread([r["cv_mape_mean"] for r in per_seed]),
+            "cv_r2_loose": _spread([r["cv_r2_loose_mean"] for r in per_seed]),
+            "cv_mape_loose": _spread([r["cv_mape_loose_mean"] for r in per_seed]),
         }}
 
-    cur = run_side(cur_train, cur_test, cur_folds, current_fs or fs)
-    cand = run_side(cand_train, cand_test, cand_folds, fs)
+    cur = run_side(cur_train, cur_test, cur_folds, current_fs or fs, cur_is_new)
+    cand = run_side(cand_train, cand_test, cand_folds, fs, cand_is_new)
+
+    # Where the new data should help: the new rows, by area. The candidate's
+    # out-of-fold error on them (loose CV) next to what the current version
+    # (trained on its own rows only) predicts for the same rows.
+    new_rows = cand_train[cand_is_new]
+    new_by_area: dict = {}
+    if len(new_rows):
+        y_new = new_rows[TARGET].to_numpy(float)
+        areas = new_rows["location_std"].to_numpy()
+        cur_runs, cur_all = [], []
+        for s in seeds:
+            _, cur_pred = _fit_and_score(cur_train, new_rows, current_fs or fs, model_seed=s, return_pred=True)
+            cur_pred = np.asarray(cur_pred, dtype=float)
+            cur_runs.append(_area_errors(y_new, cur_pred, areas))
+            cur_all.append(float(np.mean(np.abs(y_new - cur_pred) / y_new) * 100))
+        for area in sorted(set(areas.tolist())):
+            c_m = [r[area]["MAPE"] for r in cur_runs if area in r]
+            n_m = [r["new_rows_oof_by_area"][area]["MAPE"] for r in cand["per_seed"]
+                   if area in r["new_rows_oof_by_area"]]
+            if c_m and n_m:
+                new_by_area[area] = {"n_new_rows": int((areas == area).sum()),
+                                     "current_version_MAPE": float(np.mean(c_m)),
+                                     "candidate_oof_MAPE": float(np.mean(n_m))}
+        new_by_area["__all_new_rows__"] = {
+            "n_new_rows": int(len(new_rows)),
+            "current_version_MAPE": float(np.mean(cur_all)),
+            "candidate_oof_MAPE": float(np.mean([
+                np.average([v["MAPE"] for v in r["new_rows_oof_by_area"].values()],
+                           weights=[v["n"] for v in r["new_rows_oof_by_area"].values()])
+                for r in cand["per_seed"] if r["new_rows_oof_by_area"]])),
+        }
 
     def by_group(key: str) -> dict:
         out = {}
@@ -323,7 +417,8 @@ def compare_on_same_rows(
         return out
 
     mape_delta = cand["summary"]["test_mape"]["mean"] - cur["summary"]["test_mape"]["mean"]
-    cv_r2_delta = cand["summary"]["cv_r2"]["mean"] - cur["summary"]["cv_r2"]["mean"]
+    cv_r2_delta = cand["summary"]["cv_r2"]["mean"] - cur["summary"]["cv_r2"]["mean"]       # strict: the gate
+    cv_r2_delta_loose = cand["summary"]["cv_r2_loose"]["mean"] - cur["summary"]["cv_r2_loose"]["mean"]
     passes = bool(mape_delta <= DEPLOY_MAX_MAPE_WORSE_PP and cv_r2_delta >= -DEPLOY_MAX_CV_R2_DROP)
     # Paired per-seed deltas: same seed on both sides, so these show how
     # much of the mean delta is stable vs. seed noise.
@@ -332,8 +427,9 @@ def compare_on_same_rows(
 
     return {
         "rule": (f"Deploy rule: on the same evaluation rows, averaged over {len(seeds)} training seeds, "
-                 f"mean test MAPE not worse by > {DEPLOY_MAX_MAPE_WORSE_PP} pp and mean CV R2 not lower "
-                 f"by > {DEPLOY_MAX_CV_R2_DROP}"),
+                 f"mean test MAPE not worse by > {DEPLOY_MAX_MAPE_WORSE_PP} pp and mean strict CV R2 "
+                 f"(scored on the current version's training rows only; rows new to the candidate always "
+                 f"train) not lower by > {DEPLOY_MAX_CV_R2_DROP}. Loose CV is reported for information."),
         "current_version": current_version,
         "seeds": list(seeds),
         "rows": {
@@ -348,9 +444,12 @@ def compare_on_same_rows(
         "candidate": cand,
         "test_mape_delta_pp": float(mape_delta),
         "cv_r2_delta": float(cv_r2_delta),
+        "cv_r2_delta_loose": float(cv_r2_delta_loose),
+        "new_rows_by_area": new_by_area,
         "paired_seed_deltas": {"test_mape_pp": _spread(paired_mape), "cv_r2": _spread(paired_cv_r2)},
         "by_confidence": {
-            "note": "groups from the deployed version's training counts; out-of-fold CV is the main evidence",
+            "note": ("groups from the deployed version's training counts; out-of-fold CV (strict: the "
+                     "current version's training rows only) is the main evidence"),
             "cv_oof": by_group("groups_oof"),
             "test": by_group("groups_test"),
         },

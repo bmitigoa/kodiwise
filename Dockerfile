@@ -25,7 +25,7 @@ COPY agent/__init__.py ./agent/
 COPY agent/core/ ./agent/core/
 COPY data/reference/neighbourhood_centroids.csv ./data/reference/
 COPY ml/__init__.py ml/features.py ml/explain.py ./ml/
-COPY ml/models/v20261107-appE2/ ./ml/models/v20261107-appE2/
+COPY ml/models/v20261123-appF/ ./ml/models/v20261123-appF/
 
 # Cloud Run sets PORT; default to 8080 for local runs.
 ENV PORT=8080

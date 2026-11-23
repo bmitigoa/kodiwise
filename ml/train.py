@@ -25,6 +25,8 @@ from sklearn.model_selection import train_test_split
 
 from ml.evaluate import (
     compare_on_same_rows,
+    normalize_ids,
+    normalize_rows_record,
     cross_validate_baselines,
     cross_validate_lgbm,
     cross_validate_log_residuals,
@@ -83,13 +85,15 @@ def deploy_comparison(candidate_df: pd.DataFrame, fs: FeatureSet, current_versio
     if loaded is None:
         return {"current_version": current_version, "passes": False,
                 "error": "current version has no eval_rows.json / data snapshot; comparison not possible"}
-    current_df, current_rows = loaded
+    # Old versions carry raw fingerprints, newer datasets only their hash: compare on hashes.
+    current_df, current_rows = normalize_ids(loaded[0]), normalize_rows_record(loaded[1])
+    candidate_df = normalize_ids(candidate_df)
     return compare_on_same_rows(current_df, current_rows, candidate_df, fs, current_version, current_fs=current_fs)
 
 
 def run_experiment(
     df: pd.DataFrame, fs: FeatureSet, save_model: bool = False, return_artifacts: bool = False,
-    version: str | None = None, compare_to: str | None = None,
+    version: str | None = None, compare_to: str | None = None, data_source: str | None = None,
 ) -> dict:
     input_df = df
     df = coerce_dtypes(df, fs.binary, fs.categorical)
@@ -164,7 +168,10 @@ def run_experiment(
             "categorical_features": fs.categorical,
             "text_feature": fs.text,
             "hyperparameters": "see ml/features.py LGBM_PARAMS",
-            "data_source": str(CLEAN_PATH),
+            "data_source": data_source or str(CLEAN_PATH),
+            "data_date_range": ({"scrape_date_min": str(input_df["scrape_date"].min()),
+                                 "scrape_date_max": str(input_df["scrape_date"].max())}
+                                if "scrape_date" in input_df.columns else None),
             "n_train": len(train),
             "n_test": len(test),
             "test_metrics": test_metrics,

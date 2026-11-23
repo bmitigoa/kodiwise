@@ -43,7 +43,7 @@ def test_predict_minimal_input_returns_sane_range(client):
     body = resp.json()
     assert body["predicted_rent_kes"] > 0
     assert body["predicted_rent_low_kes"] <= body["predicted_rent_kes"] <= body["predicted_rent_high_kes"]
-    assert body["model_version"] == "v20261107-appE2"
+    assert body["model_version"] == "v20261123-appF"
     assert body["location_recognised"] is True
     assert "estimate" in body["note"].lower()
     # No LOW/FAIR/HIGH verdict should ever be in the response.

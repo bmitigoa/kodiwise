@@ -235,11 +235,22 @@ All figures are on the held-out test set unless marked CV (5-fold cross-validati
 | B: cleaned, all features | includes title text | 0.774 | 20.2% | **not usable**: R² −0.38 with real app inputs |
 | C: app inputs only | neighbourhood, bedrooms, bathrooms | 0.489 | 41.3% | first honest baseline |
 | D: expanded app form | C + size, type, furnishing, amenities | 0.736 | 24.7% | previous production (`v20261107-appD`) |
-| **E2: D + GPS (served)** | D + neighbourhood coordinates and distances | **0.748** | **24.8%** | in production (`v20261107-appE2`) |
+| E2: D + GPS | D + neighbourhood coordinates and distances | 0.748 | 24.8% | previous production (`v20261107-appE2`) |
+| **F: E2 features, 806 listings (served)** | same features, retrained on the 23 Nov dataset | **0.718** | **27.4%** | in production (`v20261123-appF`) |
 
-Baselines on the same split for the served model: Random Forest R² 0.744 / MAPE 25.0%, XGBoost 0.736 / 23.3%, Ridge −0.235 / 30.9%.
+Baselines on the same split for the served model (F): Random Forest R² 0.740 / MAPE 26.5%, XGBoost 0.698 / 27.2%, Ridge 0.008 / 31.7%.
 
 Adding six form fields recovered almost all of the accuracy that title text had been faking, and the typical estimate range became about 31% narrower than with Run C.
+
+**Run F (retrained on 806 listings, 254 new).** Run F uses exactly the E2 features and settings; only the data changed (the new rows are almost all Jiji listings, collected mostly for the thin neighbourhoods). The F row in the table is on its own, different 20% split (162 test rows), so it is **not comparable** with the E2 row. The deciding comparison is the deploy rule on the same rows, averaged over 5 seeds, against E2: on E2's 111 test rows mean test MAPE went from 24.66% to 23.58% (−1.08 points, better in all 5 seeds). Strict CV R² (scored on E2's training rows only, new rows always in training) went from 0.720 to 0.716 (−0.004, within the 0.01 limit). Out-of-fold error on the new rows was 28.2% against 31.3% for E2, with the largest gains in Spring Valley, Loresho, Karen and Ngara; Westlands, Kahawa and South B were worse. Location confidence changed for 9 neighbourhoods (for example Dagoretti, Spring Valley, Hurlingham and Ngara are now "high"; Upperhill, Loresho and Gigiri are "low"). Details: `ml/models/v20261123-appF/retrain_report.json`.
+
+Known caveats of Run F (decided with open eyes, re-checked at every retrain):
+
+- **Strict CV R² is slightly lower** than E2's (−0.004, negative in all 5 seeds) although test MAPE is better.
+- **The Furnished effect is large.** In "Why this estimate" it can be 37–50% of a furnished listing's estimate (for example +KES 55,000 on a 2-bed in Kilimani). Furnished listings are only 15% of the rows and their median rent is KES 140,000 against 60,000 for the rest, so the model cannot separate furnishing from other things that come with it. Treat it with care.
+- **Loresho, Upperhill and Gigiri rest on very little data** (7, 9 and 4 training rows; confidence "low"). Loresho's 1-bed estimate moved from about KES 67,000 to 31,000 with the retrain, so expect these areas to change as rows arrive.
+- **The Kileleshwa vs Lavington gap shrank** (3-bed, 2-bath: about KES 5,000 apart, from 28,000). The order is unchanged.
+- Neighbourhoods with fewer than 3 training rows ("none") got slightly worse out-of-fold (44.0% → 46.0%, 17 rows).
 
 **GPS features (Run E2).** Each neighbourhood gets OpenStreetMap coordinates and distances to the CBD, Westlands, Upperhill, JKIA, Thika Road and Mombasa Road; the app request does not change. Compared with Run D on the same rows and folds, averaged over 5 training seeds, mean test MAPE went from 24.91% to 24.66% and CV R² from 0.719 to 0.720. The gain is concentrated where location data is thin: out-of-fold error for neighbourhoods with 3–9 training listings fell by about 5 points (34.6% → 29.5%), while neighbourhoods with fewer than 3 listings did not improve (42.8% → 44.0%), so their "not enough local data" label stays. A variant that also borrowed rents from nearby neighbourhoods (Run E, a spatial prior) added nothing measurable and is not served. On the single split in the table, E2's MAPE is 0.1 points above D's; the 5-seed comparison is the deciding measure, because training noise alone moves test MAPE by up to ~0.8 points at this data size.
 
@@ -283,7 +294,7 @@ FastAPI service in `api/`, containerised with the root `Dockerfile` and deployed
   "predicted_rent_kes": 139313.54,
   "predicted_rent_low_kes": 94734.21,
   "predicted_rent_high_kes": 208461.66,
-  "model_version": "v20261107-appE2",
+  "model_version": "v20261123-appF",
   "location_recognised": true,
   "location_confidence": "high",
   "note": "Estimate only, not an exact valuation. ...",
@@ -481,6 +492,8 @@ python -m ml.train      # trains, evaluates and saves a new version
 
 Each run saves the model under the version name set in `ml/train.py` (`RUN_D_VERSION`). Training refuses to overwrite an existing version folder, so set a new version name before retraining.
 
+**Monthly retrain (one command).** `python -m ml.retrain` takes the newest `datasets/` file from the scrape bucket (or `--dataset PATH`), trains a new version with the feature set currently served, runs the deployment rule against the served version, and runs the checks (data report, flag drift, Kileleshwa vs Lavington, Furnished factor, thin areas). It writes `retrain_report.json` into the new version folder, including a checklist for the next retrain, and **stops before deploying**. Use `--report-only` for the data checks only. It exits 1 if the rule fails and 4 if an amenity flag moved by more than 10 points. Deploying (API version, Dockerfile, smoke test) stays a separate, reviewed step.
+
 ### 3. Run the API locally
 
 ```bash
@@ -543,14 +556,14 @@ cd android_app
 
 - Every trained model gets an immutable folder `ml/models/v<date>-<feature set>/` with `metrics.json`, `feature_importance.json`, `location_lookup.json` and the exact evaluation rows used.
 - A new model is compared with the deployed one **on the same test rows and the same cross-validation folds**, averaged over **5 training seeds** (LightGBM's sampling alone moves test MAPE by up to ~0.8 points).
-- It may replace the deployed model only if mean test MAPE is not worse by more than 0.5 percentage points **and** mean CV R² is not lower by more than 0.01. Anything else needs a manual decision.
+- It may replace the deployed model only if mean test MAPE is not worse by more than 0.5 percentage points **and** mean *strict* CV R² is not lower by more than 0.01. Strict CV scores only the rows the deployed model was also trained on (rows new to the candidate are always in training); the looser CV that also holds out new rows is reported for information. Anything else needs a manual decision.
 - The previous version is kept for rollback.
 
 ---
 
 ## Limitations
 
-- **Small dataset**: about 550 listings; several neighbourhoods have only one or two, which is why the app reports location confidence.
+- **Small dataset**: about 800 listings; several neighbourhoods have only one or two, which is why the app reports location confidence.
 - **Asking rents, not agreed rents**: listings show what landlords ask, which may differ from what tenants pay.
 - **Two sources, one point in time**: scraped from two websites in early 2026; prices drift.
 - **Wide ranges**: a typical range is about KES 50,000 wide; the estimate is a guide, not a valuation.
@@ -563,7 +576,7 @@ cd android_app
 1. ~~**GPS features**~~: done (Run E2). Next step: per-listing coordinates where listing pages expose a map pin.
 2. ~~**Explanations**~~: done, see *The prediction API*.
 3. ~~**Scheduled scraping**~~: weekly local Jiji run, see *Data collection*. Next: use it to grow the low-data neighbourhoods.
-4. **Monthly retraining**, gated by the deployment rule above.
+4. **Monthly retraining**, gated by the deployment rule above: `python -m ml.retrain` is built and run by hand; scheduling it is not set up yet.
 5. **On-device model** (ONNX) for offline estimates.
 6. **Conversational assistant**: the MCP server is built (see *AI assistant (MCP)*); an in-app chat is planned and will run server-side.
 
