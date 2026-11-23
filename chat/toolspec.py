@@ -6,6 +6,7 @@ import logging
 import os
 from typing import Any
 
+from agent.core import telemetry
 from agent.core.errors import KodiWiseError
 from agent.core.injection import plain
 from agent.core.tools import Tools
@@ -100,6 +101,12 @@ BIGGEST_LISTS = 6
 
 
 def call_tool(tools: Tools, name: str, args: dict[str, Any]) -> dict:
+    """Run one tool inside a trace span (name, redacted inputs, output size, status, duration)."""
+    return telemetry.traced_tool(name if name in ALLOWED else "unknown", args if isinstance(args, dict) else {},
+                                 lambda: _call_tool(tools, name, args), "chat")
+
+
+def _call_tool(tools: Tools, name: str, args: dict[str, Any]) -> dict:
     """Run one tool. Unknown tools and bad arguments come back as {"error": text} for the model to
     explain; nothing raises."""
     if name not in ALLOWED:

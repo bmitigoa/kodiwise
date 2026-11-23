@@ -15,7 +15,7 @@ from mcp.server.fastmcp.exceptions import ToolError
 from mcp.types import ToolAnnotations
 from pydantic import Field
 
-from agent.core import config
+from agent.core import config, telemetry
 from agent.core.client import ApiClient
 from agent.core.errors import KodiWiseError
 from agent.core.listings import FirestoreListingSource, ListingSource
@@ -70,7 +70,8 @@ def _friendly(fn: Callable) -> Callable:
     @functools.wraps(fn)
     async def wrapper(*a, **kw):
         try:
-            return await anyio.to_thread.run_sync(functools.partial(fn, *a, **kw))
+            run = functools.partial(telemetry.traced_tool, fn.__name__, kw, lambda: fn(*a, **kw), "mcp")
+            return await anyio.to_thread.run_sync(run)
         except KodiWiseError as e:
             raise ToolError(str(e)) from None
         except Exception:

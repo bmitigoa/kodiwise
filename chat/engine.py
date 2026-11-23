@@ -7,7 +7,7 @@ import time
 from dataclasses import dataclass, field
 from typing import Callable
 
-from agent.core import config
+from agent.core import config, telemetry
 from agent.core.tools import Tools
 from chat import compact, guard, toolspec
 from chat.gemini import GeminiBusy, GeminiClient, GeminiError
@@ -53,6 +53,9 @@ class ChatResult:
     guard_failed: bool = False
     model: str = ""
     fallback_used: bool = False
+    requests: int = 0          # Gemini requests made for this message (all models, retries included)
+    retries: int = 0           # re-asks after an empty or malformed model reply
+    degraded: bool = False     # no usable model reply: the templated answer plus the Rent Assistant button
 
 
 def clean_history(messages: list[dict], known_names=(), keep=()) -> list[dict]:
@@ -84,9 +87,17 @@ class Lane:
 
 class ChatEngine:
     def __init__(self, tools: Tools, lanes: list[Lane], sleep: Callable[[float], None] = time.sleep,
-                 backoff: float = OVERLOAD_BACKOFF_SECONDS) -> None:
+                 backoff: float = OVERLOAD_BACKOFF_SECONDS, clock: Callable[[], float] = time.monotonic,
+                 deadline_seconds: float = config.MESSAGE_DEADLINE_SECONDS,
+                 model_retries: int = config.MODEL_RETRIES) -> None:
         self.tools, self.lanes = tools, lanes
-        self._sleep, self._backoff = sleep, backoff
+        self._sleep, self._backoff, self._clock = sleep, backoff, clock
+        self._deadline_seconds, self._model_retries = deadline_seconds, model_retries
+        self.requests = 0
+        self._deadline = float("inf")
+
+    def _out_of_time(self) -> bool:
+        return self._clock() > self._deadline
 
     def _generate(self, lane: Lane, contents: list[dict]) -> dict:
         """One Gemini request, counted against the model's caps. A 429 is a quota hit. A 503 ("high
@@ -97,15 +108,47 @@ class ChatEngine:
                 raise LimitReached("busy")
             if not lane.take_global():
                 raise LimitReached("limit_global")
-            try:
-                return lane.gemini.generate(SYSTEM, contents, toolspec.DECLARATIONS)
-            except GeminiBusy as exc:
-                lane.refund_global()
-                if exc.quota or attempt == 1:
+            self.requests += 1
+            with telemetry.span("gemini.request", model=lane.name, attempt=attempt + 1) as sp:
+                try:
+                    out = lane.gemini.generate(SYSTEM, contents, toolspec.DECLARATIONS)
+                    sp.put(outcome="ok")
+                    return out
+                except GeminiBusy as exc:
+                    lane.refund_global()
+                    sp.put(outcome="quota_429" if exc.quota else "overload_or_timeout")
+                    if exc.quota or attempt == 1:
+                        raise
+                    log.info("%s: 503 high demand, retrying once", lane.name)
+                except GeminiError:
+                    sp.put(outcome="error")
                     raise
-                log.info("%s: 503 high demand, retrying once", lane.name)
-                self._sleep(self._backoff)
+            self._sleep(self._backoff)
         raise GeminiError("unreachable")
+
+    @staticmethod
+    def _usable(content: dict) -> bool:
+        """A reply with text, or tool calls that each have a name and object arguments."""
+        parts = content.get("parts") or []
+        calls = [p["functionCall"] for p in parts if isinstance(p, dict) and "functionCall" in p]
+        for fc in calls:
+            if not isinstance(fc, dict) or not isinstance(fc.get("name"), str) or not isinstance(fc.get("args") or {}, dict):
+                return False
+        has_text = any(isinstance(p, dict) and str(p.get("text") or "").strip() for p in parts)
+        return bool(calls) or has_text
+
+    def _generate_usable(self, lane: Lane, contents: list[dict], stats: dict) -> dict | None:
+        """Ask once; if the reply is empty or malformed, re-ask up to MODEL_RETRIES times (each one counted
+        against the caps). Returns None when no usable reply came."""
+        for attempt in range(self._model_retries + 1):
+            content = self._generate(lane, contents)
+            if self._usable(content):
+                return content
+            log.info("%s: empty or malformed model reply (attempt %d)", lane.name, attempt + 1)
+            if attempt >= self._model_retries or self._out_of_time():
+                break
+            stats["retries"] += 1                 # a re-ask follows
+        return None
 
     def run(self, history: list[dict]) -> ChatResult:
         """Primary model first. The fallback model (its own free quota) is used when the primary hits a
@@ -115,18 +158,26 @@ class ChatEngine:
         memo: dict[str, tuple] = {}
         errors: list[Exception] = []
         kept: ChatResult | None = None
+        self.requests = 0
+        self._deadline = self._clock() + self._deadline_seconds
         for n, lane in enumerate(self.lanes):
+            if n and self._out_of_time():
+                break                          # no time left for another model
             try:
                 r = self._run_lane(lane, history, memo)
             except (GeminiBusy, LimitReached, GeminiError) as exc:
                 errors.append(exc)
                 continue
             r.model, r.fallback_used = lane.name, n > 0
-            if not r.guard_failed:
+            r.requests = self.requests
+            if not r.guard_failed and not r.degraded:
                 return r
-            kept = r                           # reply failed the number check: ask the next model
+            kept = r                           # number check failed or no usable reply: ask the next model
         if kept is not None:
+            kept.requests = self.requests
             return kept
+        if not errors:                         # ran out of time before any model answered
+            raise LimitReached("busy")
         raise next((e for e in errors if isinstance(e, (LimitReached, GeminiBusy))), errors[0])
 
     def _run_lane(self, lane: Lane, history: list[dict], memo: dict) -> ChatResult:
@@ -135,8 +186,16 @@ class ChatEngine:
         results: list[dict] = []
         user_texts = [p["text"] for m in history if m["role"] == "user" for p in m["parts"] if "text" in p]
         reply = ""
+        stats = {"retries": 0}
+        degraded = False
         for _ in range(MAX_TOOL_CALLS + 2):           # each round is one Gemini request
-            content = self._generate(lane, contents)
+            if self._out_of_time():
+                degraded = True                       # finish with what we have
+                break
+            content = self._generate_usable(lane, contents, stats)
+            if content is None:
+                degraded = True
+                break
             fcalls = [p["functionCall"] for p in content["parts"] if "functionCall" in p]
             if not fcalls:
                 reply = " ".join(p["text"] for p in content["parts"] if p.get("text")).strip()
@@ -161,6 +220,7 @@ class ChatEngine:
             contents.append({"role": "user", "parts": answers})
         else:
             reply = ""
+            degraded = True
         allowed = guard.allowed_numbers(results, user_texts)
         bad = guard.untraceable_amounts(reply, allowed)
         if not bad and reply:
@@ -172,7 +232,8 @@ class ChatEngine:
         if bad:
             log.warning("%s: reply dropped, %d untraceable amount(s)", lane.name, len(bad))
         text = guard.finish(reply or "", cards, guard_failed=bool(bad))
-        return ChatResult(text, cards, len(memo), guard_failed=bool(bad))
+        return ChatResult(text, cards, len(memo), guard_failed=bool(bad), retries=stats["retries"],
+                          degraded=degraded or not reply)
 
 
 __all__ = ["ChatEngine", "ChatResult", "Lane", "LimitReached", "clean_history", "GeminiBusy", "GeminiError"]

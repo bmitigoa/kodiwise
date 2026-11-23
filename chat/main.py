@@ -8,11 +8,13 @@ import threading
 from dataclasses import dataclass
 from typing import Callable, Literal
 
-from fastapi import Depends, FastAPI, Header, HTTPException
+from fastapi import Depends, FastAPI, Header, HTTPException, Request
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 
-from agent.core import config
+from agent.core import config, telemetry
 from agent.core.tools import Tools
+from chat import scope
 from chat.auth import AuthError, TokenVerifier, verify_firebase_token
 from chat.engine import ChatEngine, Lane, LimitReached, clean_history
 from chat.gemini import GeminiBusy, GeminiClient, GeminiError
@@ -72,6 +74,11 @@ def create_app(settings: Settings, counters: Counters, tools: Tools, clients: di
     limiters = {m: RateLimiter(settings.rpm_cap) for m in order}
     slots = threading.BoundedSemaphore(settings.concurrent)
 
+    @app.exception_handler(Exception)
+    async def unexpected(_: Request, exc: Exception) -> JSONResponse:      # never a stack trace to the client
+        log.error("unhandled error in chat: %s", type(exc).__name__)
+        return JSONResponse(status_code=500, content={"detail": "The assistant hit a problem. Please try again."})
+
     def user(authorization: str | None = Header(None)) -> dict:
         if not authorization or not authorization.lower().startswith("bearer "):
             raise HTTPException(401, "Sign in to use the chat.")
@@ -84,13 +91,24 @@ def create_app(settings: Settings, counters: Counters, tools: Tools, clients: di
         return ChatResponse(status=status, reply=LIMIT_MESSAGES[status], remaining_today=remaining,
                             show_assistant_button=True)
 
+    def areas() -> list[str]:
+        try:
+            return known_locations() if known_locations else []
+        except Exception:                       # the scope guard still works from its rent words
+            return []
+
+    def safely(fn: Callable[[], object], what: str) -> None:
+        try:
+            fn()
+        except Exception as exc:                # a counter that cannot be updated must not break the reply
+            log.warning("%s failed: %s", what, type(exc).__name__)
+
     @app.get("/health")
     def health() -> dict:
         return {"ok": True}
 
-    @app.post("/chat", response_model=ChatResponse)
-    def chat(req: ChatRequest, who: dict = Depends(user)) -> ChatResponse:
-        keep = known_locations() if known_locations else []
+    def handle(req: ChatRequest, who: dict, sp) -> ChatResponse:
+        keep = areas()
         history = clean_history([m.model_dump() for m in req.messages],
                                 known_names=[who["name"]] if who.get("name") else (), keep=keep)
         if not history or history[-1]["role"] != "user":
@@ -99,39 +117,85 @@ def create_app(settings: Settings, counters: Counters, tools: Tools, clients: di
         if settings.global_daily_cap <= 0 or settings.rpm_cap <= 0 or not order:
             log.error("chat limits are not configured; refusing")
             return limit("limit_global")
+
+        # Scope guard: off-topic and non-Nairobi questions are answered here, without a Gemini request and
+        # without using up one of the user's messages.
+        user_texts = [p["text"] for m in history if m["role"] == "user" for p in m["parts"]]
+        verdict = scope.check(user_texts, keep)
+        sp.put(scope=verdict.reason)
+        if not verdict.allowed:
+            used = 0
+            try:
+                used = counters.user_used(uid, uday)
+            except Exception as exc:
+                log.warning("counter read failed: %s", type(exc).__name__)
+            return ChatResponse(status="ok", reply=verdict.reply, remaining_today=max(0, settings.user_daily - used))
+
         if not slots.acquire(blocking=False):
             return limit("busy")
         try:
-            ok, used = counters.user_take(uid, uday, settings.user_daily)
+            try:
+                ok, used = counters.user_take(uid, uday, settings.user_daily)
+            except Exception as exc:            # no counter, no Gemini call (fail closed)
+                log.error("counter update failed: %s", type(exc).__name__)
+                return limit("busy")
             if not ok:
                 return limit("limit_user")
             remaining = max(0, settings.user_daily - used)
 
+            def refund() -> None:
+                safely(lambda: counters.user_refund(uid, uday), "user refund")
+
             def lane(model: str) -> Lane:
                 key = f"{gday}_{model}"          # each model has its own free daily quota
-                return Lane(model, clients[model],
-                            take_global=lambda: counters.global_take(key, settings.global_daily_cap),
-                            allow_rate=limiters[model].allow,
-                            refund_global=lambda: counters.global_refund(key))
+
+                def take() -> bool:
+                    try:
+                        return counters.global_take(key, settings.global_daily_cap)
+                    except Exception as exc:
+                        log.error("global counter failed: %s", type(exc).__name__)
+                        raise LimitReached("busy") from None
+
+                return Lane(model, clients[model], take_global=take, allow_rate=limiters[model].allow,
+                            refund_global=lambda: safely(lambda: counters.global_refund(key), "global refund"))
 
             engine = ChatEngine(tools, [lane(m) for m in order])
             try:
                 result = engine.run(history)
             except LimitReached as lim:
-                counters.user_refund(uid, uday)
+                refund()
+                sp.put(requests=engine.requests, limit=lim.reason)
                 return limit(lim.reason)
-            except GeminiBusy:                    # every model said 429 (the engine refunded those requests)
-                counters.user_refund(uid, uday)
+            except GeminiBusy:                    # every model said 429 or was overloaded
+                refund()
+                sp.put(requests=engine.requests, limit="busy")
                 return limit("busy")
             except GeminiError as exc:
                 log.warning("gemini error: %s", exc)
-                counters.user_refund(uid, uday)
+                refund()
+                sp.put(requests=engine.requests)
                 raise HTTPException(502, "The assistant could not answer right now.") from None
-            log.info("chat ok: model=%s fallback=%s tool_calls=%d guard_failed=%s", result.model,
-                     result.fallback_used, result.tool_calls, result.guard_failed)
+            sp.put(model=result.model, requests=result.requests, tool_calls=result.tool_calls,
+                   fallback_used=result.fallback_used, guard_failed=result.guard_failed,
+                   retries=result.retries, degraded=result.degraded)
+            log.info("chat ok: model=%s fallback=%s tool_calls=%d requests=%d guard_failed=%s degraded=%s",
+                     result.model, result.fallback_used, result.tool_calls, result.requests, result.guard_failed,
+                     result.degraded)
+            if result.degraded:                   # no usable model reply: templated answer + the guided assistant
+                refund()
+                return ChatResponse(status="ok", reply=result.reply, cards=result.cards,
+                                    remaining_today=remaining + 1, show_assistant_button=True)
             return ChatResponse(status="ok", reply=result.reply, cards=result.cards, remaining_today=remaining)
         finally:
             slots.release()
+
+    @app.post("/chat", response_model=ChatResponse)
+    def chat(req: ChatRequest, who: dict = Depends(user)) -> ChatResponse:
+        with telemetry.span("chat.turn", user=telemetry.user_hash(who["uid"]), messages=len(req.messages)) as sp:
+            resp = handle(req, who, sp)
+            sp.put(status=resp.status, reply_chars=len(resp.reply), cards=len(resp.cards),
+                   remaining=resp.remaining_today, button=resp.show_assistant_button)
+            return resp
 
     return app
 
@@ -143,6 +207,8 @@ def build_default_app() -> FastAPI:        # pragma: no cover - wiring for Cloud
     from agent.core.listings import FirestoreListingSource
     from chat.limits import FirestoreCounters
 
+    telemetry.setup_json_logging()          # structured logs for Cloud Logging (free allowance)
+    telemetry.configure_stdout()
     settings = Settings.from_env()
     db = firestore.Client(project="kodiwise-9adab")
     api = ApiClient()

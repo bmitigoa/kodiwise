@@ -29,6 +29,7 @@ def pacific_day(now: datetime | None = None) -> str:
 
 
 class Counters(Protocol):
+    def user_used(self, uid: str, day: str) -> int: ...
     def user_take(self, uid: str, day: str, limit: int) -> tuple[bool, int]: ...
     def user_refund(self, uid: str, day: str) -> None: ...
     def global_take(self, day: str, cap: int) -> bool: ...
@@ -42,6 +43,10 @@ class MemoryCounters:
         self._lock = threading.Lock()
         self.users: dict[tuple[str, str], int] = {}
         self.globals: dict[str, int] = {}
+
+    def user_used(self, uid: str, day: str) -> int:
+        with self._lock:
+            return self.users.get((uid, day), 0)
 
     def user_take(self, uid: str, day: str, limit: int) -> tuple[bool, int]:
         with self._lock:
@@ -88,6 +93,10 @@ class FirestoreCounters:
             return True, n + 1
 
         return run(self.db.transaction())
+
+    def user_used(self, uid: str, day: str) -> int:
+        snap = self.db.collection(self.USERS).document(f"{uid}_{day}").get()
+        return int((snap.to_dict() or {}).get("count", 0)) if snap.exists else 0
 
     def user_take(self, uid: str, day: str, limit: int) -> tuple[bool, int]:
         ref = self.db.collection(self.USERS).document(f"{uid}_{day}")

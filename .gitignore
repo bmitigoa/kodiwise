@@ -41,3 +41,7 @@ ml/models/**/*.csv
 # OS cruft
 .DS_Store
 Thumbs.db
+
+# Local traces (MCP server): never committed
+logs/
+*.jsonl
