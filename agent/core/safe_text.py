@@ -10,6 +10,7 @@ import re
 import unicodedata
 
 from agent.core import config
+from agent.core.injection import neutralise
 
 MAX_TITLE_CHARS = config.MAX_TITLE_CHARS
 
@@ -38,6 +39,7 @@ def clean_title(raw: object) -> str:
     s = _PHONE.sub("[removed]", s)
     s = _MARKUP.sub(" ", s)
     s = _SPACES.sub(" ", s).strip()
+    s = neutralise(s, "listing_text")
     if len(s) > MAX_TITLE_CHARS:
         s = s[: MAX_TITLE_CHARS - 1].rstrip() + "…"
     return s or "(untitled)"

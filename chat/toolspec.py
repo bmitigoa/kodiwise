@@ -6,6 +6,7 @@ import logging
 from typing import Any
 
 from agent.core.errors import KodiWiseError
+from agent.core.injection import plain
 from agent.core.tools import Tools
 
 log = logging.getLogger("kodiwise.chat")
@@ -119,6 +120,6 @@ def card_for(name: str, args: dict, result: dict) -> dict | None:
                 "thin": result.get("thin_data_areas", [])}
     if name == "search_listings":
         return {"type": "listings", "total": result.get("total_matches"),
-                "listings": [{k: item.get(k) for k in ("title", "area", "rent_kes", "bedrooms", "bathrooms", "badge")}
+                "listings": [{k: plain(item.get(k)) for k in ("title", "area", "rent_kes", "bedrooms", "bathrooms", "badge")}
                              for item in result.get("listings", [])][:BIGGEST_LISTS]}
     return None

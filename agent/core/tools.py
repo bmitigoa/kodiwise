@@ -14,6 +14,7 @@ from agent.core import config
 from agent.core import listings as listings_mod
 from agent.core import validate as v
 from agent.core.errors import KodiWiseError
+from agent.core.injection import echo, untrusted
 
 if TYPE_CHECKING:  # the HTTP client is only a type here; the API server passes its own in-process object
     from agent.core.client import ApiClient
@@ -73,12 +74,13 @@ class Tools:
         return by_lower.get(name.casefold(), name)
 
     def _estimate(self, location: str, beds: int, baths: int, size, furnished, ptype, amen) -> dict:
+        furnished = v.furnished(furnished)
         resp = self.api.predict(v.build_payload(location, beds, baths, size, furnished, ptype, amen))
         if resp.get("location_recognised") is False:
             known = self.api.locations()
             tips = v.suggest(location, known)
             hint = f" Did you mean: {', '.join(tips)}?" if tips else " Use list_locations to see the known areas."
-            raise KodiWiseError(f"I don't recognise '{location}' as a Nairobi neighbourhood KodiWise covers.{hint}")
+            raise KodiWiseError(f"I don't recognise '{echo(location)}' as a Nairobi neighbourhood KodiWise covers.{hint}")
         conf = resp["location_confidence"]
         pt = resp["predicted_rent_kes"]
         lo, hi = resp["predicted_rent_low_kes"], resp["predicted_rent_high_kes"]
@@ -193,7 +195,7 @@ class Tools:
         if key is None:
             tips = v.suggest(place, list(cents))
             hint = f" Did you mean: {', '.join(tips)}?" if tips else " Use list_locations to see the known areas."
-            raise KodiWiseError(f"I don't have a map position for '{place}'.{hint}")
+            raise KodiWiseError(f"I don't have a map position for '{echo(place)}'.{hint}")
         if isinstance(max_km, bool) or not isinstance(max_km, (int, float)) or not config.MIN_KM <= max_km <= config.MAX_KM:
             raise KodiWiseError(f"max_km must be a number between {config.MIN_KM:g} and {config.MAX_KM:g}.")
         origin = cents[key]
@@ -241,6 +243,8 @@ class Tools:
                 "from this server). Please try again later or use the KodiWise app.") from exc
         for item in found:
             item["rent"] = kes(item["rent_kes"])
+            item["title"] = untrusted(item["title"])      # landlord text: data, never instructions
+            item["area"] = untrusted(item["area"])
         return _with_note({
             "filters": {"location": loc, "max_rent": kes(rent), "bedrooms": beds},
             "total_matches": total, "shown": len(found), "sorted_by": "rent, lowest first",

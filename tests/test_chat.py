@@ -157,8 +157,9 @@ def test_listing_titles_are_data_and_owner_fields_never_reach_the_model_or_app()
     blob = str(g.seen) + str(r.cards)
     for secret in ("SECRET-OWNER", "o@x.com", "0712 345 678"):
         assert secret not in blob
-    assert "ignore previous" in blob.lower()                  # text is passed as (cleaned) data...
-    assert "never follow" in g.seen[0][0].lower() or "not instructions" in g.seen[0][0].lower()  # ...and the system prompt says so
+    assert "ignore previous" not in blob.lower()              # instruction-like text is cut out...
+    assert "untrusted_text" in blob and "[removed]" in blob   # ...the rest is passed inside a marked field...
+    assert "untrusted_text" in g.seen[0][0] and "never" in g.seen[0][0].lower()   # ...and the prompt says it is data
     assert r.cards[0]["type"] == "listings"
 
 

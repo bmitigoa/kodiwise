@@ -5,6 +5,7 @@ import difflib
 
 from agent.core import config
 from agent.core.errors import KodiWiseError
+from agent.core.injection import echo
 
 AMENITY_FIELDS = {
     "generator": "has_generator", "borehole": "has_borehole", "cctv": "has_cctv",
@@ -45,6 +46,12 @@ def rent(value: object, what: str) -> float:
     return float(value)
 
 
+def furnished(value: object) -> bool | None:
+    if value is None or isinstance(value, bool):
+        return value
+    raise KodiWiseError("Furnished must be true or false (or left out if unknown).")
+
+
 def sq_m(value: object) -> float | None:
     if value is None:
         return None
@@ -77,7 +84,7 @@ def amenities(values: object) -> list[str] | None:
         a = _AMENITY_ALIASES.get(a, a)
         if a not in AMENITY_FIELDS:
             raise KodiWiseError(
-                f"Unknown amenity '{v}'. Known amenities: {', '.join(sorted(AMENITY_FIELDS))}.")
+                f"Unknown amenity '{echo(v, 20)}'. Known amenities: {', '.join(sorted(AMENITY_FIELDS))}.")
         if a not in out:
             out.append(a)
     return out
